@@ -63,7 +63,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>System ID</th>
+                          
                             <th>Action</th>
                             <th>Type</th>
                             <th>Description</th>
@@ -71,14 +71,14 @@
                         </tr>
                     </thead>
                     <tbody id="transaction_logs">
-                        {foreach from=$d item=transaction_logs}
+                        {foreach from=$transactions item=transaction}
                             <tr>
-                                <td>{$transaction_logs.id}</td>
-                                <td>{$transaction_logs.system_id}</td>
-                                <td>{$transaction_logs.action}</td>
-                                <td>{$transaction_logs.type}</td>
-                                <td>{$transaction_logs.description}</td>
-                                <td>{$transaction_logs.created_at}</td>
+                                <td>{$transaction.id}</td>
+                            
+                                <td>{$transaction.action}</td>
+                                <td>{$transaction.type}</td>
+                                <td>{$transaction.description}</td>
+                                <td>{$transaction.created_at}</td>
                             </tr>
                         {/foreach}
                     </tbody>
@@ -90,6 +90,7 @@
         </div>
     </div>
 </div>
+
 
 
 <input type="hidden" id="_lan_are_you_sure" value="{$_L['are_you_sure']}">

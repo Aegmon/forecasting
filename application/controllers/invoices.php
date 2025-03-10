@@ -378,15 +378,15 @@ switch ($action) {
         
         case 'add-post':
             Event::trigger('invoices/add-post/');
-            error_log("POST Data: " . json_encode($_POST)); // Log all incoming POST data
+            error_log("POST Data: " . json_encode($_POST));
         
             if (!isset($_POST['item_code'])) {
-                error_log("item_codes is not set in POST request");
+                error_log("ERROR: item_code is missing in the POST request.");
                 r2(U . 'invoices/list/', 'e', 'Item codes not set in the POST request.');
                 exit;
             }
         
-            // Retrieve POST data from AJAX request
+            // Retrieve and validate POST data
             $idate = $_POST['idate'];
             $amount = $_POST['amount'];
             $qty = $_POST['qty'];
@@ -396,32 +396,31 @@ switch ($action) {
             $msg = '';
             $sTotal = 0;
         
-            // Ensure arrays for the incoming data
             if (!is_array($amount)) $amount = explode(',', $amount);
             if (!is_array($description)) $description = explode(',', $description);
         
-            // Validation
             if (empty($amount)) {
+                error_log("ERROR: No items provided in the invoice.");
                 $msg .= 'At least one item is required.<br>';
             }
             if (!is_array($qty) || !is_array($item_code) || count($amount) != count($qty) || count($amount) != count($item_code)) {
-                $msg .= 'Mismatch between amount, qty, or item_code arrays. They must all have the same length.<br>';
+                error_log("ERROR: Mismatch between amount, qty, or item_code arrays.");
+                $msg .= 'Mismatch between amount, qty, or item_code arrays.<br>';
             }
         
-            // Check stock before proceeding
+            // Check stock availability
             if ($msg == '') {
                 $i = 0;
-                $a = [];
-                
-                // Loop through each item to check stock
                 foreach ($item_code as $code) {
                     $item = ORM::for_table('sys_items')->where('item_number', $code)->find_one();
                     if ($item) {
                         $required_qty = Finance::amount_fix($qty[$i]);
                         if ($item->inventory < $required_qty) {
+                            error_log("ERROR: Insufficient stock for item: {$item->description} (Item Code: $code)");
                             $msg .= "Not enough stock for item: " . $item->description . " (Item Code: $code)<br>";
                         }
                     } else {
+                        error_log("ERROR: Item not found in inventory: $code");
                         $msg .= "Item not found in inventory: " . $code . "<br>";
                     }
                     $i++;
@@ -429,10 +428,9 @@ switch ($action) {
             }
         
             if ($msg == '') {
-                // Proceed with invoice creation if no stock issues
+                // Create invoice
                 $i = 0;
                 $a = [];
-        
                 foreach ($amount as $samount) {
                     $samount = Finance::amount_fix($samount);
                     $a[$i] = $samount;
@@ -445,20 +443,26 @@ switch ($action) {
                 $vtoken = _raid(10);
                 $ptoken = _raid(10);
         
-                $d = ORM::for_table('sys_invoices')->create();
-                $d->userid = "1";
-                $d->account = "Walkin Customer";
-                $d->system_id = $user_id;
-                $d->date = $idate;
-                $d->datepaid = $datetime;
-                $d->subtotal = $sTotal;
-                $d->total = $sTotal;
-                $d->vtoken = $vtoken;
-                $d->ptoken = $ptoken;
-                $d->status = 'Unpaid';
-                $d->save();
+                $invoice = ORM::for_table('sys_invoices')->create();
+                $invoice->userid = "1";
+                $invoice->account = "Walkin Customer";
+                $invoice->system_id = $user_id;
+                $invoice->date = $idate;
+                $invoice->datepaid = $datetime;
+                $invoice->subtotal = $sTotal;
+                $invoice->total = $sTotal;
+                $invoice->vtoken = $vtoken;
+                $invoice->ptoken = $ptoken;
+                $invoice->status = 'Paid';
         
-                $invoiceid = $d->id();
+                if (!$invoice->save()) {
+                    error_log("ERROR: Invoice insertion failed.");
+                    r2(U . 'invoices/list/', 'e', 'Failed to create invoice.');
+                    exit;
+                }
+        
+                $invoiceid = $invoice->id();
+                error_log("SUCCESS: Invoice #$invoiceid created successfully.");
         
                 // Add invoice items
                 $i = 0;
@@ -471,35 +475,118 @@ switch ($action) {
                     $sqty = Finance::amount_fix($qty[$i]);
                     $ltotal = $a[$i] * $sqty;
         
-                    $d = ORM::for_table('sys_invoiceitems')->create();
-                    $d->invoiceid = $invoiceid;
-                    $d->description = $item;
-                    $d->qty = $sqty;
-                    $d->amount = $a[$i];
-                    $d->total = $ltotal;
-                    $d->save();
+                    $invoiceItem = ORM::for_table('sys_invoiceitems')->create();
+                    $invoiceItem->invoiceid = $invoiceid;
+                    $invoiceItem->description = $item;
+                    $invoiceItem->qty = $sqty;
+                    $invoiceItem->amount = $a[$i];
+                    $invoiceItem->total = $ltotal;
         
+                    if (!$invoiceItem->save()) {
+                        error_log("ERROR: Failed to insert invoice item: $item.");
+                    } else {
+                        error_log("SUCCESS: Invoice item '$item' added successfully.");
+                        $log = ORM::for_table('transaction_logs')->create();
+                        $log->system_id = $user_id;
+                        $log->action = 'Less';
+                        $log->type = 'Invoice';
+                        $log->description = 'User made a payment for Item : ' . $item;
+                        $log->created_at = date('Y-m-d H:i:s');
+                    }
+        
+                    // Reduce inventory stock
                     $item_code_val = $item_code[$i];
                     $item = ORM::for_table('sys_items')->where('item_number', $item_code_val)->find_one();
         
                     if ($item) {
                         $new_qty = $item->inventory - $sqty;
-                        if ($new_qty <= 0) {
+                        if ($new_qty < 0) {
+                            error_log("ERROR: Stock insufficient for item: {$item->description}");
                             $msg .= "Not enough stock for item: " . $item->description . "<br>";
                         } else {
                             $item->inventory = $new_qty;
-                            $item->save();
+                            if (!$item->save()) {
+                                error_log("ERROR: Failed to update inventory for item: {$item->description}");
+                            } else {
+                                error_log("SUCCESS: Inventory updated for item: {$item->description}");
+                            }
                         }
                     } else {
-                        $msg .= "Item not found in inventory: " . $item_code_val . "<br>";
+                        error_log("ERROR: Item not found in inventory: $item_code_val");
                     }
         
                     $i++;
                 }
-        
+                $account_nam = ORM::for_table('sys_accounts')->where('system_id', $user_id)->find_one();
+                if (!$account_nam) {
+                    error_log("ERROR: No account found for system_id: $user_id");
+                    r2(U . 'invoices/list/', 'e', 'No associated account found.');
+                    exit;
+                }
+                $account_name = $account_nam->account;
+                error_log("account name: $account_name");
                 if ($msg == '') {
+                    // Add Payment 🚀
+                    Event::trigger('invoices/add-payment-post/');
+        
+                    $account = $account_name; // Default account for Walk-in Customers
+                    $amount = $sTotal;
+                    $pmethod = "Cash";
+                    $date = date("Y-m-d");
+                    $description = "Payment for Invoice ID: $invoiceid";
+        
+                    $a = ORM::for_table('sys_accounts')->where('account', $account)->find_one();
+                    $cbal = $a['balance'];
+                    $nbal = $cbal + $amount;
+                    $a->balance = $nbal;
+        
+                    if (!$a->save()) {
+                        error_log("ERROR: Failed to update account balance.");
+                    }
+        
+                    $payment = ORM::for_table('sys_transactions')->create();
+                    $payment->system_id = $user_id;
+                    $payment->account = $account;
+                    $payment->type = 'Income';
+                    $payment->amount = $amount;
+                    $payment->category = 'Sales';
+                    $payment->method = $pmethod;
+                    $payment->description = $description;
+                    $payment->date = $date;
+                    $payment->cr = $amount;
+                    $payment->bal = $nbal;
+                    $payment->iid = $invoiceid;
+                    $payment->status = 'Cleared';
+        
+                    if (!$payment->save()) {
+                        error_log("ERROR: Failed to insert payment for Invoice ID: $invoiceid.");
+                    } else {
+                        error_log("SUCCESS: Payment recorded for Invoice ID: $invoiceid.");
+                    }
+        
+                    // Update Invoice Status
+                    $i = ORM::for_table('sys_invoices')->find_one($invoiceid);
+                    if ($i) {
+                        $i->status = 'Paid';
+                        $i->credit = $amount;
+                        if (!$i->save()) {
+                            error_log("ERROR: Failed to update invoice status.");
+                        } else {
+                            error_log("SUCCESS: Invoice status updated to Paid.");
+                        }
+                    }
+        
+                    // Log Transaction 📜
+                
+        
+                    if (!$log->save()) {
+                        error_log("ERROR: Failed to insert transaction log.");
+                    } else {
+                        error_log("SUCCESS: Transaction log recorded.");
+                    }
+        
                     Event::trigger('add_invoice_posted');
-                    r2(U . 'invoices/list/', 's', 'Invoice successfully created.');
+                    r2(U . 'invoices/list/', 's', 'Invoice and Payment successfully processed.');
                 } else {
                     r2(U . 'invoices/list/', 'e', $msg);
                 }
@@ -507,6 +594,7 @@ switch ($action) {
                 r2(U . 'invoices/list/', 'e', $msg);
             }
             break;
+        
         
 
 

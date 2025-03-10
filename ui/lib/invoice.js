@@ -100,50 +100,85 @@ $(document).ready(function () {
     });
 
     // Submit the form and send data via AJAX
-    $('#submit').click(function (e) {
-        e.preventDefault();
-
-        // Collecting form data
-        var idate = $('#idate').val();
-        var item_codes = [];
-        var descriptions = [];
-        var qtys = [];
-        var amounts = [];
-
-        // Add item code data
-        $('#invoice_items tbody tr').each(function () {
-            // Ensure you collect item_code from the hidden input field
-            item_codes.push($(this).find('.item_codes').val()); // 'item_codes' is the hidden input
-            descriptions.push($(this).find('.item_name').val());
-            qtys.push($(this).find('.qty').val());
-            amounts.push($(this).find('.item_price').val());
-        });
-
-        // Prepare data to be sent via POST
-        var postData = {
-            idate: idate,
-            item_code: item_codes, // Send the item_codes array correctly
-            desc: descriptions,
-            qty: qtys,
-            amount: amounts
-        };
-
-        // Send data via AJAX
-        $.ajax({
-            url: _url + 'invoices/add-post/',
-            method: "POST",
-            data: postData, // Send the updated postData object
-            success: function (response) {
-                console.log('Invoice added successfully: ' + response);
-                window.location.href = _url + 'invoices/list/';
-            },
-            error: function (xhr, status, error) {
-                console.error('AJAX Error: ' + error);
-                console.error('Status: ' + status);
-                console.error('Response: ' + xhr.responseText);
+    $(document).ready(function () {
+        $('#submit').click(function (e) {
+            e.preventDefault();
+    
+            console.log('Submitting Invoice Form...'); // Debugging Log
+    
+            // Collecting form data
+            var idate = $('#idate').val();
+            var item_codes = [];
+            var descriptions = [];
+            var qtys = [];
+            var amounts = [];
+    
+            // Validate if at least one item is added
+            if ($('#invoice_items tbody tr').length === 0) {
+                alert('Please add at least one item to the invoice.');
+                console.error('ERROR: No items in the invoice.');
+                return;
             }
+    
+            // Collect item details
+            $('#invoice_items tbody tr').each(function () {
+                var itemCode = $(this).find('.item_codes').val();
+                var itemName = $(this).find('.item_name').val();
+                var itemQty = $(this).find('.qty').val();
+                var itemPrice = $(this).find('.item_price').val();
+    
+                // Validation checks
+                if (!itemCode || !itemName || !itemQty || !itemPrice) {
+                    console.error('ERROR: Missing item details. Code:', itemCode, 'Name:', itemName, 'Qty:', itemQty, 'Price:', itemPrice);
+                    alert('All item fields must be filled.');
+                    return false; // Exit loop
+                }
+    
+                item_codes.push(itemCode);
+                descriptions.push(itemName);
+                qtys.push(itemQty);
+                amounts.push(itemPrice);
+            });
+    
+            // Validate invoice date
+            if (!idate) {
+                alert('Invoice date is required.');
+                console.error('ERROR: Invoice date is missing.');
+                return;
+            }
+    
+            // Prepare data to be sent via POST
+            var postData = {
+                idate: idate,
+                item_code: item_codes,
+                desc: descriptions,
+                qty: qtys,
+                amount: amounts
+            };
+    
+            console.log('Sending AJAX request with data:', postData); // Debugging Log
+    
+            // Send data via AJAX
+            $.ajax({
+                url: _url + 'invoices/add-post/',
+                method: "POST",
+                data: postData,
+                success: function (response) {
+                    console.log('SUCCESS: Invoice added successfully:', response);
+                    window.location.href = _url + 'invoices/list/';
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX ERROR:', error);
+                    console.error('Status:', status);
+                    console.error('Response:', xhr.responseText);
+    
+                    // Show error message to user
+                    alert('Error: Unable to save invoice. Check console logs for details.');
+                }
+            });
         });
     });
+    
 
     // Update the invoice items from modal selection
     $modal.on('click', '.update', function () {

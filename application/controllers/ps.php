@@ -131,14 +131,7 @@ $ui->display('add-ps.tpl');
 
 
 
-         // Log the transaction
-        $log = ORM::for_table('transaction_logs')->create();
-        $log->system_id = $user_id;
-        $log->action = 'Add';
-        $log->type = 'Product';
-        $log->description = 'User added a new product with ID: ' . $nxt;
-        $log->created_at = date('Y-m-d H:i:s'); // Assuming a `created_at` column for timestamp 
-        $log->save();
+     
 
         $ui->display('add-ps.tpl');
 
@@ -245,7 +238,14 @@ $ui->display('add-ps.tpl');
                 $d->type = $type;
                 $d->unit = '';
                 $d->e = '';
-        
+            // Log the transaction
+            $log = ORM::for_table('transaction_logs')->create();
+            $log->system_id = $user_id;
+            $log->action = 'Add';
+            $log->type = 'Product';
+            $log->description = 'User added a new product : ' . $name;
+            $log->created_at = date('Y-m-d H:i:s'); // Assuming a `created_at` column for timestamp 
+            $log->save();
                 if ($image_path) {
                     $d->image = $image_path;
                 }
@@ -266,21 +266,36 @@ $ui->display('add-ps.tpl');
         
         
 
-case 'p-list':
-    $products = ORM::for_table('sys_items')
-            ->where('system_id', $user_id)
-            ->find_many();
-
-    $ui->assign('d', $products);
-    $ui->assign('type', 'Product');
-    $ui->assign('xheader', '<link rel="stylesheet" type="text/css" href="' . $_theme . '/css/modal.css"/>');
-    $ui->assign('xfooter', '<script type="text/javascript">
-                                var user_id = ' . json_encode($user_id) . ';
-                            </script>
-                            <script type="text/javascript" src="' . $_theme . '/lib/modal.js"></script>
-                            <script type="text/javascript" src="' . $_theme . '/lib/ps-list.js"></script>');
-    $ui->display('ps-list.tpl');
-    break;
+            case 'p-list':
+                // Fetch all products for the current user
+                $products = ORM::for_table('sys_items')
+                    ->where('system_id', $user_id)
+                    ->find_many();
+            
+                // Fetch all transaction logs for the user
+                $transactions = ORM::for_table('transaction_logs')
+                    ->where('system_id', $user_id)
+                    ->order_by_desc('created_at')
+                    ->find_many();
+            
+                // Assign data to template
+                $ui->assign('d', $products);
+                $ui->assign('transactions', $transactions); // Assign transaction logs
+                $ui->assign('type', 'Product');
+                
+                // Include additional scripts and styles
+                $ui->assign('xheader', '<link rel="stylesheet" type="text/css" href="' . $_theme . '/css/modal.css"/>');
+                $ui->assign('xfooter', '
+                    <script type="text/javascript">
+                        var user_id = ' . json_encode($user_id) . ';
+                    </script>
+                    <script type="text/javascript" src="' . $_theme . '/lib/modal.js"></script>
+                    <script type="text/javascript" src="' . $_theme . '/lib/ps-list.js"></script>'
+                );
+            
+                $ui->display('ps-list.tpl');
+                break;
+            
 
 
 

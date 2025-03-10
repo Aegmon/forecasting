@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 10:44:25
+/* Smarty version 3.1.39, created on 2025-03-10 21:00:44
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\ps-list.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce5209d086c7_08164028',
+  'unifunc' => 'content_67cee27c589422_44776514',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd4ff235f8202036c94e01f5f3aeab8dd9f460aa1' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\ps-list.tpl',
-      1 => 1734044678,
+      1 => 1741611642,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce5209d086c7_08164028 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67cee27c589422_44776514 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_84322400667ce5209cfa3b5_29163562', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_184378114667cee27c57f826_71035437', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_84322400667ce5209cfa3b5_29163562 extends Smarty_Internal_Block
+class Block_184378114667cee27c57f826_71035437 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_84322400667ce5209cfa3b5_29163562',
+    0 => 'Block_184378114667cee27c57f826_71035437',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -125,7 +125,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>System ID</th>
+                          
                             <th>Action</th>
                             <th>Type</th>
                             <th>Description</th>
@@ -134,23 +134,22 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                     </thead>
                     <tbody id="transaction_logs">
                         <?php
-$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['d']->value, 'transaction_logs');
-$_smarty_tpl->tpl_vars['transaction_logs']->do_else = true;
-if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['transaction_logs']->value) {
-$_smarty_tpl->tpl_vars['transaction_logs']->do_else = false;
+$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['transactions']->value, 'transaction');
+$_smarty_tpl->tpl_vars['transaction']->do_else = true;
+if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['transaction']->value) {
+$_smarty_tpl->tpl_vars['transaction']->do_else = false;
 ?>
                             <tr>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction_logs']->value['id'];?>
+                                <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['id'];?>
 </td>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction_logs']->value['system_id'];?>
+                            
+                                <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['action'];?>
 </td>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction_logs']->value['action'];?>
+                                <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['type'];?>
 </td>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction_logs']->value['type'];?>
+                                <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['description'];?>
 </td>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction_logs']->value['description'];?>
-</td>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction_logs']->value['created_at'];?>
+                                <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['created_at'];?>
 </td>
                             </tr>
                         <?php
@@ -165,6 +164,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
         </div>
     </div>
 </div>
+
 
 
 <input type="hidden" id="_lan_are_you_sure" value="<?php echo $_smarty_tpl->tpl_vars['_L']->value['are_you_sure'];?>
