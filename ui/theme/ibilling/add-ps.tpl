@@ -34,7 +34,7 @@
                             <span id="emsgbody"></span>
                         </div>
 
-                        <form class="form-horizontal" id="rform">
+                      <form class="form-horizontal" id="rform" enctype="multipart/form-data" method="POST">
 
                             <div class="form-group"><label class="col-lg-2 control-label" for="name">{$_L['Name']}</label>
 
@@ -42,7 +42,12 @@
 
                                 </div>
                             </div>
-
+                            <div class="form-group">
+                                    <label class="col-lg-2 control-label" for="image">Upload Image</label>
+                                    <div class="col-lg-10">
+                                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                                    </div>
+                                </div>
                             <div class="form-group"><label class="col-lg-2 control-label" for="sales_price">{$_L['Sales Price']}</label>
 
                                 <div class="col-lg-10"><input type="text" id="sales_price" name="sales_price" class="form-control amount" autocomplete="off" data-a-sign="{$_c['currency_code']} "  data-a-dec="{$_c['dec_point']}" data-a-sep="{$_c['thousands_sep']}" data-d-group="2">

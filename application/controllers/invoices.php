@@ -1202,7 +1202,14 @@ $(".cdelete").click(function (e) {
                     $acs['account'] .
                     '</option>';
             }
-
+            $log = ORM::for_table('transaction_logs')->create();
+            $log->system_id = $user_id;
+            $log->action = 'Less';
+            $log->type = 'Invoice';
+            $log->description = 'User made a payment for Invoice ID: ' . $d['id'];
+            $log->created_at = date('Y-m-d H:i:s');
+            $log->save();
+    
             $pms_opt = '';
 
             $pms = ORM::for_table('sys_pmethods')

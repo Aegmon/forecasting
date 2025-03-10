@@ -26,7 +26,8 @@ switch ($action) {
             '</h3>
 </div>
 <div class="modal-body">
-
+<input type="text" id="searchBar" class="form-control" placeholder="Search for a product..." onkeyup="searchItems()">
+        <br>
 <table class="table table-striped" id="items_table">
       <thead>
         <tr>
@@ -90,8 +91,24 @@ switch ($action) {
 	<button class="btn btn-primary update">' .
             $_L['Select'] .
             '</button>
-</div>';
-
+</div>
+<script>
+function searchItems() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("searchBar");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("items_table");
+    tr = table.getElementsByTagName("tr");
+    
+    for (i = 1; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[2]; // Index 2 is Item Name
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+    }
+}
+</script>';
         break;
 
     case 'p-new':
@@ -104,11 +121,14 @@ switch ($action) {
  '
         );
 
-        $max = ORM::for_table('sys_items')
-                ->where('system_id', $user_id) 
-                ->max('id');
-        $nxt = $max + 1;
-        $ui->assign('nxt', $nxt);
+        $count = ORM::for_table('sys_items')
+    ->where('system_id', $user_id)
+    ->count();
+
+$nxt = $count + 1; // This should now return the correct next number
+$ui->assign('nxt', $nxt);
+$ui->display('add-ps.tpl');
+
 
 
          // Log the transaction
@@ -135,59 +155,116 @@ switch ($action) {
  '
         );
 
-        $max = ORM::for_table('sys_items')
-                ->where('system_id', $user_id) 
-        ->max('id');
-        $nxt = $max + 1;
+        $count = ORM::for_table('sys_items')
+        ->where('system_id', $user_id)
+        ->count();
+         $nxt = $count + 1;
         $ui->assign('nxt', $nxt);
         $ui->display('add-ps.tpl');
 
         break;
 
-    case 'add-post':
-        $name = _post('name');
-        $sales_price = _post('sales_price');
-        $sales_price = Finance::amount_fix($sales_price);
-             $stock = _post('stock');
-        $item_number = _post('item_number');
-   
-        $description = _post('description');
-        $type = _post('type');
-
-        $msg = '';
-
-        if ($name == '') {
-            $msg .= 'Item Name is required <br>';
-        }
-        if (($stock == '') || ($stock <= 0)) {
-            $msg .= 'Please input stock value 1 or more <br>';
-        }
-        if (!is_numeric($sales_price)) {
-            $sales_price = '0.00';
-        }
-
-        if ($msg == '') {
-            $d = ORM::for_table('sys_items')->create();
-            $d->system_id = $user_id;
-            $d->name = $name;
-            $d->sales_price = $sales_price;
-            $d->inventory = $stock;
-            $d->item_number = $item_number;
-      
-            $d->description = $description;
-            $d->type = $type;
-            //others
-            $d->unit = '';
-            $d->e = '';
-            $d->save();
-
-            _msglog('s', $_L['Item Added Successfully']);
-
-            echo $d->id();
-        } else {
-            echo $msg;
-        }
-        break;
+        case 'add-post':
+            error_log('🟢 add-post case triggered');
+        
+            $name = _post('name');
+            $sales_price = _post('sales_price');
+            $sales_price = Finance::amount_fix($sales_price);
+            $stock = _post('stock');
+            $item_number = _post('item_number');
+            $description = _post('description');
+            $type = _post('type');
+            $msg = '';
+        
+            ini_set('log_errors', 1);
+            ini_set('error_log', 'php_errors.log');
+        
+            error_log("🔍 Received Data: Name: $name, Sales Price: $sales_price, Stock: $stock, Item Number: $item_number, Type: $type");
+        
+            // Validate Inputs
+            if (empty($name)) {
+                $msg .= '❌ Item Name is required <br>';
+                error_log('❌ Error: Item Name is missing');
+            }
+            if (empty($stock) || $stock <= 0) {
+                $msg .= '❌ Please input stock value 1 or more <br>';
+                error_log('❌ Error: Stock value is invalid');
+            }
+            if (!is_numeric($sales_price)) {
+                $sales_price = '0.00';
+                error_log('⚠️ Warning: Sales price is not numeric, defaulting to 0.00');
+            }
+        
+            // Handle Image Upload
+            $image_path = ''; 
+            if (!empty($_FILES['image']['name'])) {
+                error_log('🖼️ Image detected for upload: ' . $_FILES['image']['name']);
+        
+                $target_dir = 'img/'; // Ensure this folder exists and is writable
+                if (!is_dir($target_dir) || !is_writable($target_dir)) {
+                    $msg .= '❌ Upload directory is not writable!<br>';
+                    error_log('❌ Error: Upload directory is not writable');
+                } else {
+                    $image_name = time() . '_' . basename($_FILES['image']['name']);
+                    $target_file = $target_dir . $image_name;
+        
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        
+                    if ($_FILES['image']['size'] > 5 * 1024 * 1024) {
+                        $msg .= '❌ Image size exceeds 5MB limit.<br>';
+                        error_log('❌ Error: Image file too large');
+                    } elseif (!in_array($imageFileType, $allowed_types)) {
+                        $msg .= '❌ Invalid image format. Only JPG, JPEG, PNG & GIF are allowed.<br>';
+                        error_log('❌ Error: Invalid image format - ' . $imageFileType);
+                    } else {
+                        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                            $image_path = $target_file; 
+                            error_log('✅ Image uploaded successfully: ' . $image_path);
+                        } else {
+                            $msg .= '❌ Error uploading the image.<br>';
+                            error_log('❌ Error: Image upload failed');
+                        }
+                    }
+                }
+            } else {
+                error_log('⚠️ No image uploaded');
+            }
+        
+            // Database Insertion
+            if ($msg == '') {
+                error_log('🟢 Saving item to database...');
+        
+                $d = ORM::for_table('sys_items')->create();
+                $d->system_id = $user_id ?? 0;
+                $d->name = $name;
+                $d->sales_price = $sales_price;
+                $d->inventory = $stock;
+                $d->item_number = $item_number;
+                $d->description = $description;
+                $d->type = $type;
+                $d->unit = '';
+                $d->e = '';
+        
+                if ($image_path) {
+                    $d->image = $image_path;
+                }
+        
+                if ($d->save()) {
+                    error_log('✅ Item added successfully with ID: ' . $d->id());
+                    _msglog('s', $_L['Item Added Successfully']);
+                    echo $d->id();
+                } else {
+                    error_log('❌ Error: Database save failed');
+                    echo 'Database error: Unable to save item';
+                }
+            } else {
+                error_log('❌ Form validation failed: ' . $msg);
+                echo $msg;
+            }
+            break;
+        
+        
 
 case 'p-list':
     $products = ORM::for_table('sys_items')

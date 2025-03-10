@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 10:47:26
+/* Smarty version 3.1.39, created on 2025-03-10 18:29:33
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\add-ps.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce52bee0e181_57959027',
+  'unifunc' => 'content_67cebf0d0ccbc9_13994343',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '1ba4a504a5498c109ac73c42e5bb2eeb717eaacc' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\add-ps.tpl',
-      1 => 1741574845,
+      1 => 1741602571,
       2 => 'file',
     ),
   ),
@@ -20,23 +20,23 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce52bee0e181_57959027 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67cebf0d0ccbc9_13994343 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_158141319967ce52bee06098_06785918', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_153153542467cebf0d0c5b73_76440770', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_158141319967ce52bee06098_06785918 extends Smarty_Internal_Block
+class Block_153153542467cebf0d0c5b73_76440770 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_158141319967ce52bee06098_06785918',
+    0 => 'Block_153153542467cebf0d0c5b73_76440770',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -81,7 +81,7 @@ ps/s-list" class="btn btn-primary btn-xs"><?php echo $_smarty_tpl->tpl_vars['_L'
                             <span id="emsgbody"></span>
                         </div>
 
-                        <form class="form-horizontal" id="rform">
+                      <form class="form-horizontal" id="rform" enctype="multipart/form-data" method="POST">
 
                             <div class="form-group"><label class="col-lg-2 control-label" for="name"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Name'];?>
 </label>
@@ -90,7 +90,12 @@ ps/s-list" class="btn btn-primary btn-xs"><?php echo $_smarty_tpl->tpl_vars['_L'
 
                                 </div>
                             </div>
-
+                            <div class="form-group">
+                                    <label class="col-lg-2 control-label" for="image">Upload Image</label>
+                                    <div class="col-lg-10">
+                                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                                    </div>
+                                </div>
                             <div class="form-group"><label class="col-lg-2 control-label" for="sales_price"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Sales Price'];?>
 </label>
 

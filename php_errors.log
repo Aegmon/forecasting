@@ -1,0 +1,54 @@
+[10-Mar-2025 13:30:56 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 232, Stock: 2, Item Number: 68, Type: Product
+[10-Mar-2025 13:30:56 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 13:30:56 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 13:30:56 Asia/Manila] ✅ Item added successfully with ID: 68
+[10-Mar-2025 13:31:52 Asia/Manila] 🔍 Received Data: Name: 312312321, Sales Price: 12, Stock: 33, Item Number: 69, Type: Product
+[10-Mar-2025 13:31:52 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 13:31:52 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 13:31:52 Asia/Manila] ✅ Item added successfully with ID: 69
+[10-Mar-2025 13:42:56 Asia/Manila] 🔍 Received Data: Name: 312, Sales Price: 22, Stock: 32, Item Number: 70, Type: Product
+[10-Mar-2025 13:42:56 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 13:42:56 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 13:42:56 Asia/Manila] ✅ Item added successfully with ID: 70
+[10-Mar-2025 13:43:36 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 12321, Stock: 232, Item Number: 71, Type: Product
+[10-Mar-2025 13:43:36 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 13:43:36 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 13:43:36 Asia/Manila] ✅ Item added successfully with ID: 71
+[10-Mar-2025 13:43:54 Asia/Manila] 🔍 Received Data: Name: 3213, Sales Price: 22, Stock: 2, Item Number: 72, Type: Product
+[10-Mar-2025 13:43:54 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 13:43:54 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 13:43:54 Asia/Manila] ✅ Item added successfully with ID: 72
+[10-Mar-2025 15:16:26 Asia/Manila] 🔍 Received Data: Name: 321, Sales Price: 32, Stock: 2, Item Number: 73, Type: Product
+[10-Mar-2025 15:16:26 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 15:16:26 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 15:16:26 Asia/Manila] ✅ Item added successfully with ID: 73
+[10-Mar-2025 15:17:02 Asia/Manila] 🔍 Received Data: Name: test21, Sales Price: 2, Stock: 23, Item Number: 1, Type: Product
+[10-Mar-2025 15:17:02 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 15:17:02 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 15:17:02 Asia/Manila] ✅ Item added successfully with ID: 74
+[10-Mar-2025 15:18:28 Asia/Manila] 🔍 Received Data: Name: 23, Sales Price: 2, Stock: 22, Item Number: 75, Type: Product
+[10-Mar-2025 15:18:28 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 15:18:28 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 15:18:28 Asia/Manila] ✅ Item added successfully with ID: 75
+[10-Mar-2025 15:18:42 Asia/Manila] 🔍 Received Data: Name: 32, Sales Price: 22, Stock: 2, Item Number: 76, Type: Product
+[10-Mar-2025 15:18:42 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 15:18:42 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 15:18:42 Asia/Manila] ✅ Item added successfully with ID: 76
+[10-Mar-2025 15:19:00 Asia/Manila] 🔍 Received Data: Name: dsadsa, Sales Price: 33, Stock: 33, Item Number: 77, Type: Product
+[10-Mar-2025 15:19:00 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 15:19:00 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 15:19:00 Asia/Manila] ✅ Item added successfully with ID: 77
+[10-Mar-2025 15:24:23 Asia/Manila] 🔍 Received Data: Name: 21, Sales Price: 33, Stock: 22, Item Number: 78, Type: Product
+[10-Mar-2025 15:24:23 Asia/Manila] ⚠️ No image uploaded
+[10-Mar-2025 15:24:23 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 15:24:23 Asia/Manila] ✅ Item added successfully with ID: 78
+[10-Mar-2025 18:26:20 Asia/Manila] 🔍 Received Data: Name: test1, Sales Price: 12, Stock: 12, Item Number: 1, Type: Product
+[10-Mar-2025 18:26:20 Asia/Manila] 🖼️ Image detected for upload: food7.jpg
+[10-Mar-2025 18:26:20 Asia/Manila] ✅ Image uploaded successfully: img/1741602380_food7.jpg
+[10-Mar-2025 18:26:20 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 18:26:20 Asia/Manila] ✅ Item added successfully with ID: 79
+[10-Mar-2025 18:26:55 Asia/Manila] 🔍 Received Data: Name: ewq, Sales Price: 2, Stock: 2, Item Number: 80, Type: Product
+[10-Mar-2025 18:26:55 Asia/Manila] 🖼️ Image detected for upload: food4.jpg
+[10-Mar-2025 18:26:55 Asia/Manila] ✅ Image uploaded successfully: img/1741602415_food4.jpg
+[10-Mar-2025 18:26:55 Asia/Manila] 🟢 Saving item to database...
+[10-Mar-2025 18:26:55 Asia/Manila] ✅ Item added successfully with ID: 80
