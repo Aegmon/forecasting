@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 21:00:44
+/* Smarty version 3.1.39, created on 2025-03-13 14:27:13
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\ps-list.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67cee27c589422_44776514',
+  'unifunc' => 'content_67d27ac1e10143_43750210',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd4ff235f8202036c94e01f5f3aeab8dd9f460aa1' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\ps-list.tpl',
-      1 => 1741611642,
+      1 => 1741847232,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67cee27c589422_44776514 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67d27ac1e10143_43750210 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_184378114667cee27c57f826_71035437', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_125660521667d27ac1e06aa3_76924336', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_184378114667cee27c57f826_71035437 extends Smarty_Internal_Block
+class Block_125660521667d27ac1e06aa3_76924336 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_184378114667cee27c57f826_71035437',
+    0 => 'Block_125660521667d27ac1e06aa3_76924336',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -85,8 +85,8 @@ $_smarty_tpl->tpl_vars['product']->do_else = false;
 </td>
                                  <td>
                                     <!-- Add product image here -->
-                                    <img src="/forecasting/img/<?php echo $_smarty_tpl->tpl_vars['product']->value['image'];?>
-" alt="<?php echo $_smarty_tpl->tpl_vars['product']->value['name'];?>
+                                    <img src="<?php echo $_smarty_tpl->tpl_vars['product']->value['image'];?>
+" alt="<?php echo $_smarty_tpl->tpl_vars['product']->value['image'];?>
 " width="50" height="50" />
                                 </td>
                                 <td>
@@ -142,7 +142,6 @@ $_smarty_tpl->tpl_vars['transaction']->do_else = false;
                             <tr>
                                 <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['id'];?>
 </td>
-                            
                                 <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['action'];?>
 </td>
                                 <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['type'];?>

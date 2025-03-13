@@ -42,15 +42,19 @@
 
 
 
-       {$admin_extra_nav[2]}
+    {$admin_extra_nav[2]}
     {if has_access($user->roleid,'transactions')}
         {if $_c['accounting'] eq '1'}
             <li class="{if $_application_menu eq 'transactions'}active{/if}">
                 <a href="#"><i class="fa fa-database"></i> <span class="nav-label">Bank Reconciliation</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                            <li><a href="{$_url}transactions/chart-of-accounts/">Chart of Accounts</a></li>
-                            <li><a href="{$_url}transactions/expense/">Disbursement </a></li>
-                            <li><a href="{$_url}transactions/list/">All Disbursement</a></li>
+                  <!--  <li><a href="{$_url}transactions/deposit/">{$_L['Add Revenue']}</a></li>-->
+                    <!--<li><a href="{$_url}transactions/expense/">{$_L['Add Expenses']}</a></li>-->
+                 <!--   <li><a href="{$_url}transactions/transfer/">{$_L['Transfer']}</a></li>-->
+                          <li><a href="{$_url}transactions/list/">{$_L['All Disbursement']}</a></li> 
+                    <!--<li><a href="{$_url}transactions/echarts/">{$_L['Chart of Accounts']}</a></li>-->
+                    <li><a href="/forecasting/accountscharts.php">Chart of Accounts</a></li>
+                    <li><a href="/forecasting/disbursements.php?user_id=<?php echo $_SESSION['uid']; ?>">Manage Disbursement</a></li>
                 </ul>
             </li>
         {/if}
@@ -63,7 +67,7 @@
     {$admin_extra_nav[3]}
 
 
-
+    {if has_access($user->roleid,'sales')}
 
         {if ($_c['invoicing'] eq '1') OR ($_c['quotes'] eq '1')}
 
@@ -74,9 +78,7 @@
                 <ul class="nav nav-second-level">
 
                     {if $_c['invoicing'] eq '1'}
-                        {if has_access($user->roleid,'sales')}
                         <li><a href="{$_url}invoices/list/">{$_L['Invoices']}</a></li>
-                        {/if}
                         <li><a href="{$_url}invoices/add/">{$_L['New Invoice']}</a></li>
              
         
@@ -89,6 +91,7 @@
 
         {/if}
 
+    {/if}
 
 
 
@@ -132,7 +135,7 @@
             <a href="#"><i class="fa fa-cube"></i> <span class="nav-label">Inventory</span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
                 <li><a href="{$_url}ps/p-list/">{$_L['Products']}</a></li>
-               
+                <li><a href="{$_url}ps/p-new/">{$_L['New Product']}</a></li>
  
 
 
@@ -168,29 +171,16 @@
                 {foreach $sub_menu_admin['reports'] as $sm_report}
 
                     {$sm_report}
-
-
                 {/foreach}
-
-
             </ul>
             </li>
-
         {/if}
-
     {/if}
-
     {if has_access($user->roleid,'settings')}
     <li class="{if $_application_menu eq 'settings'}active{/if}" id="li_settings">
             <a href="#"><i class="fa fa-cogs"></i> <span class="nav-label">{$_L['Settings']} </span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
-
                 <li><a href="{$_url}settings/users/">{$_L['Staff']}</a></li>
-               
-
-
-
-              
             </ul>
             </li>
     {/if}

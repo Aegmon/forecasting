@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 18:29:33
+/* Smarty version 3.1.39, created on 2025-03-13 14:20:29
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\add-ps.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67cebf0d0ccbc9_13994343',
+  'unifunc' => 'content_67d2792dddf6c3_01324945',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '1ba4a504a5498c109ac73c42e5bb2eeb717eaacc' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\add-ps.tpl',
-      1 => 1741602571,
+      1 => 1741846826,
       2 => 'file',
     ),
   ),
@@ -20,23 +20,23 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67cebf0d0ccbc9_13994343 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67d2792dddf6c3_01324945 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_153153542467cebf0d0c5b73_76440770', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_44016245667d2792ddd6424_77829339', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_153153542467cebf0d0c5b73_76440770 extends Smarty_Internal_Block
+class Block_44016245667d2792ddd6424_77829339 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_153153542467cebf0d0c5b73_76440770',
+    0 => 'Block_44016245667d2792ddd6424_77829339',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -77,7 +77,7 @@ ps/s-list" class="btn btn-primary btn-xs"><?php echo $_smarty_tpl->tpl_vars['_L'
                         </div>
                     </div>
                     <div class="ibox-content" id="ibox_form">
-                        <div class="alert alert-danger" id="emsg">
+                        <div class="alert alert-success" id="emsg">
                             <span id="emsgbody"></span>
                         </div>
 

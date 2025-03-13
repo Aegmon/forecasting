@@ -726,7 +726,27 @@ $(\'[data-toggle="tooltip"]\').tooltip();
 
  '
         );
-
+        $ui->assign(
+            'xjq',
+            '
+            $(document).ready(function () {
+                $("#invoice_search").on("keyup", function () {
+                    var searchValue = $(this).val().toLowerCase().trim();
+                    
+                    $("#invoice_table tbody tr").each(function () {
+                        var rowText = $(this).find(".searchable").text().toLowerCase();
+                        
+                        if (rowText.includes(searchValue)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+            });
+            '
+        );
+        
         $ui->display('list-invoices.tpl');
         break;
 

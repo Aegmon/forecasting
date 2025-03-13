@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 16:04:47
+/* Smarty version 3.1.39, created on 2025-03-13 19:33:23
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\sections\nav.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce9d1f0c6aa6_59906167',
+  'unifunc' => 'content_67d2c283b2f578_38615844',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'c12ef80b45326fa41272c8358b9edfccd1dade55' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\sections\\nav.tpl',
-      1 => 1741593884,
+      1 => 1741865601,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce9d1f0c6aa6_59906167 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67d2c283b2f578_38615844 (Smarty_Internal_Template $_smarty_tpl) {
 ?><ul class="nav" id="side-menu">
 
     <li class="nav-header">
@@ -91,19 +91,12 @@ echo $_smarty_tpl->tpl_vars['_c']->value['redirect_url'];?>
             <li class="<?php if ($_smarty_tpl->tpl_vars['_application_menu']->value == 'transactions') {?>active<?php }?>">
                 <a href="#"><i class="fa fa-database"></i> <span class="nav-label">Bank Reconciliation</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
-                    <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/deposit/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['New Deposit'];?>
-</a></li>
-                    <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/expense/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['New Expense'];?>
-</a></li>
-                    <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/transfer/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Transfer'];?>
-</a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/list/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['All Transactions'];?>
-</a></li>
-           
+transactions/chart-of-accounts/">Chart of Accounts</a></li>
+                            <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/expense/">Disbursement </a></li>
+                            <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/list/">All Disbursement</a></li>
                 </ul>
             </li>
         <?php }?>
@@ -133,8 +126,7 @@ transactions/list/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['All Transact
                         <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 invoices/list/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Invoices'];?>
 </a></li>
-                        
-    <?php }?>
+                        <?php }?>
                         <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 invoices/add/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['New Invoice'];?>
 </a></li>

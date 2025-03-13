@@ -12,7 +12,11 @@
                 </div>
             </div>
             <div class="ibox-content">
-                <!-- 🔍 DataTable Integrated Table -->
+                
+                <!-- 🔍 Search Bar -->
+                <input type="text" id="invoice_search" class="form-control" placeholder="🔍 Search Invoices..." style="margin-bottom: 15px; width: 50%;">
+
+                <!-- 📝 Invoice Table -->
                 <table class="table table-bordered table-hover sys_table" id="invoice_table">
                     <thead>
                         <tr>
@@ -26,9 +30,9 @@
                     <tbody>
                         {foreach $d as $ds}
                             <tr>
-                                <td>{$ds['total']}</td>
-                                <td>{date($_c['df'], strtotime($ds['date']))}</td>
-                                <td>
+                                <td class="searchable">{$ds['total']}</td>
+                                <td class="searchable">{date($_c['df'], strtotime($ds['date']))}</td>
+                                <td class="searchable">
                                     {if $ds['status'] eq 'Unpaid'}
                                         <span class="label label-danger">{ib_lan_get_line($ds['status'])}</span>
                                     {elseif $ds['status'] eq 'Paid'}
@@ -39,7 +43,7 @@
                                         {ib_lan_get_line($ds['status'])}
                                     {/if}
                                 </td>
-                                <td>
+                                <td class="searchable">
                                     {if $ds['r'] eq '0'}
                                         <span class="label label-success"><i class="fa fa-dot-circle-o"></i> {$_L['Onetime']}</span>
                                     {else}

@@ -33,7 +33,7 @@
                                 <td>{$product.inventory}</td>
                                  <td>
                                     <!-- Add product image here -->
-                                    <img src="/forecasting/img/{$product.image}" alt="{$product.name}" width="50" height="50" />
+                                    <img src="{$product.image}" alt="{$product.image}" width="50" height="50" />
                                 </td>
                                 <td>
                                     <a href="{$_url}ps/edit/{$product.id}" class="btn btn-xs btn-warning cedit" id="edit_{$product.id}">Edit</a>
@@ -74,7 +74,6 @@
                         {foreach from=$transactions item=transaction}
                             <tr>
                                 <td>{$transaction.id}</td>
-                            
                                 <td>{$transaction.action}</td>
                                 <td>{$transaction.type}</td>
                                 <td>{$transaction.description}</td>
@@ -90,7 +89,50 @@
         </div>
     </div>
 </div>
-
+<!-- Inactive Products Modal -->
+<div class="modal fade" id="inactiveProductsModal" tabindex="-1" role="dialog" aria-labelledby="inactiveProductsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 100%; width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inactiveProductsModalLabel">Inactive Products</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Stocks</th>
+                            <th>Image</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach from=$inactive_products item=product}
+                            <tr>
+                                <td>{$product.name}</td>
+                                <td>{$product.sales_price}</td>
+                                <td>{$product.inventory}</td>
+                                <td>
+                                    <img src="{$product.image}" alt="{$product.name}" width="50" height="50" />
+                                </td>
+                                <td>
+                                    <a href="{$_url}ps/restore/{$product.id}" class="btn btn-xs btn-success">Restore</a>
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <input type="hidden" id="_lan_are_you_sure" value="{$_L['are_you_sure']}">

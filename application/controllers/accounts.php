@@ -33,6 +33,9 @@ if ($user) {
 Event::trigger('accounts');
 
 switch ($action) {
+ 
+
+  
     case 'journal':
  
         $d = ORM::for_table('sys_accounts')

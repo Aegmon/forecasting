@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     <div class="ibox-content" id="ibox_form">
-                        <div class="alert alert-danger" id="emsg">
+                        <div class="alert alert-success" id="emsg">
                             <span id="emsgbody"></span>
                         </div>
 

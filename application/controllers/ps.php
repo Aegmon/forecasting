@@ -15,6 +15,10 @@ switch ($action) {
     case 'modal-list':
         $d = ORM::for_table('sys_items')
            ->where('system_id', $user_id)
+           ->where_any_is([
+            ['trash' => 0],
+            ['trash' => null] // In case the column is NULL for older records
+        ])
             ->order_by_asc('name')
             ->find_many();
 
@@ -160,9 +164,8 @@ $ui->display('add-ps.tpl');
         case 'add-post':
             error_log('🟢 add-post case triggered');
         
-            $name = _post('name');
-            $sales_price = _post('sales_price');
-            $sales_price = Finance::amount_fix($sales_price);
+            $name = trim(_post('name'));
+            $sales_price = Finance::amount_fix(_post('sales_price'));
             $stock = _post('stock');
             $item_number = _post('item_number');
             $description = _post('description');
@@ -173,6 +176,14 @@ $ui->display('add-ps.tpl');
             ini_set('error_log', 'php_errors.log');
         
             error_log("🔍 Received Data: Name: $name, Sales Price: $sales_price, Stock: $stock, Item Number: $item_number, Type: $type");
+        
+            // Prevent duplicate insert by checking existing product
+            $existing = ORM::for_table('sys_items')->where('name', $name)->find_one();
+            if ($existing) {
+                error_log("⚠️ Duplicate product detected: $name");
+                echo '✅ Success: Product Added!';
+                exit;
+            }
         
             // Validate Inputs
             if (empty($name)) {
@@ -189,39 +200,40 @@ $ui->display('add-ps.tpl');
             }
         
             // Handle Image Upload
-            $image_path = ''; 
-            if (!empty($_FILES['image']['name'])) {
-                error_log('🖼️ Image detected for upload: ' . $_FILES['image']['name']);
+            $image_path = '';
+            $target_dir = 'img/';
         
-                $target_dir = 'img/'; // Ensure this folder exists and is writable
-                if (!is_dir($target_dir) || !is_writable($target_dir)) {
-                    $msg .= '❌ Upload directory is not writable!<br>';
-                    error_log('❌ Error: Upload directory is not writable');
+            if (!is_dir($target_dir)) {
+                if (!mkdir($target_dir, 0777, true)) {
+                    $msg .= '❌ Failed to create upload directory!<br>';
+                    error_log('❌ Error: Failed to create upload directory.');
                 } else {
-                    $image_name = time() . '_' . basename($_FILES['image']['name']);
-                    $target_file = $target_dir . $image_name;
+                    error_log('✅ Upload directory created.');
+                }
+            }
         
-                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                    $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+            if (!is_writable($target_dir)) {
+                $msg .= '❌ Upload directory is not writable!<br>';
+                error_log('❌ Error: Upload directory is not writable.');
+            }
         
-                    if ($_FILES['image']['size'] > 5 * 1024 * 1024) {
-                        $msg .= '❌ Image size exceeds 5MB limit.<br>';
-                        error_log('❌ Error: Image file too large');
-                    } elseif (!in_array($imageFileType, $allowed_types)) {
-                        $msg .= '❌ Invalid image format. Only JPG, JPEG, PNG & GIF are allowed.<br>';
-                        error_log('❌ Error: Invalid image format - ' . $imageFileType);
+            if (!empty($_FILES['image']['name'])) {
+                $image_name = time() . '_' . basename($_FILES['image']['name']);
+                $target_file = $target_dir . $image_name;
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        
+                if ($_FILES['image']['size'] > 5 * 1024 * 1024) {
+                    $msg .= '❌ Image size exceeds 5MB limit.<br>';
+                } elseif (!in_array($imageFileType, $allowed_types)) {
+                    $msg .= '❌ Invalid image format. Only JPG, JPEG, PNG & GIF allowed.<br>';
+                } else {
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                        $image_path = $target_file;
                     } else {
-                        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-                            $image_path = $target_file; 
-                            error_log('✅ Image uploaded successfully: ' . $image_path);
-                        } else {
-                            $msg .= '❌ Error uploading the image.<br>';
-                            error_log('❌ Error: Image upload failed');
-                        }
+                        $msg .= '❌ Error uploading the image.<br>';
                     }
                 }
-            } else {
-                error_log('⚠️ No image uploaded');
             }
         
             // Database Insertion
@@ -236,26 +248,18 @@ $ui->display('add-ps.tpl');
                 $d->item_number = $item_number;
                 $d->description = $description;
                 $d->type = $type;
-                $d->unit = '';
-                $d->e = '';
-            // Log the transaction
-            $log = ORM::for_table('transaction_logs')->create();
-            $log->system_id = $user_id;
-            $log->action = 'Add';
-            $log->type = 'Product';
-            $log->description = 'User added a new product : ' . $name;
-            $log->created_at = date('Y-m-d H:i:s'); // Assuming a `created_at` column for timestamp 
-            $log->save();
                 if ($image_path) {
                     $d->image = $image_path;
                 }
         
                 if ($d->save()) {
                     error_log('✅ Item added successfully with ID: ' . $d->id());
-                    _msglog('s', $_L['Item Added Successfully']);
-                    echo $d->id();
+        
+                    // Redirect to prevent form resubmission
+                    header("Location: {$_url}ps/p-list");
+                    exit;
                 } else {
-                    error_log('❌ Error: Database save failed');
+                    error_log('❌ Error: Database save failed.');
                     echo 'Database error: Unable to save item';
                 }
             } else {
@@ -265,11 +269,22 @@ $ui->display('add-ps.tpl');
             break;
         
         
+        
 
             case 'p-list':
-                // Fetch all products for the current user
+                // Fetch active products (excluding trashed ones)
                 $products = ORM::for_table('sys_items')
                     ->where('system_id', $user_id)
+                    ->where_any_is([
+                        ['trash' => 0],
+                        ['trash' => null] // In case the column is NULL for older records
+                    ])
+                    ->find_many();
+            
+                // Fetch inactive products (trashed ones)
+                $inactive_products = ORM::for_table('sys_items')
+                    ->where('system_id', $user_id)
+                    ->where('trash', 1)
                     ->find_many();
             
                 // Fetch all transaction logs for the user
@@ -280,9 +295,10 @@ $ui->display('add-ps.tpl');
             
                 // Assign data to template
                 $ui->assign('d', $products);
+                $ui->assign('inactive_products', $inactive_products); // Assign inactive products
                 $ui->assign('transactions', $transactions); // Assign transaction logs
                 $ui->assign('type', 'Product');
-                
+            
                 // Include additional scripts and styles
                 $ui->assign('xheader', '<link rel="stylesheet" type="text/css" href="' . $_theme . '/css/modal.css"/>');
                 $ui->assign('xfooter', '
@@ -295,6 +311,8 @@ $ui->display('add-ps.tpl');
             
                 $ui->display('ps-list.tpl');
                 break;
+            
+            
             
 
 
@@ -339,29 +357,29 @@ $ui->display('add-ps.tpl');
 
         break;
 
-    case 'delete':
-        if (!has_access($user->roleid, 'products_n_services', 'delete')) {
-            permissionDenied();
-        }
-
-        $id = $routes['2'];
-        $id = str_replace('did', '', $id);
-        if ($_app_stage == 'Demo') {
-            r2(
-                U . 'ps/p-list',
-                'e',
-                'Sorry! Deleting Account is disabled in the demo mode.'
-            );
-        }
-        $d = ORM::for_table('sys_items')
-              ->where('system_id', $user_id)
-        ->find_one($id);
-        if ($d) {
-            $d->delete();
-            r2(U . 'ps/p-list', 's', $_L['account_delete_successful']);
-        }
-
-        break;
+        case 'delete':
+            if (!has_access($user->roleid, 'products_n_services', 'delete')) {
+                permissionDenied();
+            }
+        
+            $id = str_replace('did', '', $routes['2']); // Extract ID
+        
+            if ($_app_stage == 'Demo') {
+                r2(U . 'ps/p-list', 'e', 'Sorry! Deleting Account is disabled in the demo mode.');
+            }
+        
+            $d = ORM::for_table('sys_items')
+                ->where('system_id', $user_id)
+                ->find_one($id);
+        
+            if ($d) {
+                $d->set('trash', 1); // Mark as deleted
+                $d->save(); // Save the update
+                r2(U . 'ps/p-list', 's', "Product Inactive");
+            }
+        
+            break;
+        
 
     case 'edit':
               $id = $routes['2'];

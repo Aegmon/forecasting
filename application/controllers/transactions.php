@@ -26,6 +26,148 @@ _L[\'Submit\'] = \'' .
 Event::trigger('transactions');
 //
 switch ($action) {
+
+    case 'chart-of-accounts':
+        Event::trigger('transactions/chart-of-accounts/');
+        
+        // Fetch all accounts
+        $accounts = ORM::for_table('chartsaccount')->find_many();
+        
+        // Fetch categorized accounts
+        $assets = ORM::for_table('chartsaccount')->where('asset_type', 'Asset')->find_many();
+        $liabilities = ORM::for_table('chartsaccount')->where('asset_type', 'Liability')->find_many();
+        $equities = ORM::for_table('chartsaccount')->where('asset_type', 'Equity')->find_many();
+        $expenses = ORM::for_table('chartsaccount')->where('asset_type', 'Expense')->find_many();
+        $revenues = ORM::for_table('chartsaccount')->where('asset_type', 'Revenue')->find_many();
+    
+        // Assign data to template
+        $ui->assign('accounts', $accounts);
+        $ui->assign('assets', $assets);
+        $ui->assign('liabilities', $liabilities);
+        $ui->assign('equities', $equities);
+        $ui->assign('expenses', $expenses);
+        $ui->assign('revenues', $revenues);
+    
+        $ui->assign('xfooter', Asset::js(['numeric']));
+        $ui->assign('xjq', '
+        $(document).ready(function () {
+    $(".edit-account").click(function () {
+        var accountId = $(this).data("id");
+        window.location.href = "/forecasting/?ng=transactions/edit-chart-of-accounts/" + accountId;
+    });
+
+    $(".delete-account").click(function () {
+        var accountId = $(this).data("id");
+        var baseUrl = window.location.origin + "/forecasting/?ng=transactions/";
+
+        if (confirm("Are you sure you want to delete this account?")) {
+            $.post(baseUrl + "delete-chart-of-accounts/" + accountId, function (response) {
+                if (response.status === "success") {
+                    location.reload();
+                } else {
+                    alert("Delete failed: " + response.message);
+                }
+            }, "json").fail(function () {
+                alert("Error deleting account.");
+            });
+        }
+    });
+});
+
+    ');
+    
+    
+        $ui->display('chart-of-accounts.tpl');
+        break;
+        case 'edit-chart-of-accounts':
+            Event::trigger('transactions/edit-chart-of-accounts/');
+        
+            $id = route(2); // Get the account ID from the URL
+        
+            $account = ORM::for_table('chartsaccount')->find_one($id);
+        
+            if (!$account) {
+                die("Account not found!");
+            }
+        
+            $ui->assign('account', $account);
+            $ui->assign('xjq', '
+      $(document).ready(function () {
+    $("#editAccountForm").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        var formData = {
+            id: $("#edit_account_id").val(),
+            account_number: $("#edit_account_number").val(),
+            description: $("#edit_description").val(),
+            asset_type: $("#edit_asset_type").val(),
+            statement: $("#edit_statement").val()
+        };
+
+        $.post("/forecasting/?ng=transactions/edit-chart-of-accounts-post", formData, function (response) {
+            if (response.status === "success") {
+                alert("Account updated successfully!");
+                window.location.href = "/forecasting/?ng=transactions/chart-of-accounts"; // Redirect to list
+            } else {
+                alert("Error: " + response.message);
+            }
+        }, "json").fail(function () {
+            alert("An error occurred while updating the account.");
+        });
+    });
+});
+
+    
+        ');
+            $ui->display('edit-chart-of-accounts.tpl');
+            break;
+        
+            case 'edit-chart-of-accounts-post':
+                Event::trigger('transactions/edit-chart-of-accounts-post/');
+            
+                $id = _post('id');
+                $account = ORM::for_table('chartsaccount')->find_one($id);
+            
+                if (!$account) {
+                    echo json_encode(['status' => 'error', 'message' => 'Account not found']);
+                    exit;
+                }
+            
+                // Sanitize inputs
+                $account->account_number = filter_var(_post('account_number'), FILTER_SANITIZE_STRING);
+                $account->description = filter_var(_post('description'), FILTER_SANITIZE_STRING);
+                $account->asset_type = filter_var(_post('asset_type'), FILTER_SANITIZE_STRING);
+                $account->statement = filter_var(_post('statement'), FILTER_SANITIZE_STRING);
+            
+                // Save and return response
+                if ($account->save()) {
+                    echo json_encode(['status' => 'success']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to update account']);
+                }
+                exit;
+            
+        
+        
+        
+        case 'delete-chart-of-accounts':
+            Event::trigger('transactions/delete-chart-of-accounts/');
+        
+            $id = route(2);
+            $account = ORM::for_table('chartsaccount')->find_one($id);
+        
+            if ($account) {
+                if ($account->delete()) {
+                    echo json_encode(['status' => 'success']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Failed to delete account.']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Account not found.']);
+            }
+            exit;
+            break;
+        
     case 'deposit':
         Event::trigger('transactions/deposit/');
 
