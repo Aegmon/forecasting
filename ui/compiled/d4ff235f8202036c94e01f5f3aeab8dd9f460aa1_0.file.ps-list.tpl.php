@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-13 14:27:13
+/* Smarty version 3.1.39, created on 2025-03-13 22:44:28
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\ps-list.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67d27ac1e10143_43750210',
+  'unifunc' => 'content_67d2ef4cf0ec81_70718575',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd4ff235f8202036c94e01f5f3aeab8dd9f460aa1' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\ps-list.tpl',
-      1 => 1741847232,
+      1 => 1741877065,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67d27ac1e10143_43750210 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67d2ef4cf0ec81_70718575 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_125660521667d27ac1e06aa3_76924336', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_134947622567d2ef4cf03614_07917038', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_125660521667d27ac1e06aa3_76924336 extends Smarty_Internal_Block
+class Block_134947622567d2ef4cf03614_07917038 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_125660521667d27ac1e06aa3_76924336',
+    0 => 'Block_134947622567d2ef4cf03614_07917038',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -55,6 +55,9 @@ ps/p-new" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> Add Product<
                     <button class="btn btn-info btn-xs" data-toggle="modal" data-target="#transactionHistoryModal">
                         <i class="fa fa-history"></i> View Transaction History
                     </button>
+                    <button class="btn btn-warning btn-xs" data-toggle="modal" data-target="#inactiveProductsModal">
+    <i class="fa fa-eye"></i> View Inactive Products
+</button>
                 </div>
             </div>
             <div class="ibox-content">
@@ -163,7 +166,60 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
         </div>
     </div>
 </div>
-
+<!-- Inactive Products Modal -->
+<div class="modal fade" id="inactiveProductsModal" tabindex="-1" role="dialog" aria-labelledby="inactiveProductsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 100%; width: 100%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inactiveProductsModalLabel">Inactive Products</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Stocks</th>
+                            <th>Image</th>
+                       
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['inactive_products']->value, 'product');
+$_smarty_tpl->tpl_vars['product']->do_else = true;
+if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['product']->value) {
+$_smarty_tpl->tpl_vars['product']->do_else = false;
+?>
+                            <tr>
+                                <td><?php echo $_smarty_tpl->tpl_vars['product']->value['name'];?>
+</td>
+                                <td><?php echo $_smarty_tpl->tpl_vars['product']->value['sales_price'];?>
+</td>
+                                <td><?php echo $_smarty_tpl->tpl_vars['product']->value['inventory'];?>
+</td>
+                                <td>
+                                    <img src="<?php echo $_smarty_tpl->tpl_vars['product']->value['image'];?>
+" alt="<?php echo $_smarty_tpl->tpl_vars['product']->value['name'];?>
+" width="50" height="50" />
+                                </td>
+                             
+                            </tr>
+                        <?php
+}
+$_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <input type="hidden" id="_lan_are_you_sure" value="<?php echo $_smarty_tpl->tpl_vars['_L']->value['are_you_sure'];?>

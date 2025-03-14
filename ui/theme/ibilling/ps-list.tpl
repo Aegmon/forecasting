@@ -11,6 +11,9 @@
                     <button class="btn btn-info btn-xs" data-toggle="modal" data-target="#transactionHistoryModal">
                         <i class="fa fa-history"></i> View Transaction History
                     </button>
+                    <button class="btn btn-warning btn-xs" data-toggle="modal" data-target="#inactiveProductsModal">
+    <i class="fa fa-eye"></i> View Inactive Products
+</button>
                 </div>
             </div>
             <div class="ibox-content">
@@ -107,7 +110,7 @@
                             <th>Price</th>
                             <th>Stocks</th>
                             <th>Image</th>
-                            <th>Actions</th>
+                       
                         </tr>
                     </thead>
                     <tbody>
@@ -119,9 +122,7 @@
                                 <td>
                                     <img src="{$product.image}" alt="{$product.name}" width="50" height="50" />
                                 </td>
-                                <td>
-                                    <a href="{$_url}ps/restore/{$product.id}" class="btn btn-xs btn-success">Restore</a>
-                                </td>
+                             
                             </tr>
                         {/foreach}
                     </tbody>
