@@ -43,12 +43,13 @@ switch ($action) {
             $_L['Item Name'] .
             '</th>
 
-            <th width="10%">' .
-            $_L['Inventory'] .
-            '</th>
+       
 
           <th width="15%">' .
             $_L['Price'] .
+            '</th>
+                 <th width="10%">' .
+            $_L['Inventory'] .
             '</th>
         </tr>
       </thead>
@@ -71,12 +72,13 @@ switch ($action) {
                 $ds['name'] .
                 '</td>
 
-            <td>' .
-                $ds['inventory'] .
-                '</td>
+       
 
           <td class="price">' .
                 $price .
+                '</td>
+                     <td>' .
+                $ds['inventory'] .
                 '</td>
         </tr>';
         }

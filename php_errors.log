@@ -136,3 +136,8 @@
 [13-Mar-2025 14:21:17 Asia/Manila] ✅ Item added successfully with ID: 12
 [13-Mar-2025 14:21:17 Asia/Manila] 🔍 Received Data: Name: 23, Sales Price: 2, Stock: 2, Item Number: 4, Type: Product
 [13-Mar-2025 14:21:17 Asia/Manila] ⚠️ Duplicate product detected: 23
+[21-Mar-2025 23:16:09 Asia/Manila] 🔍 Received Data: Name: 2132, Sales Price: 200, Stock: 23, Item Number: 5, Type: Product
+[21-Mar-2025 23:16:09 Asia/Manila] 🟢 Saving item to database...
+[21-Mar-2025 23:16:09 Asia/Manila] ✅ Item added successfully with ID: 13
+[21-Mar-2025 23:16:20 Asia/Manila] 🔍 Received Data: Name: 2132, Sales Price: 200, Stock: 23, Item Number: 5, Type: Product
+[21-Mar-2025 23:16:20 Asia/Manila] ⚠️ Duplicate product detected: 2132
