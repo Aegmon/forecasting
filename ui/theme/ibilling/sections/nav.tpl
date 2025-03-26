@@ -50,6 +50,7 @@
                 <ul class="nav nav-second-level">
                             <li><a href="{$_url}transactions/chart-of-accounts/">Chart of Accounts</a></li>
                             <li><a href="{$_url}transactions/expense/">Disbursement </a></li>
+                            <li><a href="{$_url}transactions/reconciliation/">Reconciliation </a></li>
                             <li><a href="{$_url}transactions/list/">All Disbursement</a></li>
                 </ul>
             </li>
@@ -77,7 +78,12 @@
                         {if has_access($user->roleid,'sales')}
                         <li><a href="{$_url}invoices/list/">{$_L['Invoices']}</a></li>
                         {/if}
+                    
+
+                    {if $user->roleid != '0'}
                         <li><a href="{$_url}invoices/add/">{$_L['New Invoice']}</a></li>
+                    {/if}
+
              
         
                     {/if}
@@ -89,12 +95,6 @@
 
         {/if}
 
-
-
-
-
-
-  
 
     {if has_access($user->roleid,'calendar')}
         <li {if $_application_menu eq 'calendar'}class="active"{/if}><a href="{$_url}calendar/events/"><i class="fa fa-calendar"></i> <span class="nav-label">{$_L['Calendar']}</span></a></li>
@@ -141,56 +141,31 @@
     {/if}
 
     {/if}
-
-
     {$admin_extra_nav[6]}
-
     {if has_access($user->roleid,'reports')}
-
             {if $_c['accounting'] eq '1'}
-
             <li class="{if $_application_menu eq 'reports'}active{/if}">
             <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Cash Flow</span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
-
-
                 <li><a href="{$_url}reports/statement/">{$_L['Account Statement']}</a></li>
                 <li><a href="{$_url}reports/inflow/">Cash Inflow</a></li>
                 <li><a href="{$_url}reports/outflow/">Cash Outflow</a></li>
                 <li><a href="{$_url}reports/income-vs-expense/">{$_L['Income Vs Expense']}</a></li>
-
                 <li><a href="{$_url}reports/by-date/">{$_L['Reports by Date']}</a></li>
                 {*<li><a href="{$_url}reports/cats/">{$_L['Reports by Category']}</a></li>*}
-      
-        
-
-
                 {foreach $sub_menu_admin['reports'] as $sm_report}
-
                     {$sm_report}
-
-
                 {/foreach}
-
-
             </ul>
             </li>
-
         {/if}
-
     {/if}
-
     {if has_access($user->roleid,'settings')}
     <li class="{if $_application_menu eq 'settings'}active{/if}" id="li_settings">
             <a href="#"><i class="fa fa-cogs"></i> <span class="nav-label">{$_L['Settings']} </span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
-
                 <li><a href="{$_url}settings/users/">{$_L['Staff']}</a></li>
                
-
-
-
-              
             </ul>
             </li>
     {/if}

@@ -256,8 +256,13 @@ $ui->display('add-ps.tpl');
         
                 if ($d->save()) {
                     error_log('✅ Item added successfully with ID: ' . $d->id());
-        
-                    // Redirect to prevent form resubmission
+                    $log = ORM::for_table('transaction_logs')->create();
+                    $log->action = 'Add';
+                    $log->created_at = date('Y-m-d H:i:s');
+                    $log->type = 'Product';
+                    $log->description = "User added a new product: $name";
+                    $log->system_id = $user_id ?? 0;
+                    $log->save();
                     header("Location: {$_url}ps/p-list");
                     exit;
                 } else {
@@ -308,7 +313,9 @@ $ui->display('add-ps.tpl');
                         var user_id = ' . json_encode($user_id) . ';
                     </script>
                     <script type="text/javascript" src="' . $_theme . '/lib/modal.js"></script>
-                    <script type="text/javascript" src="' . $_theme . '/lib/ps-list.js"></script>'
+                    <script type="text/javascript" src="' . $_theme . '/lib/ps-list.js"></script>
+                    
+                    '
                 );
             
                 $ui->display('ps-list.tpl');
@@ -382,7 +389,26 @@ $ui->display('add-ps.tpl');
         
             break;
         
-
+            case 'activate':
+                if (!has_access($user->roleid, 'products_n_services', 'delete')) {
+                    permissionDenied();
+                }
+            
+                $id = str_replace('did', '', $routes['2']); // Extract ID
+            
+                if ($_app_stage == 'Demo') {
+                    r2(U . 'ps/p-list', 'e', 'Sorry! Deleting Account is disabled in the demo mode.');
+                }
+            
+                $d = ORM::for_table('sys_items')
+                    ->where('system_id', $user_id)
+                    ->find_one($id);
+            
+                if ($d) {
+                    $d->set('trash', 0); // Mark as deleted
+                    $d->save(); // Save the update
+                    r2(U . 'ps/p-list', 's', "Product Activated");
+                }
     case 'edit':
               $id = $routes['2'];
               $d = ORM::for_table('sys_items')

@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-13 22:44:28
+/* Smarty version 3.1.39, created on 2025-03-26 13:17:25
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\ps-list.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67d2ef4cf0ec81_70718575',
+  'unifunc' => 'content_67e38de5801e00_84967390',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd4ff235f8202036c94e01f5f3aeab8dd9f460aa1' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\ps-list.tpl',
-      1 => 1741877065,
+      1 => 1742966242,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67d2ef4cf0ec81_70718575 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67e38de5801e00_84967390 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_134947622567d2ef4cf03614_07917038', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_173570997167e38de57f5f84_98348137', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_134947622567d2ef4cf03614_07917038 extends Smarty_Internal_Block
+class Block_173570997167e38de57f5f84_98348137 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_134947622567d2ef4cf03614_07917038',
+    0 => 'Block_173570997167e38de57f5f84_98348137',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -133,6 +133,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                             <th>Type</th>
                             <th>Description</th>
                             <th>Timestamp</th>
+                  
                         </tr>
                     </thead>
                     <tbody id="transaction_logs">
@@ -153,6 +154,7 @@ $_smarty_tpl->tpl_vars['transaction']->do_else = false;
 </td>
                                 <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['created_at'];?>
 </td>
+                            
                             </tr>
                         <?php
 }
@@ -184,7 +186,8 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                             <th>Price</th>
                             <th>Stocks</th>
                             <th>Image</th>
-                       
+                                 <th>Action</th>
+                                 
                         </tr>
                     </thead>
                     <tbody>
@@ -206,7 +209,10 @@ $_smarty_tpl->tpl_vars['product']->do_else = false;
 " alt="<?php echo $_smarty_tpl->tpl_vars['product']->value['name'];?>
 " width="50" height="50" />
                                 </td>
-                             
+                                <td>  <a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+ps/activate/<?php echo $_smarty_tpl->tpl_vars['product']->value['id'];?>
+" class="btn btn-xs btn-success cdelete" id="delete_<?php echo $_smarty_tpl->tpl_vars['product']->value['id'];?>
+">Activate</a></td>
                             </tr>
                         <?php
 }

@@ -890,6 +890,16 @@ function has_access($rid, $shortname, $action = 'view')
     }
 }
 
+function is_admin($uid)
+{
+    $user = ORM::for_table('sys_users')
+        ->where('id', $uid)
+        ->where('user_type', 'admin')
+        ->find_one();
+
+    return $user ? true : false;
+}
+
 function addPermission($pname, $shortname)
 {
     $d = ORM::for_table('sys_permissions')

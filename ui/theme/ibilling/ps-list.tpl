@@ -71,6 +71,7 @@
                             <th>Type</th>
                             <th>Description</th>
                             <th>Timestamp</th>
+                  
                         </tr>
                     </thead>
                     <tbody id="transaction_logs">
@@ -81,6 +82,7 @@
                                 <td>{$transaction.type}</td>
                                 <td>{$transaction.description}</td>
                                 <td>{$transaction.created_at}</td>
+                            
                             </tr>
                         {/foreach}
                     </tbody>
@@ -110,7 +112,8 @@
                             <th>Price</th>
                             <th>Stocks</th>
                             <th>Image</th>
-                       
+                                 <th>Action</th>
+                                 
                         </tr>
                     </thead>
                     <tbody>
@@ -122,7 +125,7 @@
                                 <td>
                                     <img src="{$product.image}" alt="{$product.name}" width="50" height="50" />
                                 </td>
-                             
+                                <td>  <a href="{$_url}ps/activate/{$product.id}" class="btn btn-xs btn-success cdelete" id="delete_{$product.id}">Activate</a></td>
                             </tr>
                         {/foreach}
                     </tbody>

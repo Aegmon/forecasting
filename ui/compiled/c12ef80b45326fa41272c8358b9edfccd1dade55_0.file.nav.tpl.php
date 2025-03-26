@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-13 19:33:23
+/* Smarty version 3.1.39, created on 2025-03-26 11:49:51
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\sections\nav.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67d2c283b2f578_38615844',
+  'unifunc' => 'content_67e3795f39c328_63309652',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'c12ef80b45326fa41272c8358b9edfccd1dade55' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\sections\\nav.tpl',
-      1 => 1741865601,
+      1 => 1742960950,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67d2c283b2f578_38615844 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67e3795f39c328_63309652 (Smarty_Internal_Template $_smarty_tpl) {
 ?><ul class="nav" id="side-menu">
 
     <li class="nav-header">
@@ -96,6 +96,8 @@ transactions/chart-of-accounts/">Chart of Accounts</a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 transactions/expense/">Disbursement </a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/reconciliation/">Reconciliation </a></li>
+                            <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 transactions/list/">All Disbursement</a></li>
                 </ul>
             </li>
@@ -127,9 +129,14 @@ transactions/list/">All Disbursement</a></li>
 invoices/list/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Invoices'];?>
 </a></li>
                         <?php }?>
+                    
+
+                    <?php if ($_smarty_tpl->tpl_vars['user']->value->roleid != '0') {?>
                         <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 invoices/add/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['New Invoice'];?>
 </a></li>
+                    <?php }?>
+
              
         
                     <?php }?>
@@ -141,12 +148,6 @@ invoices/add/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['New Invoice'];?>
 
         <?php }?>
 
-
-
-
-
-
-  
 
     <?php if (has_access($_smarty_tpl->tpl_vars['user']->value->roleid,'calendar')) {?>
         <li <?php if ($_smarty_tpl->tpl_vars['_application_menu']->value == 'calendar') {?>class="active"<?php }?>><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
@@ -204,20 +205,13 @@ ps/p-list/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Products'];?>
     <?php }?>
 
     <?php }?>
-
-
     <?php echo $_smarty_tpl->tpl_vars['admin_extra_nav']->value[6];?>
 
-
     <?php if (has_access($_smarty_tpl->tpl_vars['user']->value->roleid,'reports')) {?>
-
             <?php if ($_smarty_tpl->tpl_vars['_c']->value['accounting'] == '1') {?>
-
             <li class="<?php if ($_smarty_tpl->tpl_vars['_application_menu']->value == 'reports') {?>active<?php }?>">
             <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Cash Flow</span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
-
-
                 <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 reports/statement/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Account Statement'];?>
 </a></li>
@@ -228,51 +222,33 @@ reports/outflow/">Cash Outflow</a></li>
                 <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 reports/income-vs-expense/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Income Vs Expense'];?>
 </a></li>
-
                 <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 reports/by-date/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Reports by Date'];?>
 </a></li>
-                      
-        
-
-
-                <?php
+                                <?php
 $_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['sub_menu_admin']->value['reports'], 'sm_report');
 $_smarty_tpl->tpl_vars['sm_report']->do_else = true;
 if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['sm_report']->value) {
 $_smarty_tpl->tpl_vars['sm_report']->do_else = false;
 ?>
-
                     <?php echo $_smarty_tpl->tpl_vars['sm_report']->value;?>
-
-
 
                 <?php
 }
 $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
-
-
             </ul>
             </li>
-
         <?php }?>
-
     <?php }?>
-
     <?php if (has_access($_smarty_tpl->tpl_vars['user']->value->roleid,'settings')) {?>
     <li class="<?php if ($_smarty_tpl->tpl_vars['_application_menu']->value == 'settings') {?>active<?php }?>" id="li_settings">
             <a href="#"><i class="fa fa-cogs"></i> <span class="nav-label"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Settings'];?>
  </span><span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
-
                 <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 settings/users/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Staff'];?>
 </a></li>
                
-
-
-
-              
             </ul>
             </li>
     <?php }?>

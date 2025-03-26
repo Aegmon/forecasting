@@ -4,7 +4,7 @@
             <th>Account #</th>
             <th>Description</th>
             <th>Asset Type</th>
-            <th>Statement</th>
+  
             <th>Actions</th>
         </tr>
     </thead>
@@ -14,7 +14,7 @@
                 <td>{$account['account_number']}</td>
                 <td>{$account['description']}</td>
                 <td>{$account['asset_type']}</td>
-                <td>{$account['statement']}</td>
+          
                 <td>
                     <button class="btn btn-xs btn-warning edit-account" data-id="{$account['id']}">
                         <i class="fa fa-edit"></i> Edit

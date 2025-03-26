@@ -27,6 +27,134 @@ Event::trigger('transactions');
 //
 switch ($action) {
 
+    case 'reconciliation':
+        Event::trigger('transactions/reconciliation/');
+    
+        $paginator = Paginator::bootstrap('sys_transactions');
+        $d = ORM::for_table('sys_transactions')
+            ->where('system_id', $user_id)
+            ->offset($paginator['startpoint'])
+            ->limit($paginator['limit'])
+            ->order_by_desc('date')
+            ->find_many();
+    
+        $total_debit = ORM::for_table('sys_transactions')
+            ->where('system_id', $user_id)
+            ->where('archived', 1)
+            ->sum('dr');
+    
+        $total_credit = ORM::for_table('sys_transactions')
+            ->where('system_id', $user_id)
+            ->where('archived', 1)
+            ->sum('cr');
+    
+        $ui->assign('d', $d);
+        $ui->assign('paginator', $paginator);
+        $ui->assign('total_debit', $total_debit);
+        $ui->assign('total_credit', $total_credit);
+    
+        $ui->display('reconciliation.tpl');
+        break;
+    
+    case 'update-archived':
+        $id = _post('id');
+        $transaction = ORM::for_table('sys_transactions')->find_one($id);
+        if ($transaction) {
+            $transaction->archived = 1;
+            $transaction->save();
+            Event::trigger('transactions/reconciliation/');
+            header("Location: /forecasting/?ng=transactions/reconciliation");
+            exit;
+        } else {
+            echo "<script>alert('Error updating transaction.'); window.location.href = '/forecasting/?ng=transactions/reconciliation';</script>";
+        }
+        exit;
+        break;
+    
+
+
+
+
+
+    case 'add-accounts':
+        $ui->display('add-accounts.tpl');
+        break;
+
+        case 'add-accounts-post':
+            Event::trigger('transactions/add-accounts-post/');
+        
+            // Sanitize inputs
+            $account_number = filter_var(_post('account_number'), FILTER_SANITIZE_STRING);
+            $description = filter_var(_post('description'), FILTER_SANITIZE_STRING);
+            $asset_type = filter_var(_post('asset_type'), FILTER_SANITIZE_STRING);
+       
+        
+            // Insert into database
+            $account = ORM::for_table('chartsaccount')->create();
+            $account->account_number = $account_number;
+            $account->description = $description;
+            $account->asset_type = $asset_type;
+    
+        
+            // Save and return response
+            if ($account->save()) {
+                Event::trigger('transactions/chart-of-accounts/');
+        
+                // Fetch all accounts
+                $accounts = ORM::for_table('chartsaccount')->find_many();
+                
+                // Fetch categorized accounts
+                $assets = ORM::for_table('chartsaccount')->where('asset_type', 'Asset')->find_many();
+                $liabilities = ORM::for_table('chartsaccount')->where('asset_type', 'Liability')->find_many();
+                $equities = ORM::for_table('chartsaccount')->where('asset_type', 'Equity')->find_many();
+                $expenses = ORM::for_table('chartsaccount')->where('asset_type', 'Expense')->find_many();
+                $revenues = ORM::for_table('chartsaccount')->where('asset_type', 'Revenue')->find_many();
+            
+                // Assign data to template
+                $ui->assign('accounts', $accounts);
+                $ui->assign('assets', $assets);
+                $ui->assign('liabilities', $liabilities);
+                $ui->assign('equities', $equities);
+                $ui->assign('expenses', $expenses);
+                $ui->assign('revenues', $revenues);
+            
+                $ui->assign('xfooter', Asset::js(['numeric']));
+                $ui->assign('xjq', '
+                $(document).ready(function () {
+            $(".edit-account").click(function () {
+                var accountId = $(this).data("id");
+                window.location.href = "/forecasting/?ng=transactions/edit-chart-of-accounts/" + accountId;
+            });
+        
+            $(".delete-account").click(function () {
+                var accountId = $(this).data("id");
+                var baseUrl = window.location.origin + "/forecasting/?ng=transactions/";
+        
+                if (confirm("Are you sure you want to delete this account?")) {
+                    $.post(baseUrl + "delete-chart-of-accounts/" + accountId, function (response) {
+                        if (response.status === "success") {
+                            location.reload();
+                        } else {
+                            alert("Delete failed: " + response.message);
+                        }
+                    }, "json").fail(function () {
+                        alert("Error deleting account.");
+                    });
+                }
+            });
+        });
+        
+            ');
+            
+            
+                $ui->display('chart-of-accounts.tpl');
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to add account']);
+            }
+            exit;
+            break;
+        
+
     case 'chart-of-accounts':
         Event::trigger('transactions/chart-of-accounts/');
         
@@ -146,7 +274,7 @@ switch ($action) {
                     echo json_encode(['status' => 'error', 'message' => 'Failed to update account']);
                 }
                 exit;
-            
+                break;
         
         
         
