@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-13 14:20:29
+/* Smarty version 3.1.39, created on 2025-04-01 20:56:26
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\add-ps.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67d2792dddf6c3_01324945',
+  'unifunc' => 'content_67ebe27a07fb28_91702349',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '1ba4a504a5498c109ac73c42e5bb2eeb717eaacc' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\add-ps.tpl',
-      1 => 1741846826,
+      1 => 1743512164,
       2 => 'file',
     ),
   ),
@@ -20,23 +20,23 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67d2792dddf6c3_01324945 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ebe27a07fb28_91702349 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_44016245667d2792ddd6424_77829339', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_111965088167ebe27a075490_98999107', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_44016245667d2792ddd6424_77829339 extends Smarty_Internal_Block
+class Block_111965088167ebe27a075490_98999107 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_44016245667d2792ddd6424_77829339',
+    0 => 'Block_111965088167ebe27a075490_98999107',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -81,7 +81,7 @@ ps/s-list" class="btn btn-primary btn-xs"><?php echo $_smarty_tpl->tpl_vars['_L'
                             <span id="emsgbody"></span>
                         </div>
 
-                      <form class="form-horizontal" id="rform" enctype="multipart/form-data" method="POST">
+                      <form class="form-horizontal" id="productform" enctype="multipart/form-data" method="POST">
 
                             <div class="form-group"><label class="col-lg-2 control-label" for="name"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Name'];?>
 </label>

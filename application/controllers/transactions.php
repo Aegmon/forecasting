@@ -33,6 +33,7 @@ switch ($action) {
         $paginator = Paginator::bootstrap('sys_transactions');
         $d = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
+            ->where('type', 'Expense')
             ->offset($paginator['startpoint'])
             ->limit($paginator['limit'])
             ->order_by_desc('date')
@@ -40,36 +41,99 @@ switch ($action) {
     
         $total_debit = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
+            ->where('type', 'Expense')
             ->where('archived', 1)
             ->sum('dr');
     
         $total_credit = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
+            ->where('type', 'Expense')
             ->where('archived', 1)
-            ->sum('cr');
+            ->sum('dr');
     
         $ui->assign('d', $d);
         $ui->assign('paginator', $paginator);
         $ui->assign('total_debit', $total_debit);
         $ui->assign('total_credit', $total_credit);
-    
+        $ui->assign('xjq', '
+    $(document).ready(function () {
+        // ✅ Reconcile Transaction
+        $(".reconcile-btn").click(function () {
+            var transactionId = $(this).data("id");
+
+            $.ajax({
+                type: "POST",
+                url: window.location.origin + "/forecasting/?ng=transactions/update-archived", // ✅ Ensured correct URL
+                data: { id: transactionId },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        location.reload(); // ✅ Reload page after successful update
+                    } else {
+                        alert("Error updating transaction: " + (response.message || "Unknown error"));
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Failed to update transaction. " + xhr.status + ": " + xhr.statusText);
+                }
+            });
+        });
+
+        // ✅ Edit Account
+        $(".edit-account").click(function () {
+            var accountId = $(this).data("id");
+            window.location.href = "/forecasting/?ng=transactions/edit-chart-of-accounts/" + accountId;
+        });
+
+        // ✅ Delete Account
+        $(".delete-account").click(function () {
+            var accountId = $(this).data("id");
+            var deleteUrl = window.location.origin + "/forecasting/?ng=transactions/delete-chart-of-accounts/" + accountId;
+
+            if (confirm("Are you sure you want to delete this account?")) {
+                $.ajax({
+                    type: "POST",
+                    url: deleteUrl, // ✅ Corrected URL format
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.status === "success") {
+                            location.reload();
+                        } else {
+                            alert("Delete failed: " + (response.message || "Unknown error"));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error deleting account. " + xhr.status + ": " + xhr.statusText);
+                    }
+                });
+            }
+        });
+    });
+');
+
         $ui->display('reconciliation.tpl');
         break;
     
-    case 'update-archived':
-        $id = _post('id');
-        $transaction = ORM::for_table('sys_transactions')->find_one($id);
-        if ($transaction) {
-            $transaction->archived = 1;
-            $transaction->save();
-            Event::trigger('transactions/reconciliation/');
-            header("Location: /forecasting/?ng=transactions/reconciliation");
+        case 'update-archived':
+            header('Content-Type: application/json'); // Ensure JSON response
+        
+            $id = _post('id');
+            $transaction = ORM::for_table('sys_transactions')->find_one($id);
+        
+            if ($transaction) {
+                $transaction->archived = 1;
+        
+                if ($transaction->save()) {
+                    echo json_encode(['success' => true, 'message' => 'Transaction updated successfully.']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to update transaction.']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Transaction not found.']);
+            }
             exit;
-        } else {
-            echo "<script>alert('Error updating transaction.'); window.location.href = '/forecasting/?ng=transactions/reconciliation';</script>";
-        }
-        exit;
-        break;
+            break;
+        
     
 
 

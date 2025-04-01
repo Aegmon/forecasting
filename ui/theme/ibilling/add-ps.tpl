@@ -34,7 +34,7 @@
                             <span id="emsgbody"></span>
                         </div>
 
-                      <form class="form-horizontal" id="rform" enctype="multipart/form-data" method="POST">
+                      <form class="form-horizontal" id="productform" enctype="multipart/form-data" method="POST">
 
                             <div class="form-group"><label class="col-lg-2 control-label" for="name">{$_L['Name']}</label>
 

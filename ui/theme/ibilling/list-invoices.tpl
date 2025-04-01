@@ -13,6 +13,13 @@
             </div>
             <div class="ibox-content">
                 
+                <!-- 🚨 Insufficient Stock Banner -->
+                {if $validation_message}
+                    <div class="alert alert-danger">
+                        <strong>⚠️ Stock Issue:</strong> {$validation_message}
+                    </div>
+                {/if}
+
                 <!-- 🔍 Search Bar -->
                 <input type="text" id="invoice_search" class="form-control" placeholder="🔍 Search Invoices..." style="margin-bottom: 15px; width: 50%;">
 
@@ -52,7 +59,7 @@
                                 </td>
                                 <td class="text-right">
                                     <a href="{$_url}invoices/view/{$ds['id']}/" class="btn btn-primary btn-xs"><i class="fa fa-file-text-o"></i></a>
-                                    <a href="#" class="btn btn-danger btn-xs cdelete" id="iid{$ds['id']}"><i class="fa fa-trash"></i></a>
+                                    <a href="{$_url}invoices/delete/{$ds['id']}/" class="btn btn-danger btn-xs cdelete" id="iid{$ds['id']}"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         {/foreach}

@@ -141,3 +141,104 @@
 [21-Mar-2025 23:16:09 Asia/Manila] ✅ Item added successfully with ID: 13
 [21-Mar-2025 23:16:20 Asia/Manila] 🔍 Received Data: Name: 2132, Sales Price: 200, Stock: 23, Item Number: 5, Type: Product
 [21-Mar-2025 23:16:20 Asia/Manila] ⚠️ Duplicate product detected: 2132
+[01-Apr-2025 18:30:38 Asia/Manila] 🔍 Received Data: Name: 312, Sales Price: 1000, Stock: 1, Item Number: 6, Type: Product
+[01-Apr-2025 18:30:38 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 18:30:38 Asia/Manila] ✅ Item added successfully with ID: 14
+[01-Apr-2025 18:30:46 Asia/Manila] 🔍 Received Data: Name: 312, Sales Price: 1000, Stock: 1, Item Number: 6, Type: Product
+[01-Apr-2025 18:30:46 Asia/Manila] ⚠️ Duplicate product detected: 312
+[01-Apr-2025 20:35:02 Asia/Manila] 🔍 Received Data: Name: test1, Sales Price: 1000, Stock: 23, Item Number: 7, Type: Product
+[01-Apr-2025 20:35:02 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:35:02 Asia/Manila] ✅ Item added successfully with ID: 15
+[01-Apr-2025 20:37:03 Asia/Manila] 🔍 Received Data: Name: Test3, Sales Price: 23, Stock: 2, Item Number: 8, Type: Product
+[01-Apr-2025 20:37:03 Asia/Manila] ⚠️ Duplicate product detected: Test3
+[01-Apr-2025 20:38:34 Asia/Manila] 🔍 Received Data: Name: testtest, Sales Price: 2, Stock: 23, Item Number: 8, Type: Product
+[01-Apr-2025 20:38:34 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:38:34 Asia/Manila] ✅ Item added successfully with ID: 16
+[01-Apr-2025 20:41:33 Asia/Manila] 🔍 Received Data: Name: testtest43, Sales Price: 123, Stock: 232, Item Number: 9, Type: Product
+[01-Apr-2025 20:41:33 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:41:33 Asia/Manila] ✅ Item added successfully with ID: 17
+[01-Apr-2025 20:43:01 Asia/Manila] 🔍 Received Data: Name: testtest43, Sales Price: 123, Stock: 232, Item Number: 9, Type: Product
+[01-Apr-2025 20:43:01 Asia/Manila] ⚠️ Duplicate product detected: testtest43
+[01-Apr-2025 20:43:06 Asia/Manila] 🔍 Received Data: Name: testtest43, Sales Price: 123, Stock: 232, Item Number: 9, Type: Product
+[01-Apr-2025 20:43:06 Asia/Manila] ⚠️ Duplicate product detected: testtest43
+[01-Apr-2025 20:43:07 Asia/Manila] 🔍 Received Data: Name: testtest43, Sales Price: 123, Stock: 232, Item Number: 9, Type: Product
+[01-Apr-2025 20:43:07 Asia/Manila] ⚠️ Duplicate product detected: testtest43
+[01-Apr-2025 20:43:07 Asia/Manila] 🔍 Received Data: Name: testtest43, Sales Price: 123, Stock: 232, Item Number: 9, Type: Product
+[01-Apr-2025 20:43:07 Asia/Manila] ⚠️ Duplicate product detected: testtest43
+[01-Apr-2025 20:43:32 Asia/Manila] 🔍 Received Data: Name: testestfds, Sales Price: 34, Stock: 34, Item Number: 10, Type: Product
+[01-Apr-2025 20:43:32 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:43:32 Asia/Manila] ✅ Item added successfully with ID: 18
+[01-Apr-2025 20:43:51 Asia/Manila] 🔍 Received Data: Name: testestfds, Sales Price: 34, Stock: 34, Item Number: 10, Type: Product
+[01-Apr-2025 20:43:51 Asia/Manila] ⚠️ Duplicate product detected: testestfds
+[01-Apr-2025 20:44:06 Asia/Manila] 🔍 Received Data: Name: fasfafd, Sales Price: 34, Stock: 2, Item Number: 11, Type: Product
+[01-Apr-2025 20:44:06 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:44:06 Asia/Manila] ✅ Item added successfully with ID: 19
+[01-Apr-2025 20:47:53 Asia/Manila] 🔍 Received Data: Name: 2132, Sales Price: 2, Stock: 22, Item Number: 12, Type: Product
+[01-Apr-2025 20:47:53 Asia/Manila] ⚠️ Duplicate product detected: 2132
+[01-Apr-2025 20:48:03 Asia/Manila] 🔍 Received Data: Name: 7657, Sales Price: 2, Stock: 22, Item Number: 12, Type: Product
+[01-Apr-2025 20:48:03 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:48:03 Asia/Manila] ✅ Item added successfully with ID: 20
+[01-Apr-2025 20:49:48 Asia/Manila] 🔍 Received Data: Name: 3213, Sales Price: 22, Stock: 2, Item Number: 13, Type: Product
+[01-Apr-2025 20:49:48 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:49:48 Asia/Manila] ✅ Item added successfully with ID: 21
+[01-Apr-2025 20:53:45 Asia/Manila] 🔍 Received Data: Name: 231, Sales Price: 2, Stock: 3, Item Number: 14, Type: Product
+[01-Apr-2025 20:53:45 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:53:45 Asia/Manila] ✅ Item added successfully with ID: 22
+[01-Apr-2025 20:56:34 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 22, Stock: 22, Item Number: 15, Type: Product
+[01-Apr-2025 20:56:34 Asia/Manila] ⚠️ Duplicate product detected: dsa
+[01-Apr-2025 20:57:29 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 2, Stock: 2, Item Number: 15, Type: Product
+[01-Apr-2025 20:57:29 Asia/Manila] ⚠️ Duplicate product detected: dsa
+[01-Apr-2025 20:57:41 Asia/Manila] 🔍 Received Data: Name: dsa23, Sales Price: 2, Stock: 2, Item Number: 15, Type: Product
+[01-Apr-2025 20:57:41 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:57:41 Asia/Manila] ✅ Item added successfully with ID: 23
+[01-Apr-2025 20:59:36 Asia/Manila] 🔍 Received Data: Name: dsadsa, Sales Price: 23, Stock: 23, Item Number: 16, Type: Product
+[01-Apr-2025 20:59:36 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 20:59:36 Asia/Manila] ✅ Item added successfully with ID: 24
+[01-Apr-2025 21:01:33 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 23, Stock: 23, Item Number: 17, Type: Product
+[01-Apr-2025 21:01:33 Asia/Manila] ⚠️ Duplicate product detected: dsa
+[01-Apr-2025 21:01:37 Asia/Manila] 🔍 Received Data: Name: dsa23232, Sales Price: 23, Stock: 23, Item Number: 17, Type: Product
+[01-Apr-2025 21:01:37 Asia/Manila] OVERALL ERROR MESSAGE: 
+[01-Apr-2025 21:01:37 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:01:37 Asia/Manila] ✅ Item added successfully with ID: 25
+[01-Apr-2025 21:09:35 Asia/Manila] 🔍 Received Data: Name: test1, Sales Price: 23, Stock: 23, Item Number: 1, Type: Product
+[01-Apr-2025 21:09:35 Asia/Manila] OVERALL ERROR MESSAGE: 
+[01-Apr-2025 21:09:35 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:09:35 Asia/Manila] ✅ Item added successfully with ID: 26
+[01-Apr-2025 21:12:09 Asia/Manila] 🔍 Received Data: Name: test2, Sales Price: 23, Stock: 23, Item Number: 2, Type: Product
+[01-Apr-2025 21:12:09 Asia/Manila] OVERALL ERROR MESSAGE: 
+[01-Apr-2025 21:12:09 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:12:09 Asia/Manila] ✅ Item added successfully with ID: 27
+[01-Apr-2025 21:13:05 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 2, Stock: 23, Item Number: 3, Type: Product
+[01-Apr-2025 21:13:05 Asia/Manila] OVERALL ERROR MESSAGE: 
+[01-Apr-2025 21:13:05 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:13:05 Asia/Manila] ✅ Item added successfully with ID: 28
+[01-Apr-2025 21:14:00 Asia/Manila] 🔍 Received Data: Name: fdsfsd, Sales Price: 2, Stock: 23, Item Number: 4, Type: Product
+[01-Apr-2025 21:14:00 Asia/Manila] 
+[01-Apr-2025 21:14:00 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:14:00 Asia/Manila] ✅ Item added successfully with ID: 29
+[01-Apr-2025 21:16:26 Asia/Manila] 🔍 Received Data: Name: dsa, Sales Price: 2, Stock: 2, Item Number: 5, Type: Product
+[01-Apr-2025 21:16:26 Asia/Manila] ⚠️ Duplicate product detected: dsa
+[01-Apr-2025 21:16:29 Asia/Manila] 🔍 Received Data: Name: dsad, Sales Price: 2, Stock: 2, Item Number: 5, Type: Product
+[01-Apr-2025 21:16:29 Asia/Manila] 
+[01-Apr-2025 21:16:29 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:16:29 Asia/Manila] ✅ Item added successfully with ID: 30
+[01-Apr-2025 21:17:11 Asia/Manila] 🔍 Received Data: Name: sadsadas, Sales Price: 2, Stock: 2, Item Number: 6, Type: Product
+[01-Apr-2025 21:17:11 Asia/Manila] 
+[01-Apr-2025 21:17:11 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:17:11 Asia/Manila] ✅ Item added successfully with ID: 31
+[01-Apr-2025 21:17:59 Asia/Manila] 🔍 Received Data: Name: sss, Sales Price: 2, Stock: 2, Item Number: 7, Type: Product
+[01-Apr-2025 21:17:59 Asia/Manila] 
+[01-Apr-2025 21:17:59 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:17:59 Asia/Manila] ✅ Item added successfully with ID: 32
+[01-Apr-2025 21:19:00 Asia/Manila] 🔍 Received Data: Name: hgfhgf, Sales Price: 3, Stock: 3, Item Number: 8, Type: Product
+[01-Apr-2025 21:19:00 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:19:00 Asia/Manila] ✅ Item added successfully with ID: 33
+[01-Apr-2025 21:19:23 Asia/Manila] 🔍 Received Data: Name: e, Sales Price: 2, Stock: 2, Item Number: 9, Type: Product
+[01-Apr-2025 21:19:23 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:19:23 Asia/Manila] ✅ Item added successfully with ID: 34
+[01-Apr-2025 21:20:38 Asia/Manila] 🔍 Received Data: Name: 23, Sales Price: 2, Stock: 2, Item Number: 10, Type: Product
+[01-Apr-2025 21:20:38 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:20:38 Asia/Manila] ✅ Item added successfully with ID: 35
+[01-Apr-2025 21:22:47 Asia/Manila] 🔍 Received Data: Name: dsadsa, Sales Price: 2, Stock: 2, Item Number: 11, Type: Product
+[01-Apr-2025 21:22:47 Asia/Manila] 🟢 Saving item to database...
+[01-Apr-2025 21:22:47 Asia/Manila] ✅ Item added successfully with ID: 36

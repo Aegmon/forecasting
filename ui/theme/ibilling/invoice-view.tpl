@@ -22,9 +22,7 @@
                      
 
 
-                        {if $_c['accounting'] eq '1'}
-                            <button type="button" class="btn  btn-danger btn-sm" id="add_payment"><i class="fa fa-plus"></i> {$_L['Add Payment']}</button>
-                        {/if}
+                  
 
                      
                         <div class="btn-group" role="group">
@@ -50,7 +48,7 @@
                             <div class="row">
                                 <div class="col-sm-6 mt-md">
                                     <h2 class="h2 mt-none mb-sm text-dark text-bold">{$_L['INVOICE']}</h2>
-                                    <h4 class="h4 m-none text-dark text-bold">#{$d['invoicenum']}{if $d['cn'] neq ''} {$d['cn']} {else} {$d['id']} {/if}</h4>
+                                    <h4 class="h4 m-none text-dark text-bold">#{$d['invoicenum']}</h4>
                                     {if $d['status'] eq 'Unpaid'}
                                         <h3 class="alert alert-danger">{$_L['Unpaid']}</h3>
                                     {elseif $d['status'] eq 'Paid'}

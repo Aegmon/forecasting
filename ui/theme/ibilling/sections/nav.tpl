@@ -51,7 +51,7 @@
                             <li><a href="{$_url}transactions/chart-of-accounts/">Chart of Accounts</a></li>
                             <li><a href="{$_url}transactions/expense/">Disbursement </a></li>
                             <li><a href="{$_url}transactions/reconciliation/">Reconciliation </a></li>
-                            <li><a href="{$_url}transactions/list/">All Disbursement</a></li>
+                            <li><a href="{$_url}transactions/list/">All Transactions</a></li>
                 </ul>
             </li>
         {/if}

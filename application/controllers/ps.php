@@ -181,11 +181,11 @@ $ui->display('add-ps.tpl');
         
             // Prevent duplicate insert by checking existing product
             $existing = ORM::for_table('sys_items')->where('name', $name)->find_one();
-            if ($existing) {
-                error_log("⚠️ Duplicate product detected: $name");
-                echo '✅ Success: Product Added!';
-                exit;
-            }
+                if ($existing) {
+                    error_log("⚠️ Duplicate product detected: $name");
+                    echo '❌ Error: Product already exists!';
+                    exit; // Stop further execution
+                }
         
             // Validate Inputs
             if (empty($name)) {
@@ -263,7 +263,7 @@ $ui->display('add-ps.tpl');
                     $log->description = "User added a new product: $name";
                     $log->system_id = $user_id ?? 0;
                     $log->save();
-                    header("Location: {$_url}ps/p-list");
+                    echo json_encode(['success' => true, 'message' => 'Item added successfully']);
                     exit;
                 } else {
                     error_log('❌ Error: Database save failed.');

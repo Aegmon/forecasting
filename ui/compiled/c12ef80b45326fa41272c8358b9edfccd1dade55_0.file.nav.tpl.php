@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-26 11:49:51
+/* Smarty version 3.1.39, created on 2025-04-01 20:00:13
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\sections\nav.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67e3795f39c328_63309652',
+  'unifunc' => 'content_67ebd54d720fb6_00138037',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'c12ef80b45326fa41272c8358b9edfccd1dade55' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\sections\\nav.tpl',
-      1 => 1742960950,
+      1 => 1743508811,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67e3795f39c328_63309652 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ebd54d720fb6_00138037 (Smarty_Internal_Template $_smarty_tpl) {
 ?><ul class="nav" id="side-menu">
 
     <li class="nav-header">
@@ -98,7 +98,7 @@ transactions/expense/">Disbursement </a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 transactions/reconciliation/">Reconciliation </a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/list/">All Disbursement</a></li>
+transactions/list/">All Transactions</a></li>
                 </ul>
             </li>
         <?php }?>

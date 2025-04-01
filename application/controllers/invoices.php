@@ -417,7 +417,8 @@ switch ($action) {
                         $required_qty = Finance::amount_fix($qty[$i]);
                         if ($item->inventory < $required_qty) {
                             error_log("ERROR: Insufficient stock for item: {$item->description} (Item Code: $code)");
-                            $msg .= "Not enough stock for item: " . $item->description . " (Item Code: $code)<br>";
+                            $msg .= "Not enough stock for item: " . $item->name . " (Item Code: $code)<br>";
+                            
                         }
                     } else {
                         error_log("ERROR: Item not found in inventory: $code");
@@ -426,7 +427,12 @@ switch ($action) {
                     $i++;
                 }
             }
-        
+            if ($msg != '') {
+             
+                $_SESSION['validation_message'] = $msg;
+                r2(U . 'invoices/list/', 'e', $msg);
+                exit;
+            }
             if ($msg == '') {
                 // Create invoice
                 $i = 0;
@@ -442,7 +448,12 @@ switch ($action) {
                 $datetime = date("Y-m-d H:i:s");
                 $vtoken = _raid(10);
                 $ptoken = _raid(10);
-        
+                $existingInvoiceCount = ORM::for_table('sys_invoices')
+                ->where('system_id', $user_id)
+                 ->count();
+            
+    
+               $newInvoiceNum = $existingInvoiceCount + 1;
                 $invoice = ORM::for_table('sys_invoices')->create();
                 $invoice->userid = "1";
                 $invoice->account = "Walkin Customer";
@@ -454,6 +465,7 @@ switch ($action) {
                 $invoice->vtoken = $vtoken;
                 $invoice->ptoken = $ptoken;
                 $invoice->status = 'Paid';
+                $invoice->invoicenum = $newInvoiceNum;
         
                 if (!$invoice->save()) {
                     error_log("ERROR: Invoice insertion failed.");
@@ -502,7 +514,7 @@ switch ($action) {
                         $new_qty = $item->inventory - $sqty;
                         if ($new_qty < 0) {
                             error_log("ERROR: Stock insufficient for item: {$item->description}");
-                            $msg .= "Not enough stock for item: " . $item->description . "<br>";
+                            $msg .= "Not enough stock for item: " . $item->name . "<br>";
                         } else {
                             $item->inventory = $new_qty;
                             if (!$item->save()) {
@@ -678,7 +690,9 @@ switch ($action) {
                 '" style="box-shadow: none;"><i class="fa fa-download"></i></a>
 </div>'
         );
-
+        $validation_message = isset($_SESSION['validation_message']) ? $_SESSION['validation_message'] : '';
+        $ui->assign('validation_message', $validation_message);
+   
         $ui->assign('xheader', $mode_css);
         $ui->assign('xfooter', $mode_js);
         $ui->assign('view_type', $view_type);
@@ -1062,24 +1076,35 @@ $(".cdelete").click(function (e) {
 
         break;
 
-    case 'delete':
-        Event::trigger('invoices/delete/');
-
-        $id = $routes['2'];
-        if ($_app_stage == 'Demo') {
-            r2(
-                U . 'accounts/list',
-                'e',
-                'Sorry! Deleting Account is disabled in the demo mode.'
-            );
-        }
-        $d = ORM::for_table('crm_accounts')->find_one($id);
-        if ($d) {
-            $d->delete();
-            r2(U . 'accounts/list', 's', $_L['account_delete_successful']);
-        }
-
-        break;
+        case 'delete':
+            Event::trigger('invoices/delete/');
+        
+            $id = $routes[2]; 
+            if ($_app_stage == 'Demo') {
+                echo json_encode(["status" => "error", "message" => "Deleting invoices is disabled in demo mode."]);
+                exit;
+            }
+        
+            $invoice = ORM::for_table('sys_invoices')->find_one($id);
+            if ($invoice) {
+                // Delete related invoice items first
+                ORM::for_table('sys_invoiceitems')->where('invoiceid', $id)->delete_many();
+        
+                // Delete the invoice itself
+                $invoice->delete();
+        
+                // Redirect to the 'list' case with the correct URL structure
+                header("Location: http://localhost/forecasting/?ng=invoices/list/");  // Correct URL
+                exit;
+            } else {
+                echo json_encode(["status" => "error", "message" => "Invoice not found."]);
+            }
+            exit;
+        
+        
+        
+        
+        
 
     case 'print':
         Event::trigger('invoices/print/');

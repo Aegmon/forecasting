@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 11:02:25
+/* Smarty version 3.1.39, created on 2025-04-01 20:26:52
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\invoice-view.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce5641831855_95261853',
+  'unifunc' => 'content_67ebdb8cbbf3c6_09647054',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '900f248ad998ff38a3bc0cbef60684332d029104' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\invoice-view.tpl',
-      1 => 1733131562,
+      1 => 1743510411,
       2 => 'file',
     ),
   ),
@@ -20,23 +20,23 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce5641831855_95261853 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ebdb8cbbf3c6_09647054 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_207450733467ce56417fb455_47065702', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_48176349067ebdb8cb9a975_88431823', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_207450733467ce56417fb455_47065702 extends Smarty_Internal_Block
+class Block_48176349067ebdb8cb9a975_88431823 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_207450733467ce56417fb455_47065702',
+    0 => 'Block_48176349067ebdb8cb9a975_88431823',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -72,10 +72,7 @@ if ($_smarty_tpl->tpl_vars['d']->value['cn'] != '') {?> <?php echo $_smarty_tpl-
                      
 
 
-                        <?php if ($_smarty_tpl->tpl_vars['_c']->value['accounting'] == '1') {?>
-                            <button type="button" class="btn  btn-danger btn-sm" id="add_payment"><i class="fa fa-plus"></i> <?php echo $_smarty_tpl->tpl_vars['_L']->value['Add Payment'];?>
-</button>
-                        <?php }?>
+                  
 
                      
                         <div class="btn-group" role="group">
@@ -115,10 +112,8 @@ iview/print/<?php echo $_smarty_tpl->tpl_vars['d']->value['id'];?>
                                 <div class="col-sm-6 mt-md">
                                     <h2 class="h2 mt-none mb-sm text-dark text-bold"><?php echo $_smarty_tpl->tpl_vars['_L']->value['INVOICE'];?>
 </h2>
-                                    <h4 class="h4 m-none text-dark text-bold">#<?php echo $_smarty_tpl->tpl_vars['d']->value['invoicenum'];
-if ($_smarty_tpl->tpl_vars['d']->value['cn'] != '') {?> <?php echo $_smarty_tpl->tpl_vars['d']->value['cn'];?>
- <?php } else { ?> <?php echo $_smarty_tpl->tpl_vars['d']->value['id'];?>
- <?php }?></h4>
+                                    <h4 class="h4 m-none text-dark text-bold">#<?php echo $_smarty_tpl->tpl_vars['d']->value['invoicenum'];?>
+</h4>
                                     <?php if ($_smarty_tpl->tpl_vars['d']->value['status'] == 'Unpaid') {?>
                                         <h3 class="alert alert-danger"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Unpaid'];?>
 </h3>
