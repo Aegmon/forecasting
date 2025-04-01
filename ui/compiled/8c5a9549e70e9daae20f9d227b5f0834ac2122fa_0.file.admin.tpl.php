@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 09:20:15
+/* Smarty version 3.1.39, created on 2025-04-01 21:43:06
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\layouts\admin.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce3e4f164692_72177965',
+  'unifunc' => 'content_67ebed6a755b42_93869369',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '8c5a9549e70e9daae20f9d227b5f0834ac2122fa' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\layouts\\admin.tpl',
-      1 => 1733189952,
+      1 => 1743514968,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce3e4f164692_72177965 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ebed6a755b42_93869369 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, false);
 ?>
@@ -53,6 +53,14 @@ application/storage/icon/favicon.ico">
     <meta name="msapplication-config" content="<?php echo $_smarty_tpl->tpl_vars['app_url']->value;?>
 application/storage/icon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <?php echo '<script'; ?>
+ src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"><?php echo '</script'; ?>
+>
+    <?php echo '<script'; ?>
+ src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"><?php echo '</script'; ?>
+>
 
     <link href="<?php echo $_smarty_tpl->tpl_vars['app_url']->value;?>
 ui/lib/css/ibilling.css?v=3" rel="stylesheet">
@@ -201,7 +209,7 @@ logout/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Logout'];?>
 <?php }?>
 
                 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_135004508467ce3e4f15d879_28757036', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_164468212667ebed6a74ebf0_23734562', "content");
 ?>
 
 
@@ -387,7 +395,7 @@ ui/lib/ibilling.js"><?php echo '</script'; ?>
 <?php }?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_214516408667ce3e4f1631a8_20644836', 'script');
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_160201441367ebed6a7547c3_98420773', 'script');
 ?>
 
 
@@ -409,12 +417,12 @@ $_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_214516408667ce3e4f
 </html>
 <?php }
 /* {block "content"} */
-class Block_135004508467ce3e4f15d879_28757036 extends Smarty_Internal_Block
+class Block_164468212667ebed6a74ebf0_23734562 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_135004508467ce3e4f15d879_28757036',
+    0 => 'Block_164468212667ebed6a74ebf0_23734562',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -422,12 +430,12 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 }
 /* {/block "content"} */
 /* {block 'script'} */
-class Block_214516408667ce3e4f1631a8_20644836 extends Smarty_Internal_Block
+class Block_160201441367ebed6a7547c3_98420773 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'script' => 
   array (
-    0 => 'Block_214516408667ce3e4f1631a8_20644836',
+    0 => 'Block_160201441367ebed6a7547c3_98420773',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {

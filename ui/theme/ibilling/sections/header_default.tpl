@@ -16,6 +16,11 @@
     <link rel="manifest" href="{$app_url}application/storage/icon/site.webmanifest">
     <link rel="mask-icon" href="{$app_url}application/storage/icon/safari-pinned-tab.svg" color="#5bbad5">
     <link rel="shortcut icon" href="{$app_url}application/storage/icon/favicon.ico">
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="msapplication-config" content="{$app_url}application/storage/icon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">

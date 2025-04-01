@@ -30,89 +30,123 @@ switch ($action) {
     case 'reconciliation':
         Event::trigger('transactions/reconciliation/');
     
-        $paginator = Paginator::bootstrap('sys_transactions');
-        $d = ORM::for_table('sys_transactions')
-            ->where('system_id', $user_id)
-            ->where('type', 'Expense')
-            ->offset($paginator['startpoint'])
-            ->limit($paginator['limit'])
-            ->order_by_desc('date')
-            ->find_many();
+        $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-01');
+        $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
     
-        $total_debit = ORM::for_table('sys_transactions')
+        $paginator = Paginator::bootstrap('sys_transactions');
+    
+        $query = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
             ->where('type', 'Expense')
-            ->where('archived', 1)
-            ->sum('dr');
+            ->where_gte('date', $start_date)
+            ->where_lte('date', $end_date)
+            ->order_by_desc('date');
+    
+        $total_records = $query->count();
+        $query->offset($paginator['startpoint'])->limit($paginator['limit']);
+    
+        $d = $query->find_many();
     
         $total_credit = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
             ->where('type', 'Expense')
             ->where('archived', 1)
+            ->where_gte('date', $start_date)
+            ->where_lte('date', $end_date)
             ->sum('dr');
     
         $ui->assign('d', $d);
         $ui->assign('paginator', $paginator);
-        $ui->assign('total_debit', $total_debit);
         $ui->assign('total_credit', $total_credit);
-        $ui->assign('xjq', '
-    $(document).ready(function () {
-        // ✅ Reconcile Transaction
-        $(".reconcile-btn").click(function () {
-            var transactionId = $(this).data("id");
+        $ui->assign('start_date', $start_date);
+        $ui->assign('end_date', $end_date);
+        if (Ib_I18n::get_code($config['language']) != 'en') {
+            $dp_lan =
+                '<script type="text/javascript" src="' .
+                $_theme .
+                '/lib/datepaginator/locale/' .
+                Ib_I18n::get_code($config['language']) .
+                '.js"></script>';
 
-            $.ajax({
-                type: "POST",
-                url: window.location.origin + "/forecasting/?ng=transactions/update-archived", // ✅ Ensured correct URL
-                data: { id: transactionId },
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                        location.reload(); // ✅ Reload page after successful update
-                    } else {
-                        alert("Error updating transaction: " + (response.message || "Unknown error"));
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert("Failed to update transaction. " + xhr.status + ": " + xhr.statusText);
-                }
-            });
-        });
-
-        // ✅ Edit Account
-        $(".edit-account").click(function () {
-            var accountId = $(this).data("id");
-            window.location.href = "/forecasting/?ng=transactions/edit-chart-of-accounts/" + accountId;
-        });
-
-        // ✅ Delete Account
-        $(".delete-account").click(function () {
-            var accountId = $(this).data("id");
-            var deleteUrl = window.location.origin + "/forecasting/?ng=transactions/delete-chart-of-accounts/" + accountId;
-
-            if (confirm("Are you sure you want to delete this account?")) {
-                $.ajax({
-                    type: "POST",
-                    url: deleteUrl, // ✅ Corrected URL format
-                    dataType: "json",
-                    success: function (response) {
-                        if (response.status === "success") {
-                            location.reload();
-                        } else {
-                            alert("Delete failed: " + (response.message || "Unknown error"));
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert("Error deleting account. " + xhr.status + ": " + xhr.statusText);
-                    }
-                });
-            }
-        });
+            $x_lan = '';
+        } else {
+            $dp_lan = '';
+            $x_lan = '';
+        }
+        $ui->assign(
+            'xheader',
+            '
+    <link rel="stylesheet" type="text/css" href="' .
+                $_theme .
+                '/lib/datepaginator/bootstrap-datepaginator.min.css"/>
+    <link rel="stylesheet" type="text/css" href="' .
+                $_theme .
+                '/lib/datepaginator/bootstrap-datepicker.css"/>
+    '
+        );
+    
+        $ui->assign(
+            'xfooter',
+            '
+    <script type="text/javascript" src="' .
+                $_theme .
+                '/lib/datepaginator/moment.js"></script>
+    <script type="text/javascript" src="' .
+                $_theme .
+                '/lib/datepaginator/bootstrap-datepicker.js"></script>
+    ' .
+                $dp_lan .
+                '
+    <script type="text/javascript" src="' .
+                $_theme .
+                '/lib/datepaginator/bootstrap-datepaginator.min.js"></script>
+    '
+        );
+    
+        $mdf = Ib_Internal::get_moment_format($config['df']);
+        $today = date('Y-m-d');
+    
+        $ui->assign(
+            'xjq',
+            $x_lan .
+                '
+    
+      $(\'#dpx\').datepaginator(
+      {
+    
+        selectedDate: \'' .
+                $today .
+                '\',
+        selectedDateFormat:  \'YYYY-MM-DD\',
+        textSelected:  "dddd<br/>' .
+                $mdf .
+                '"
+    }
+      );
+       $(\'#dpx\').on(\'selectedDateChanged\', function(event, date) {
+      // Your logic goes here
+     // alert(date);
+     $( "#result" ).html( "<h3>' .
+                $_L['Loading'] .
+                '.....</h3>" );
+     // $(\'#tdate\').text(moment(date).format("dddd, ' .
+                $mdf .
+                '"));
+     $.get( "' .
+                U .
+                'ajax.date-summary/" + date, function( data ) {
+         $( "#result" ).html( data );
+         //alert(date);
+         // console.log(date);
+     });
     });
-');
-
+    '
+        );
+    
         $ui->display('reconciliation.tpl');
         break;
+    
+    
     
         case 'update-archived':
             header('Content-Type: application/json'); // Ensure JSON response

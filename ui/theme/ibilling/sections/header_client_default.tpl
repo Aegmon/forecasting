@@ -20,6 +20,10 @@
     <link href="{$_theme}/css/style.css?ver=2.0.1" rel="stylesheet">
     <link href="{$_theme}/css/component.css?ver=2.0.1" rel="stylesheet">
     <link href="{$_theme}/css/custom.css" rel="stylesheet">
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 
     <link href="{$app_url}ui/lib/icons/css/ibilling_icons.css" rel="stylesheet">

@@ -19,6 +19,10 @@
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="msapplication-config" content="{$app_url}application/storage/icon/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <link href="{$app_url}ui/lib/css/ibilling.css?v=3" rel="stylesheet">
 
