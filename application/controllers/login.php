@@ -6,7 +6,7 @@ if ($do == '') {
 }
 switch ($do) {
     case 'post':
-        $username = _post('username');
+        $username = isset($_POST['username']) ? $_POST['username'] : '';
         $username = filter_var($username, FILTER_SANITIZE_STRING);
         $username = addslashes($username);
         $password = _post('password');

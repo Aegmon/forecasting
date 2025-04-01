@@ -879,95 +879,140 @@ minHeight: 150 // pixels
 
         break;
 
-    case 'users-edit-post':
-        $username = _post('username');
-        $fullname = _post('fullname');
-        $img = _post('picture');
-        $password = _post('password');
-        $cpassword = _post('cpassword');
-
-        $msg = '';
-
-        if (Validator::Email($username) == false) {
-            $msg .= 'Please use a valid Email address as Username' . '<br>';
-        }
-        if (Validator::Length($fullname, 26, 2) == false) {
-            $msg .= 'Full Name should be between 3 to 25 characters' . '<br>';
-        }
-        if ($password != '') {
-            if (!Validator::Length($password, 15, 5)) {
-                $msg .=
-                    'Password should be between 6 to 15 characters' . '<br>';
+        case 'users-edit-post':
+            $username = _post('username');
+            $fullname = _post('fullname');
+            $password = _post('password');
+            $cpassword = _post('cpassword');
+        
+            $msg = '';
+        
+            // Validate Email
+            if (Validator::Email($username) == false) {
+                $msg .= 'Please use a valid Email address as Username' . '<br>';
             }
-            if ($password != $cpassword) {
-                $msg .= 'Passwords does not match' . '<br>';
+        
+            // Validate Full Name Length
+            if (Validator::Length($fullname, 26, 2) == false) {
+                $msg .= 'Full Name should be between 3 to 25 characters' . '<br>';
             }
-        }
-        //find this user
-        $id = _post('id');
-        $d = ORM::for_table('sys_users')->find_one($id);
-        if ($d) {
-        } else {
-            $msg .= 'Username Not Found' . '<br>';
-        }
-        //check with same name account is exist
-        if ($d['username'] != $username) {
-            $c = ORM::for_table('sys_users')
-                ->where('username', $username)
-                ->find_one();
-            if ($c) {
-                $msg .= $_L['account_already_exist'] . '<br>';
-            }
-        }
-
-        if ($_app_stage == 'Demo') {
-            $msg .= 'Editing User is disabled in the Demo Mode!' . '<br>';
-        }
-
-        $user_type = _post('user_type');
-
-        $r = Model::factory('Models_Role')->find_one($user_type);
-
-        if ($r) {
-            $role = $r->rname;
-            $roleid = $user_type;
-            $user_type = $r->rname;
-        } else {
-            $role = '';
-            $roleid = 0;
-            $user_type = 'Admin';
-        }
-
-        if ($msg == '') {
-            // Add Account
-
-            $d->username = $username;
+        
+            // Validate Password
             if ($password != '') {
-                $password = Password::_crypt($password);
-                $d->password = $password;
+                if (!Validator::Length($password, 15, 5)) {
+                    $msg .= 'Password should be between 6 to 15 characters' . '<br>';
+                }
+                if ($password != $cpassword) {
+                    $msg .= 'Passwords do not match' . '<br>';
+                }
             }
-
-            $d->fullname = $fullname;
-            if ($user['id'] != $id) {
-                $d->user_type = $user_type;
+        
+            // Find the User
+            $id = _post('id');
+            $d = ORM::for_table('sys_users')->find_one($id);
+            if (!$d) {
+                $msg .= 'User Not Found' . '<br>';
             }
-
-            $d->img = $img;
-
-            $d->role = $role;
-            $d->roleid = $roleid;
-
-            $d->save();
-            r2(
-                U . 'settings/users-edit/' . $id,
-                's',
-                'User Updated Successfully'
-            );
-        } else {
-            r2(U . 'settings/users-edit/' . $id, 'e', $msg);
-        }
-
-        break;
+        
+            // Check if Username already exists
+            if ($d['username'] != $username) {
+                $c = ORM::for_table('sys_users')->where('username', $username)->find_one();
+                if ($c) {
+                    $msg .= $_L['account_already_exist'] . '<br>';
+                }
+            }
+        
+            // Demo Mode Check
+            if ($_app_stage == 'Demo') {
+                $msg .= 'Editing User is disabled in Demo Mode!' . '<br>';
+            }
+        
+            // Handle User Role
+            $user_type = _post('user_type');
+            $r = Model::factory('Models_Role')->find_one($user_type);
+            if ($r) {
+                $role = $r->rname;
+                $roleid = $user_type;
+                $user_type = $r->rname;
+            } else {
+                $role = '';
+                $roleid = 0;
+                $user_type = 'Admin';
+            }
+        
+            // Handle Image Upload
+            $image_path = $d->img; // Keep existing image if no new file is uploaded
+            if (!empty($_FILES['picture']['name'])) {
+                $target_dir = 'img/users/';
+                if (!file_exists($target_dir)) {
+                    mkdir($target_dir, 0777, true); // Creates directory with full permissions
+                }
+                $file_name = time() . '_' . basename($_FILES['picture']['name']);
+                $target_file = $target_dir . $file_name;
+                $uploadOk = 1;
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+        
+                // Check if image file is a valid image
+                $check = getimagesize($_FILES['picture']['tmp_name']);
+                if ($check !== false) {
+                    $uploadOk = 1;
+                } else {
+                    $msg .= 'File is not an image.' . '<br>';
+                    $uploadOk = 0;
+                }
+        
+                // Check file size (limit to 5MB)
+                if ($_FILES['picture']['size'] > 5000000) {
+                    $msg .= 'Sorry, your file is too large.' . '<br>';
+                    $uploadOk = 0;
+                }
+        
+                // Allow only certain file formats
+                if (!in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+                    $msg .= 'Sorry, only JPG, JPEG, PNG & GIF files are allowed.' . '<br>';
+                    $uploadOk = 0;
+                }
+        
+                // Try uploading the file
+                if ($uploadOk == 1) {
+                    if (move_uploaded_file($_FILES['picture']['tmp_name'], $target_file)) {
+                        $image_path = $target_file; // Save the image path in DB
+                    } else {
+                        $msg .= 'Sorry, there was an error uploading your file.' . '<br>';
+                    }
+                }
+            }
+        
+            // If no error, update user
+            if ($msg == '') {
+                // Update user fields
+                $d->username = $username;
+                if ($password != '') {
+                    $d->password = Password::_crypt($password);
+                }
+                $d->fullname = $fullname;
+        
+                // Check if user is trying to edit a different user (prevents self-editing of user_type)
+                if ($user['id'] != $id) {
+                    $d->user_type = $user_type;
+                }
+        
+                // Save uploaded image path
+                $d->img = $image_path;
+        
+                $d->role = $role;
+                $d->roleid = $roleid;
+        
+                $d->save();
+        
+                // Redirect with success message
+                r2(U . 'settings/users-edit/' . $id, 's', 'User Updated Successfully');
+            } else {
+                // Redirect with error message
+                r2(U . 'settings/users-edit/' . $id, 'e', $msg);
+            }
+            break;
+        
 
     case 'app-post':
         if ($_app_stage == 'xDemo') {

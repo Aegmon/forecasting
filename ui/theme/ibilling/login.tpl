@@ -40,7 +40,9 @@
             {/if}
             <form class="login" method="post" action="{$_url}admin/post/{if isset($after)}{$after}/{/if}">
                 <div class="form-group m-bottom-md">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="{$_L['Email Address']}" required>
+                   <input type="text" class="form-control" id="username" name="username" 
+       value="{if isset($username)}{$username}{/if}" 
+       placeholder="{$_L['Email Address']}" required>
                 </div>
                 <div class="form-group">
                     <input type="password" class="form-control" id="password" name="password" placeholder="{$_L['Password']}" required>

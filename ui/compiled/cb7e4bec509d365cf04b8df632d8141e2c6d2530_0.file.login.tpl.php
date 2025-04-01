@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 09:18:20
+/* Smarty version 3.1.39, created on 2025-04-01 22:24:27
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\login.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce3ddccdc2c2_95818284',
+  'unifunc' => 'content_67ebf71b0e3946_62807130',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'cb7e4bec509d365cf04b8df632d8141e2c6d2530' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\login.tpl',
-      1 => 1734044670,
+      1 => 1743517437,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce3ddccdc2c2_95818284 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ebf71b0e3946_62807130 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,7 +82,11 @@ admin/post/<?php if ((isset($_smarty_tpl->tpl_vars['after']->value))) {
 echo $_smarty_tpl->tpl_vars['after']->value;?>
 /<?php }?>">
                 <div class="form-group m-bottom-md">
-                    <input type="text" class="form-control" id="username" name="username" placeholder="<?php echo $_smarty_tpl->tpl_vars['_L']->value['Email Address'];?>
+                   <input type="text" class="form-control" id="username" name="username" 
+       value="<?php if ((isset($_smarty_tpl->tpl_vars['username']->value))) {
+echo $_smarty_tpl->tpl_vars['username']->value;
+}?>" 
+       placeholder="<?php echo $_smarty_tpl->tpl_vars['_L']->value['Email Address'];?>
 " required>
                 </div>
                 <div class="form-group">
