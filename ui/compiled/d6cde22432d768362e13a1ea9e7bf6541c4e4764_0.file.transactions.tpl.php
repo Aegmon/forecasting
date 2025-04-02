@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 16:03:55
+/* Smarty version 3.1.39, created on 2025-04-02 18:20:48
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\transactions.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce9cebb94db3_65935626',
+  'unifunc' => 'content_67ed0f803ffc85_57355984',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd6cde22432d768362e13a1ea9e7bf6541c4e4764' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\transactions.tpl',
-      1 => 1733284926,
+      1 => 1743589246,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce9cebb94db3_65935626 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ed0f803ffc85_57355984 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_117454443167ce9cebb7de66_85145304', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_155108027467ed0f80340a85_07076588', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_117454443167ce9cebb7de66_85145304 extends Smarty_Internal_Block
+class Block_155108027467ed0f80340a85_07076588 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_117454443167ce9cebb7de66_85145304',
+    0 => 'Block_155108027467ed0f80340a85_07076588',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -87,7 +87,8 @@ $_smarty_tpl->tpl_vars['ds']->do_else = false;
 </td>
                                     <td><?php echo $_smarty_tpl->tpl_vars['ds']->value['account'];?>
 </td>
-                                                                        
+                                                                      
+
                                     <td>
                                         <?php if ($_smarty_tpl->tpl_vars['ds']->value['type'] == 'Income') {?>
                                             <?php echo $_smarty_tpl->tpl_vars['_L']->value['Income'];?>

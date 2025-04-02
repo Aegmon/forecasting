@@ -34,12 +34,29 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="description" class="col-sm-3 control-label">{$_L['Description']}</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="description" name="description">
-                          
-                            </div>
-                        </div>
+    <label for="description" class="col-sm-3 control-label">{$_L['Description']}</label>
+    <div class="col-sm-9">
+        <select class="form-control" id="description" name="description">
+            <option value="">-- Select Expense --</option>
+            <option value="Rent">Rent</option>
+            <option value="Utilities">Utilities (Electricity, Water, Internet)</option>
+            <option value="Salaries">Salaries & Wages</option>
+            <option value="Office Supplies">Office Supplies</option>
+            <option value="Marketing">Marketing & Advertising</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Travel">Travel & Transportation</option>
+            <option value="Maintenance">Maintenance & Repairs</option>
+            <option value="Software">Software & Subscriptions</option>
+            <option value="Legal Fees">Legal & Professional Fees</option>
+            <option value="Taxes">Taxes & Licenses</option>
+            <option value="Loan Payments">Loan Payments</option>
+            <option value="Inventory">Inventory & Raw Materials</option>
+            <option value="Training">Employee Training & Development</option>
+            <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+    </div>
+</div>
+
 
                         <div class="form-group">
                             <label for="amount" class="col-sm-3 control-label">{$_L['Amount']}</label>

@@ -545,7 +545,7 @@ switch ($action) {
                     $amount = $sTotal;
                     $pmethod = "Cash";
                     $date = date("Y-m-d");
-                    $description = "Payment for Invoice ID: $invoiceid";
+                    $description = "Payment for Invoice ID: $newInvoiceNum";
         
                     $a = ORM::for_table('sys_accounts')->where('account', $account)->find_one();
                     $cbal = $a['balance'];

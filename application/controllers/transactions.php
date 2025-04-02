@@ -30,121 +30,108 @@ switch ($action) {
     case 'reconciliation':
         Event::trigger('transactions/reconciliation/');
     
-        $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-01');
-        $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
-    
         $paginator = Paginator::bootstrap('sys_transactions');
+    
+        // Get filter values
+        $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+        $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
     
         $query = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
-            ->where('type', 'Expense')
-            ->where_gte('date', $start_date)
-            ->where_lte('date', $end_date)
-            ->order_by_desc('date');
+            ->where('type', 'Expense');
     
-        $total_records = $query->count();
-        $query->offset($paginator['startpoint'])->limit($paginator['limit']);
+        // Apply date range filter if provided
+        if (!empty($start_date) && !empty($end_date)) {
+            $start_date_formatted = date('Y-m-d', strtotime($start_date));
+            $end_date_formatted = date('Y-m-d', strtotime($end_date));
     
-        $d = $query->find_many();
+            $query->where_gte('date', $start_date_formatted)
+                  ->where_lte('date', $end_date_formatted);
+        }
     
-        $total_credit = ORM::for_table('sys_transactions')
+        // Fetch filtered transactions
+        $d = $query->offset($paginator['startpoint'])
+                   ->limit($paginator['limit'])
+                   ->order_by_desc('date')
+                   ->find_many();
+    
+        // Get total reconciled and unreconciled amounts
+        $total_reconciled = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
             ->where('type', 'Expense')
             ->where('archived', 1)
-            ->where_gte('date', $start_date)
-            ->where_lte('date', $end_date)
             ->sum('dr');
     
+        $total_unreconciled = ORM::for_table('sys_transactions')
+            ->where('system_id', $user_id)
+            ->where('type', 'Expense')
+            ->where('archived', 0)
+            ->sum('dr');
+    
+        // Assign values to template
         $ui->assign('d', $d);
         $ui->assign('paginator', $paginator);
-        $ui->assign('total_credit', $total_credit);
         $ui->assign('start_date', $start_date);
         $ui->assign('end_date', $end_date);
-        if (Ib_I18n::get_code($config['language']) != 'en') {
-            $dp_lan =
-                '<script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/locale/' .
-                Ib_I18n::get_code($config['language']) .
-                '.js"></script>';
-
-            $x_lan = '';
-        } else {
-            $dp_lan = '';
-            $x_lan = '';
-        }
-        $ui->assign(
-            'xheader',
-            '
-    <link rel="stylesheet" type="text/css" href="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepaginator.min.css"/>
-    <link rel="stylesheet" type="text/css" href="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepicker.css"/>
-    '
-        );
+        $ui->assign('total_reconciled', $total_reconciled);
+        $ui->assign('total_unreconciled', $total_unreconciled);
     
-        $ui->assign(
-            'xfooter',
-            '
-    <script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/moment.js"></script>
-    <script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepicker.js"></script>
-    ' .
-                $dp_lan .
-                '
-    <script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepaginator.min.js"></script>
-    '
-        );
+        // JavaScript for AJAX-based filtering and reconciliation
+        $ui->assign('xjq', '
+            $(document).ready(function () {
+                // ✅ Filter Transactions Without Reloading
+                $("#filterBtn").click(function (e) {
+                    e.preventDefault();
+                    var startDate = $("#start_date").val();
+                    var endDate = $("#end_date").val();
     
-        $mdf = Ib_Internal::get_moment_format($config['df']);
-        $today = date('Y-m-d');
+                    if (!startDate || !endDate) {
+                        alert("Please select both start and end dates.");
+                        return;
+                    }
     
-        $ui->assign(
-            'xjq',
-            $x_lan .
-                '
+                    $.ajax({
+                        url: window.location.origin + "/forecasting/?ng=transactions/reconciliation/",
+                        type: "GET",
+                        data: { start_date: startDate, end_date: endDate },
+                        success: function (response) {
+                            var tableContent = $(response).find("table tbody").html();
+                            $("table tbody").html(tableContent);
+                        },
+                        error: function () {
+                            alert("Failed to load filtered data.");
+                        }
+                    });
+                });
     
-      $(\'#dpx\').datepaginator(
-      {
-    
-        selectedDate: \'' .
-                $today .
-                '\',
-        selectedDateFormat:  \'YYYY-MM-DD\',
-        textSelected:  "dddd<br/>' .
-                $mdf .
-                '"
-    }
-      );
-       $(\'#dpx\').on(\'selectedDateChanged\', function(event, date) {
-      // Your logic goes here
-     // alert(date);
-     $( "#result" ).html( "<h3>' .
-                $_L['Loading'] .
-                '.....</h3>" );
-     // $(\'#tdate\').text(moment(date).format("dddd, ' .
-                $mdf .
-                '"));
-     $.get( "' .
-                U .
-                'ajax.date-summary/" + date, function( data ) {
-         $( "#result" ).html( data );
-         //alert(date);
-         // console.log(date);
-     });
-    });
-    '
-        );
+                // ✅ Reconcile Transaction
+                $(".reconcile-btn").click(function () {
+                    var transactionId = $(this).data("id");
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: window.location.origin + "/forecasting/?ng=transactions/update-archived", 
+                        data: { id: transactionId },
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                alert("Error updating transaction: " + (response.message || "Unknown error"));
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Failed to update transaction. " + xhr.status + ": " + xhr.statusText);
+                        }
+                    });
+                });
+            });
+        ');
     
         $ui->display('reconciliation.tpl');
         break;
+    
+    
     
     
     

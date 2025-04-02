@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 16:04:50
+/* Smarty version 3.1.39, created on 2025-04-02 18:12:15
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\expense.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce9d22dfcee2_73012095',
+  'unifunc' => 'content_67ed0d7f795f70_89694937',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'e131edd33fd3b906bd5ccde6bc9f747f4a6c37f8' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\expense.tpl',
-      1 => 1733131561,
+      1 => 1743588731,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce9d22dfcee2_73012095 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ed0d7f795f70_89694937 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_89369899367ce9d22debd02_26295521', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_59354107667ed0d7f7840e7_09678970', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_89369899367ce9d22debd02_26295521 extends Smarty_Internal_Block
+class Block_59354107667ed0d7f7840e7_09678970 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_89369899367ce9d22debd02_26295521',
+    0 => 'Block_59354107667ed0d7f7840e7_09678970',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -91,13 +91,30 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                         </div>
 
                         <div class="form-group">
-                            <label for="description" class="col-sm-3 control-label"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Description'];?>
+    <label for="description" class="col-sm-3 control-label"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Description'];?>
 </label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="description" name="description">
-                          
-                            </div>
-                        </div>
+    <div class="col-sm-9">
+        <select class="form-control" id="description" name="description">
+            <option value="">-- Select Expense --</option>
+            <option value="Rent">Rent</option>
+            <option value="Utilities">Utilities (Electricity, Water, Internet)</option>
+            <option value="Salaries">Salaries & Wages</option>
+            <option value="Office Supplies">Office Supplies</option>
+            <option value="Marketing">Marketing & Advertising</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Travel">Travel & Transportation</option>
+            <option value="Maintenance">Maintenance & Repairs</option>
+            <option value="Software">Software & Subscriptions</option>
+            <option value="Legal Fees">Legal & Professional Fees</option>
+            <option value="Taxes">Taxes & Licenses</option>
+            <option value="Loan Payments">Loan Payments</option>
+            <option value="Inventory">Inventory & Raw Materials</option>
+            <option value="Training">Employee Training & Development</option>
+            <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+    </div>
+</div>
+
 
                         <div class="form-group">
                             <label for="amount" class="col-sm-3 control-label"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Amount'];?>

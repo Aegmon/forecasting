@@ -25,7 +25,7 @@
                                     <td>{date( $_c['df'], strtotime($ds['date']))}</td>
                                     <td>{$ds['account']}</td>
                                     {*<td>{$ds['type']}</td>*}
-                                    {* From v 2.4 Sadia Sharmin *}
+                                  
 
                                     <td>
                                         {if $ds['type'] eq 'Income'}

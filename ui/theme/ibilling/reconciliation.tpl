@@ -5,14 +5,28 @@
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> {$_L['Page']} {$paginator['page']} {$_L['of']} {$paginator['lastpage']}. </h5>
+                    <h5> {$_L['Page']} {$paginator['page']} {$_L['of']} {$paginator['lastpage']} </h5>
                 </div>
                 <div class="ibox-content">
-                
-                    <div id="dpx"></div>
 
-                 
+                    <!-- Filter Form -->
+                   <div class="row">
+                        <div class="col-md-5">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control">
+                        </div>
+                        <div class="col-md-5">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control">
+                        </div>
+                        <div class="col-md-2" style="margin-top: 25px;">
+                            <button id="filterBtn" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+
                     <br>
+
+                    <!-- Table -->
                     <div class="table-responsive">
                         <table class="table table-bordered sys_table">
                             <thead>
@@ -43,9 +57,13 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Totals -->
                     <div class="text-right">
-                        <strong>Total:</strong> {$total_credit}
+                        <strong>Total Reconciled:</strong> {$total_reconciled} <br>
+                        <strong>Total Unreconciled:</strong> {$total_unreconciled}
                     </div>
+
                 </div>
             </div>
             {$paginator['contents']}

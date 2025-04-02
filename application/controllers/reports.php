@@ -91,24 +91,27 @@ $(\'#dp1\').datepicker({
 
     case 'by-date':
         $d = ORM::for_table('sys_transactions')
-          ->where ('system_id',$user_id)
+           ->where ('system_id',$user_id)
             ->where('date', $mdate)
             ->order_by_desc('id')
             ->find_many();
+
         $dr = ORM::for_table('sys_transactions')
-          ->where ('system_id',$user_id)
+            ->where ('system_id',$user_id)
             ->where('date', $mdate)
             ->sum('dr');
         if ($dr == '') {
             $dr = '0.00';
         }
+
         $cr = ORM::for_table('sys_transactions')
-          ->where ('system_id',$user_id)
+            ->where ('system_id',$user_id)
             ->where('date', $mdate)
             ->sum('cr');
         if ($cr == '') {
             $cr = '0.00';
         }
+        
         $ui->assign('d', $d);
         $ui->assign('dr', $dr);
         $ui->assign('cr', $cr);

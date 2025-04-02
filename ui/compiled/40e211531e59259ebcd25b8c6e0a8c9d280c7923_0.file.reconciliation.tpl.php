@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-01 21:49:18
+/* Smarty version 3.1.39, created on 2025-04-02 18:08:17
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\reconciliation.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ebeede86bd64_56029268',
+  'unifunc' => 'content_67ed0c9101e327_87004919',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '40e211531e59259ebcd25b8c6e0a8c9d280c7923' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\reconciliation.tpl',
-      1 => 1743515353,
+      1 => 1743588448,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ebeede86bd64_56029268 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ed0c9101e327_87004919 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_142252309067ebeede8604a4_39547171', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_20076613767ed0c9100e7e8_72805240', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_142252309067ebeede8604a4_39547171 extends Smarty_Internal_Block
+class Block_20076613767ed0c9100e7e8_72805240 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_142252309067ebeede8604a4_39547171',
+    0 => 'Block_20076613767ed0c9100e7e8_72805240',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -52,14 +52,28 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
  <?php echo $_smarty_tpl->tpl_vars['paginator']->value['page'];?>
  <?php echo $_smarty_tpl->tpl_vars['_L']->value['of'];?>
  <?php echo $_smarty_tpl->tpl_vars['paginator']->value['lastpage'];?>
-. </h5>
+ </h5>
                 </div>
                 <div class="ibox-content">
-                
-                    <div id="dpx"></div>
 
-                 
+                    <!-- Filter Form -->
+                   <div class="row">
+                        <div class="col-md-5">
+                            <label for="start_date">Start Date:</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control">
+                        </div>
+                        <div class="col-md-5">
+                            <label for="end_date">End Date:</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control">
+                        </div>
+                        <div class="col-md-2" style="margin-top: 25px;">
+                            <button id="filterBtn" class="btn btn-primary">Filter</button>
+                        </div>
+                    </div>
+
                     <br>
+
+                    <!-- Table -->
                     <div class="table-responsive">
                         <table class="table table-bordered sys_table">
                             <thead>
@@ -107,10 +121,15 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Totals -->
                     <div class="text-right">
-                        <strong>Total:</strong> <?php echo $_smarty_tpl->tpl_vars['total_credit']->value;?>
+                        <strong>Total Reconciled:</strong> <?php echo $_smarty_tpl->tpl_vars['total_reconciled']->value;?>
+ <br>
+                        <strong>Total Unreconciled:</strong> <?php echo $_smarty_tpl->tpl_vars['total_unreconciled']->value;?>
 
                     </div>
+
                 </div>
             </div>
             <?php echo $_smarty_tpl->tpl_vars['paginator']->value['contents'];?>
