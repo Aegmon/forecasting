@@ -89,123 +89,99 @@ $(\'#dp1\').datepicker({
         $ui->display('statement-view.tpl');
         break;
 
-    case 'by-date':
-        $d = ORM::for_table('sys_transactions')
-           ->where ('system_id',$user_id)
-            ->where('date', $mdate)
-            ->order_by_desc('id')
-            ->find_many();
-
-        $dr = ORM::for_table('sys_transactions')
-            ->where ('system_id',$user_id)
-            ->where('date', $mdate)
-            ->sum('dr');
-        if ($dr == '') {
-            $dr = '0.00';
-        }
-
-        $cr = ORM::for_table('sys_transactions')
-            ->where ('system_id',$user_id)
-            ->where('date', $mdate)
-            ->sum('cr');
-        if ($cr == '') {
-            $cr = '0.00';
-        }
+        case 'by-date':
+            // Check if $user_id and $mdate are set
+            if (empty($user_id) || empty($mdate)) {
+                // Handle the error: $user_id or $mdate is missing
+                echo "User ID or Date is missing.";
+                exit;
+            }
         
-        $ui->assign('d', $d);
-        $ui->assign('dr', $dr);
-        $ui->assign('cr', $cr);
-
-        $ui->assign('mdate', $mdate);
-
-        if (Ib_I18n::get_code($config['language']) != 'en') {
-            $dp_lan =
-                '<script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/locale/' .
-                Ib_I18n::get_code($config['language']) .
-                '.js"></script>';
-
-            $x_lan = '';
-        } else {
-            $dp_lan = '';
-            $x_lan = '';
-        }
-
-        $ui->assign(
-            'xheader',
-            '
-<link rel="stylesheet" type="text/css" href="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepaginator.min.css"/>
-<link rel="stylesheet" type="text/css" href="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepicker.css"/>
-'
-        );
-        $ui->assign(
-            'xfooter',
-            '
-<script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/moment.js"></script>
-<script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepicker.js"></script>
-' .
-                $dp_lan .
-                '
-<script type="text/javascript" src="' .
-                $_theme .
-                '/lib/datepaginator/bootstrap-datepaginator.min.js"></script>
-'
-        );
-
-        $mdf = Ib_Internal::get_moment_format($config['df']);
-        $today = date('Y-m-d');
-
-        $ui->assign(
-            'xjq',
-            $x_lan .
-                '
-
-  $(\'#dpx\').datepaginator(
-  {
-
-    selectedDate: \'' .
-                $today .
-                '\',
-    selectedDateFormat:  \'YYYY-MM-DD\',
-    textSelected:  "dddd<br/>' .
-                $mdf .
-                '"
-}
-  );
-   $(\'#dpx\').on(\'selectedDateChanged\', function(event, date) {
-  // Your logic goes here
- // alert(date);
- $( "#result" ).html( "<h3>' .
-                $_L['Loading'] .
-                '.....</h3>" );
- // $(\'#tdate\').text(moment(date).format("dddd, ' .
-                $mdf .
-                '"));
- $.get( "' .
-                U .
-                'ajax.date-summary/" + date, function( data ) {
-     $( "#result" ).html( data );
-     //alert(date);
-     // console.log(date);
- });
-});
-
-
-
- '
-        );
-        $ui->display('reports-by-date.tpl');
-
-        break;
+            // Fetch transactions filtered by system_id and date
+            $d = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id)
+                ->where('date', $mdate)
+                ->order_by_desc('id')
+                ->find_many();
+        
+            // Calculate sum of 'dr' (debit) for the selected date and system_id
+            $dr = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id)
+                ->where('date', $mdate)
+                ->sum('dr');
+            if (empty($dr)) {
+                $dr = '0.00';
+            }
+        
+            // Calculate sum of 'cr' (credit) for the selected date and system_id
+            $cr = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id)
+                ->where('date', $mdate)
+                ->sum('cr');
+            if (empty($cr)) {
+                $cr = '0.00';
+            }
+        
+            // Assign the data to the template
+            $ui->assign('d', $d);
+            $ui->assign('dr', $dr);
+            $ui->assign('cr', $cr);
+            $ui->assign('system_id', $user_id);
+            $ui->assign('mdate', $mdate);
+            $d_array = get_object_vars($d); // Convert object to an array
+            $d_filtered = array_filter($d_array, function ($ds) use ($user_id) {
+                return isset($ds['system_id']) && $ds['system_id'] == $user_id;
+            });
+            
+            $ui->assign('d', $d_filtered);
+            // Assign language-specific script for date picker
+            if (Ib_I18n::get_code($config['language']) != 'en') {
+                $dp_lan = '<script type="text/javascript" src="' .
+                          $_theme .
+                          '/lib/datepaginator/locale/' .
+                          Ib_I18n::get_code($config['language']) .
+                          '.js"></script>';
+                $x_lan = '';
+            } else {
+                $dp_lan = '';
+                $x_lan = '';
+            }
+        
+            // Add CSS and JavaScript for date picker
+            $ui->assign('xheader', '
+                <link rel="stylesheet" type="text/css" href="' . $_theme . '/lib/datepaginator/bootstrap-datepaginator.min.css"/>
+                <link rel="stylesheet" type="text/css" href="' . $_theme . '/lib/datepaginator/bootstrap-datepicker.css"/>
+            ');
+        
+            $ui->assign('xfooter', '
+                <script type="text/javascript" src="' . $_theme . '/lib/datepaginator/moment.js"></script>
+                <script type="text/javascript" src="' . $_theme . '/lib/datepaginator/bootstrap-datepicker.js"></script>
+                ' . $dp_lan . '
+                <script type="text/javascript" src="' . $_theme . '/lib/datepaginator/bootstrap-datepaginator.min.js"></script>
+            ');
+        
+            $mdf = Ib_Internal::get_moment_format($config['df']);
+            $today = date('Y-m-d');
+        
+            // Assign JavaScript to handle the date picker selection
+            $ui->assign('xjq', $x_lan . '
+                $(\'#dpx\').datepaginator({
+                    selectedDate: \'' . $today . '\',
+                    selectedDateFormat:  \'YYYY-MM-DD\',
+                    textSelected:  "dddd<br/>' . $mdf . '"
+                });
+                $(\'#dpx\').on(\'selectedDateChanged\', function(event, date) {
+                    $( "#result" ).html( "<h3>' . $_L['Loading'] . '.....</h3>" );
+                    $.get( "' . U . 'ajax.date-summary/" + date, function(data) {
+                        $( "#result" ).html( data );
+                    });
+                });
+            ');
+        
+            // Display the template
+            $ui->display('reports-by-date.tpl');
+            break;
+        
 
     case 'inflow':
         $d = ORM::for_table('sys_transactions')

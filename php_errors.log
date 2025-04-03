@@ -254,3 +254,9 @@
 [03-Apr-2025 08:40:05 Asia/Manila] 🔍 Received Data: Name: Test product 1, Sales Price: 2, Stock: 2, Item Number: 2, Type: Product
 [03-Apr-2025 08:40:05 Asia/Manila] 🟢 Saving item to database...
 [03-Apr-2025 08:40:05 Asia/Manila] ✅ Item added successfully with ID: 40
+[03-Apr-2025 14:52:29 Asia/Manila] 🔍 Received Data: Name: Vivo, Sales Price: 2, Stock: 2, Item Number: 3, Type: Product
+[03-Apr-2025 14:52:29 Asia/Manila] 🟢 Saving item to database...
+[03-Apr-2025 14:52:29 Asia/Manila] ✅ Item added successfully with ID: 41
+[03-Apr-2025 14:53:36 Asia/Manila] 🔍 Received Data: Name: Vivo, Sales Price: 2, Stock: 2, Item Number: 1, Type: Product
+[03-Apr-2025 14:53:36 Asia/Manila] 🟢 Saving item to database...
+[03-Apr-2025 14:53:36 Asia/Manila] ✅ Item added successfully with ID: 42

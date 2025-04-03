@@ -36,25 +36,25 @@
                             <th class="text-right">{$_L['Cr']}</th>
                             <th class="text-right">{$_L['Balance']}</th>
 
-                            {foreach $d as $ds}
-                                <tr>
-
-                                    <td>{$ds['account']}</td>
-                                    {*<td>{$ds['type']}</td>*}
-                                    <td>{ib_lan_get_line($ds['type'])}</td>
-                                    <td>{if $ds['category'] == 'Uncategorized'}{$_L['Uncategorized']} {else} {$ds['category']} {/if}</td>
-                                    <td class="text-right">{$_c['currency_code']} {number_format($ds['amount'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
-                                    <td class="hidden-xs hidden-sm hidden-md">{$ds['payer']}</td>
-                                    <td class="hidden-xs hidden-sm hidden-md">{$ds['payee']}</td>
-                                    <td class="hidden-xs hidden-sm hidden-md">{$ds['method']}</td>
-                                    <td class="hidden-xs hidden-sm hidden-md">{$ds['ref']}</td>
-                                    <td>{$ds['description']}</td>
-                                    <td class="text-right">{$_c['currency_code']} {number_format($ds['dr'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
-                                    <td class="text-right">{$_c['currency_code']} {number_format($ds['cr'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
-                                    <td class="text-right"><span {if $ds['bal'] < 0}class="text-red"{/if}>{$_c['currency_code']} {number_format($ds['bal'],2,$_c['dec_point'],$_c['thousands_sep'])}</span></td>
-
-                                </tr>
+                           {foreach $d as $ds}
+                                {if $ds.system_id == $user_id} {* Filter condition *}
+                                    <tr>
+                                        <td>{$ds['account']}</td>
+                                        <td>{ib_lan_get_line($ds['type'])}</td>
+                                        <td>{if $ds['category'] == 'Uncategorized'}{$_L['Uncategorized']} {else} {$ds['category']} {/if}</td>
+                                        <td class="text-right">{$_c['currency_code']} {number_format($ds['amount'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
+                                        <td class="hidden-xs hidden-sm hidden-md">{$ds['payer']}</td>
+                                        <td class="hidden-xs hidden-sm hidden-md">{$ds['payee']}</td>
+                                        <td class="hidden-xs hidden-sm hidden-md">{$ds['method']}</td>
+                                        <td class="hidden-xs hidden-sm hidden-md">{$ds['ref']}</td>
+                                        <td>{$ds['description']}</td>
+                                        <td class="text-right">{$_c['currency_code']} {number_format($ds['dr'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
+                                        <td class="text-right">{$_c['currency_code']} {number_format($ds['cr'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
+                                        <td class="text-right"><span {if $ds['bal'] < 0}class="text-red"{/if}>{$_c['currency_code']} {number_format($ds['bal'],2,$_c['dec_point'],$_c['thousands_sep'])}</span></td>
+                                    </tr>
+                                {/if}
                             {/foreach}
+
 
 
 

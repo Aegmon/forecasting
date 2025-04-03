@@ -196,7 +196,7 @@ $(document).ready(function () {
                     '<tr>' +
                     '<td><input type="hidden" class="form-control item_codes" name="item_codes[]" value="' + item_code + '">' + item_code + '</td>' +
                     '<td><input type="text" class="form-control item_name" name="desc[]" value="' + item_name + '"></td>' +
-                    '<td><input type="text" class="form-control qty" name="qty[]" value="1"></td>' +
+                    '<td> <input type="number" class="form-control qty" name="qty[]" value="1" min="1"oninput="this.value = Math.max(1, this.value)"></td>' +
                     '<td><input type="text" class="form-control item_price" name="amount[]" value="' + item_price + '"></td>' +
                     '<td class="ltotal"><input type="text" class="form-control lvtotal" readonly value="' + item_price + '"></td>' +
                     '<td><button class="btn btn-danger delete-item">Delete</button></td>' +
