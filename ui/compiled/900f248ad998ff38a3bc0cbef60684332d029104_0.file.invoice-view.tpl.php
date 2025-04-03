@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-01 20:26:52
+/* Smarty version 3.1.39, created on 2025-04-03 08:38:40
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\invoice-view.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ebdb8cbbf3c6_09647054',
+  'unifunc' => 'content_67edd890652552_49954897',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '900f248ad998ff38a3bc0cbef60684332d029104' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\invoice-view.tpl',
-      1 => 1743510411,
+      1 => 1743640717,
       2 => 'file',
     ),
   ),
@@ -20,23 +20,23 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ebdb8cbbf3c6_09647054 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67edd890652552_49954897 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_48176349067ebdb8cb9a975_88431823', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_127141893267edd890312245_63471996', "content");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_48176349067ebdb8cb9a975_88431823 extends Smarty_Internal_Block
+class Block_127141893267edd890312245_63471996 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_48176349067ebdb8cb9a975_88431823',
+    0 => 'Block_127141893267edd890312245_63471996',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -58,10 +58,8 @@ client/iview/<?php echo $_smarty_tpl->tpl_vars['d']->value['id'];?>
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     <h5><?php echo $_smarty_tpl->tpl_vars['_L']->value['Invoice'];?>
- - <?php echo $_smarty_tpl->tpl_vars['d']->value['invoicenum'];
-if ($_smarty_tpl->tpl_vars['d']->value['cn'] != '') {?> <?php echo $_smarty_tpl->tpl_vars['d']->value['cn'];?>
- <?php } else { ?> <?php echo $_smarty_tpl->tpl_vars['d']->value['id'];?>
- <?php }?> </h5>
+ - <?php echo $_smarty_tpl->tpl_vars['d']->value['invoicenum'];?>
+</h5>
                     <input type="hidden" name="iid" value="<?php echo $_smarty_tpl->tpl_vars['d']->value['id'];?>
 " id="iid">
 

@@ -180,12 +180,12 @@ $ui->display('add-ps.tpl');
             error_log("🔍 Received Data: Name: $name, Sales Price: $sales_price, Stock: $stock, Item Number: $item_number, Type: $type");
         
             // Prevent duplicate insert by checking existing product
-            $existing = ORM::for_table('sys_items')->where('name', $name)->find_one();
-                if ($existing) {
-                    error_log("⚠️ Duplicate product detected: $name");
-                    echo '❌ Error: Product already exists!';
-                    exit; // Stop further execution
-                }
+            // $existing = ORM::for_table('sys_items')->where('name', $name)->find_one();
+            //     if ($existing) {
+            //         error_log("⚠️ Duplicate product detected: $name");
+            //         echo '❌ Error: Product already exists!';
+            //         exit; // Stop further execution
+            //     }
         
             // Validate Inputs
             if (empty($name)) {

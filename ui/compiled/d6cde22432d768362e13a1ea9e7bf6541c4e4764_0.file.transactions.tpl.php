@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-02 18:20:48
+/* Smarty version 3.1.39, created on 2025-04-03 08:39:37
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\transactions.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ed0f803ffc85_57355984',
+  'unifunc' => 'content_67edd8c9bfcfb5_56053602',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd6cde22432d768362e13a1ea9e7bf6541c4e4764' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\transactions.tpl',
-      1 => 1743589246,
+      1 => 1743640776,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ed0f803ffc85_57355984 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67edd8c9bfcfb5_56053602 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_155108027467ed0f80340a85_07076588', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_107827819867edd8c9bee394_24860322', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_155108027467ed0f80340a85_07076588 extends Smarty_Internal_Block
+class Block_107827819867edd8c9bee394_24860322 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_155108027467ed0f80340a85_07076588',
+    0 => 'Block_107827819867edd8c9bee394_24860322',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -74,8 +74,7 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 </th>
                             <th class="text-right"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Balance'];?>
 </th>
-                            <th><?php echo $_smarty_tpl->tpl_vars['_L']->value['Manage'];?>
-</th>
+                         
                             <?php
 $_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['d']->value, 'ds');
 $_smarty_tpl->tpl_vars['ds']->do_else = true;
@@ -115,10 +114,7 @@ $_smarty_tpl->tpl_vars['ds']->do_else = false;
 </td>
                                     <td class="text-right"><span class="amount<?php if ($_smarty_tpl->tpl_vars['ds']->value['bal'] < 0) {?> text-red<?php }?>" ><?php echo $_smarty_tpl->tpl_vars['ds']->value['bal'];?>
 </span></td>
-                                    <td><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/manage/<?php echo $_smarty_tpl->tpl_vars['ds']->value['id'];?>
-"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Manage'];?>
-</a></td>
+                                
                                 </tr>
                             <?php
 }
@@ -128,13 +124,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                 </div>
             </div>
 
-            <!-- View Chart Button -->
-            <div class="text-center">
-                <a href="/forecasting/disbursements.php?user_id=<?php echo '<?php ';?>
-echo $_SESSION['uid']; <?php echo '?>';?>
-">Manage Disbursement</a>
-            </div>
-
+      
             <?php echo $_smarty_tpl->tpl_vars['paginator']->value['contents'];?>
 
         </div>

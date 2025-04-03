@@ -19,7 +19,7 @@
                             <th class="text-right">{$_L['Dr']}</th>
                             <th class="text-right">{$_L['Cr']}</th>
                             <th class="text-right">{$_L['Balance']}</th>
-                            <th>{$_L['Manage']}</th>
+                         
                             {foreach $d as $ds}
                                 <tr class="{if $ds['cr'] eq '0.00'}warning {else}info{/if}">
                                     <td>{date( $_c['df'], strtotime($ds['date']))}</td>
@@ -44,7 +44,7 @@
                                     <td class="text-right amount">{$ds['dr']}</td>
                                     <td class="text-right amount">{$ds['cr']}</td>
                                     <td class="text-right"><span class="amount{if $ds['bal'] < 0} text-red{/if}" >{$ds['bal']}</span></td>
-                                    <td><a href="{$_url}transactions/manage/{$ds['id']}">{$_L['Manage']}</a></td>
+                                
                                 </tr>
                             {/foreach}
                         </table>
@@ -52,11 +52,7 @@
                 </div>
             </div>
 
-            <!-- View Chart Button -->
-            <div class="text-center">
-                <a href="/forecasting/disbursements.php?user_id=<?php echo $_SESSION['uid']; ?>">Manage Disbursement</a>
-            </div>
-
+      
             {$paginator['contents']}
         </div>
 

@@ -107,13 +107,13 @@ if($config['rtl'] == 1){ ?>
         <tr>
             <td style="border: 0;  text-align: left" width="62%">
                 <span style="font-size: 18px; color: #2f4f4f"><strong><?php echo $_L['INVOICE']; ?> # <?php
-                        if($d['cn'] != ''){
-                            $dispid = $d['cn'];
-                        }
-                        else{
-                            $dispid = $d['id'];
-                        }
-                        echo $d['invoicenum'].$dispid;
+                        // if($d['cn'] != ''){
+                        //     $dispid = $d['cn'];
+                        // }
+                        // else{
+                        //     $dispid = $d['id'];
+                        // }
+                        echo $d['invoicenum'];
                         ?></strong></span>
             </td>
             <td style="border: 0;  text-align: right" width="62%"><div id="logo" style="font-size:18px">

@@ -12,7 +12,7 @@
         <div class="col-lg-12"  id="application_ajaxrender">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>{$_L['Invoice']} - {$d['invoicenum']}{if $d['cn'] neq ''} {$d['cn']} {else} {$d['id']} {/if} </h5>
+                    <h5>{$_L['Invoice']} - {$d['invoicenum']}</h5>
                     <input type="hidden" name="iid" value="{$d['id']}" id="iid">
 
 
