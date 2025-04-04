@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-03 15:06:12
+/* Smarty version 3.1.39, created on 2025-04-04 20:27:46
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\reports-by-date.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ee3364e5fc55_07399885',
+  'unifunc' => 'content_67efd04256b5e4_65011424',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd41fd2861e57fcd391331b742a9b2abceaf510c3' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\reports-by-date.tpl',
-      1 => 1743663923,
+      1 => 1743769665,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ee3364e5fc55_07399885 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67efd04256b5e4_65011424 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_210958269867ee3364e47759_74501268', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_168363583967efd042558327_49352548', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_210958269867ee3364e47759_74501268 extends Smarty_Internal_Block
+class Block_168363583967efd042558327_49352548 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_210958269867ee3364e47759_74501268',
+    0 => 'Block_168363583967efd042558327_49352548',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -56,7 +56,22 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
                 </div>
                 <div class="ibox-content">
 
-                    <div id="dpx"></div>
+                    <form class="form-inline mb-3">
+                        <div class="form-group">
+                            <label for="start_date"><?php echo $_smarty_tpl->tpl_vars['_L']->value['From'];?>
+:</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control mx-2" value="<?php echo $_smarty_tpl->tpl_vars['start_date']->value;?>
+">
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date"><?php echo $_smarty_tpl->tpl_vars['_L']->value['To'];?>
+:</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control mx-2" value="<?php echo $_smarty_tpl->tpl_vars['end_date']->value;?>
+">
+                        </div>
+                        <button type="submit" id="filterBtn" class="btn btn-primary"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Filter'];?>
+</button>
+                    </form>
 
                     <div id="result">
                         <h4><?php echo $_smarty_tpl->tpl_vars['_L']->value['Total Income'];?>
@@ -68,11 +83,7 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
  <?php echo number_format($_smarty_tpl->tpl_vars['dr']->value,2,$_smarty_tpl->tpl_vars['_c']->value['dec_point'],$_smarty_tpl->tpl_vars['_c']->value['thousands_sep']);?>
 </h4>
 
-                        <hr>
-                        <h4><?php echo $_smarty_tpl->tpl_vars['_L']->value['All Transactions at Date'];?>
-: <span id="tdate"><?php echo date($_smarty_tpl->tpl_vars['_c']->value['df'],strtotime($_smarty_tpl->tpl_vars['mdate']->value));?>
-</span> </h4>
-                        <hr>
+                        
                         <table class="table table-striped table-bordered table-responsive">
 
                             <th><?php echo $_smarty_tpl->tpl_vars['_L']->value['Account'];?>
@@ -106,7 +117,8 @@ $_smarty_tpl->tpl_vars['ds']->do_else = true;
 if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['ds']->value) {
 $_smarty_tpl->tpl_vars['ds']->do_else = false;
 ?>
-                                <?php if ($_smarty_tpl->tpl_vars['ds']->value['system_id'] == $_smarty_tpl->tpl_vars['user_id']->value) {?>                                     <tr>
+                              
+                                    <tr>
                                         <td><?php echo $_smarty_tpl->tpl_vars['ds']->value['account'];?>
 </td>
                                         <td><?php echo ib_lan_get_line($_smarty_tpl->tpl_vars['ds']->value['type']);?>
@@ -138,7 +150,7 @@ echo $_smarty_tpl->tpl_vars['_L']->value['Uncategorized'];?>
  <?php echo number_format($_smarty_tpl->tpl_vars['ds']->value['bal'],2,$_smarty_tpl->tpl_vars['_c']->value['dec_point'],$_smarty_tpl->tpl_vars['_c']->value['thousands_sep']);?>
 </span></td>
                                     </tr>
-                                <?php }?>
+                           
                             <?php
 }
 $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>

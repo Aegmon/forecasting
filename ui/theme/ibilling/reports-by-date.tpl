@@ -12,15 +12,23 @@
                 </div>
                 <div class="ibox-content">
 
-                    <div id="dpx"></div>
+                    <form class="form-inline mb-3">
+                        <div class="form-group">
+                            <label for="start_date">{$_L['From']}:</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control mx-2" value="{$start_date}">
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">{$_L['To']}:</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control mx-2" value="{$end_date}">
+                        </div>
+                        <button type="submit" id="filterBtn" class="btn btn-primary">{$_L['Filter']}</button>
+                    </form>
 
                     <div id="result">
                         <h4>{$_L['Total Income']}: {$_c['currency_code']} {number_format($cr,2,$_c['dec_point'],$_c['thousands_sep'])}</h4>
                         <h4>{$_L['Total Expense']}: {$_c['currency_code']} {number_format($dr,2,$_c['dec_point'],$_c['thousands_sep'])}</h4>
 
-                        <hr>
-                        <h4>{$_L['All Transactions at Date']}: <span id="tdate">{date( $_c['df'], strtotime($mdate))}</span> </h4>
-                        <hr>
+                        
                         <table class="table table-striped table-bordered table-responsive">
 
                             <th>{$_L['Account']}</th>
@@ -37,7 +45,7 @@
                             <th class="text-right">{$_L['Balance']}</th>
 
                            {foreach $d as $ds}
-                                {if $ds.system_id == $user_id} {* Filter condition *}
+                              
                                     <tr>
                                         <td>{$ds['account']}</td>
                                         <td>{ib_lan_get_line($ds['type'])}</td>
@@ -52,7 +60,7 @@
                                         <td class="text-right">{$_c['currency_code']} {number_format($ds['cr'],2,$_c['dec_point'],$_c['thousands_sep'])}</td>
                                         <td class="text-right"><span {if $ds['bal'] < 0}class="text-red"{/if}>{$_c['currency_code']} {number_format($ds['bal'],2,$_c['dec_point'],$_c['thousands_sep'])}</span></td>
                                     </tr>
-                                {/if}
+                           
                             {/foreach}
 
 

@@ -66,9 +66,9 @@ $(\'#dp1\').datepicker({
         $tdate = _post('tdate');
         $account = _post('account');
         $stype = _post('stype');
-        $d = ORM::for_table('sys_transactions');
-           $d->where('system_id', $user_id);
-        $d->where('account', $account);
+        $d = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->where('account', $account);
         if ($stype == 'credit') {
             $d->where('dr', '0.00');
         } elseif ($stype == 'debit') {
@@ -90,95 +90,76 @@ $(\'#dp1\').datepicker({
         break;
 
         case 'by-date':
-            // Check if $user_id and $mdate are set
-            if (empty($user_id) || empty($mdate)) {
-                // Handle the error: $user_id or $mdate is missing
-                echo "User ID or Date is missing.";
-                exit;
+            Event::trigger('reports/by-date/');
+        
+            $paginator = Paginator::bootstrap('sys_transactions');
+        
+            // Get filter values
+            $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+            $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+        
+            $query = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id);
+        
+            // Apply date range filter if provided
+            if (!empty($start_date) && !empty($end_date)) {
+                $start_date_formatted = date('Y-m-d', strtotime($start_date));
+                $end_date_formatted = date('Y-m-d', strtotime($end_date));
+        
+                $query->where_gte('date', $start_date_formatted)
+                      ->where_lte('date', $end_date_formatted);
             }
         
-            // Fetch transactions filtered by system_id and date
-            $d = ORM::for_table('sys_transactions')
-                ->where('system_id', $user_id)
-                ->where('date', $mdate)
-                ->order_by_desc('id')
-                ->find_many();
+            $d = $query->offset($paginator['startpoint'])
+                      ->limit($paginator['limit'])
+                      ->order_by_desc('date')
+                      ->find_many();
         
-            // Calculate sum of 'dr' (debit) for the selected date and system_id
-            $dr = ORM::for_table('sys_transactions')
-                ->where('system_id', $user_id)
-                ->where('date', $mdate)
-                ->sum('dr');
-            if (empty($dr)) {
-                $dr = '0.00';
-            }
+            // Totals within date range
+            $dr = clone $query;
+            $dr = $dr->sum('dr');
+            $cr = clone $query;
+            $cr = $cr->sum('cr');
         
-            // Calculate sum of 'cr' (credit) for the selected date and system_id
-            $cr = ORM::for_table('sys_transactions')
-                ->where('system_id', $user_id)
-                ->where('date', $mdate)
-                ->sum('cr');
-            if (empty($cr)) {
-                $cr = '0.00';
-            }
+            if (empty($dr)) $dr = '0.00';
+            if (empty($cr)) $cr = '0.00';
         
-            // Assign the data to the template
             $ui->assign('d', $d);
             $ui->assign('dr', $dr);
             $ui->assign('cr', $cr);
-            $ui->assign('system_id', $user_id);
-            $ui->assign('mdate', $mdate);
-            $d_array = get_object_vars($d); // Convert object to an array
-            $d_filtered = array_filter($d_array, function ($ds) use ($user_id) {
-                return isset($ds['system_id']) && $ds['system_id'] == $user_id;
-            });
-            
-            $ui->assign('d', $d_filtered);
-            // Assign language-specific script for date picker
-            if (Ib_I18n::get_code($config['language']) != 'en') {
-                $dp_lan = '<script type="text/javascript" src="' .
-                          $_theme .
-                          '/lib/datepaginator/locale/' .
-                          Ib_I18n::get_code($config['language']) .
-                          '.js"></script>';
-                $x_lan = '';
-            } else {
-                $dp_lan = '';
-                $x_lan = '';
-            }
+            $ui->assign('start_date', $start_date);
+            $ui->assign('end_date', $end_date);
+            $ui->assign('paginator', $paginator);
         
-            // Add CSS and JavaScript for date picker
-            $ui->assign('xheader', '
-                <link rel="stylesheet" type="text/css" href="' . $_theme . '/lib/datepaginator/bootstrap-datepaginator.min.css"/>
-                <link rel="stylesheet" type="text/css" href="' . $_theme . '/lib/datepaginator/bootstrap-datepicker.css"/>
-            ');
+            // JavaScript for AJAX filtering
+            $ui->assign('xjq', '
+                $(document).ready(function () {
+                    $("#filterBtn").click(function (e) {
+                        e.preventDefault();
+                        var startDate = $("#start_date").val();
+                        var endDate = $("#end_date").val();
         
-            $ui->assign('xfooter', '
-                <script type="text/javascript" src="' . $_theme . '/lib/datepaginator/moment.js"></script>
-                <script type="text/javascript" src="' . $_theme . '/lib/datepaginator/bootstrap-datepicker.js"></script>
-                ' . $dp_lan . '
-                <script type="text/javascript" src="' . $_theme . '/lib/datepaginator/bootstrap-datepaginator.min.js"></script>
-            ');
+                        if (!startDate || !endDate) {
+                            alert("Please select both start and end dates.");
+                            return;
+                        }
         
-            $mdf = Ib_Internal::get_moment_format($config['df']);
-            $today = date('Y-m-d');
-        
-            // Assign JavaScript to handle the date picker selection
-            $ui->assign('xjq', $x_lan . '
-                $(\'#dpx\').datepaginator({
-                    selectedDate: \'' . $today . '\',
-                    selectedDateFormat:  \'YYYY-MM-DD\',
-                    textSelected:  "dddd<br/>' . $mdf . '"
-                });
-                $(\'#dpx\').on(\'selectedDateChanged\', function(event, date) {
-                    $( "#result" ).html( "<h3>' . $_L['Loading'] . '.....</h3>" );
-                    $.get( "' . U . 'ajax.date-summary/" + date, function(data) {
-                        $( "#result" ).html( data );
+                        $.ajax({
+                            url: window.location.origin + "/forecasting/?ng=reports/by-date/",
+                            type: "GET",
+                            data: { start_date: startDate, end_date: endDate },
+                            success: function (response) {
+                                var result = $(response).find("#result").html();
+                                $("#result").html(result);
+                            },
+                            error: function () {
+                                alert("Failed to load filtered data.");
+                            }
+                        });
                     });
                 });
             ');
         
-            // Display the template
             $ui->display('reports-by-date.tpl');
             break;
         
@@ -644,7 +625,7 @@ $(\'#dp1\').datepicker({
         $cat = _post('cat');
 
         $d = ORM::for_table('sys_transactions');
-           $d->where('system_id', $user_id);
+        $d->where('system_id', $user_id);
         $d->where('category', $cat);
 
         $d->where_gte('date', $fdate);
@@ -780,7 +761,7 @@ $(\'#dp1\').datepicker({
         $payer = _post('payer');
 
         $d = ORM::for_table('sys_transactions');
-            $d->where('system_id', $user_id);
+        $d->where('system_id', $user_id);
         $d->where('payer', $payer);
 
         $d->where_gte('date', $fdate);
