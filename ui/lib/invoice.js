@@ -181,32 +181,38 @@ $(document).ready(function () {
     
 
     // Update the invoice items from modal selection
-    $modal.on('click', '.update', function () {
-        var tableControl = document.getElementById('items_table');
-        $modal.modal('loading');
+    // Update the invoice items from modal selection
+$modal.on('click', '.update', function () {
+    var tableControl = document.getElementById('items_table');
+    $modal.modal('loading');
 
-        $('input:checkbox:checked', tableControl).each(function () {
-            var item_code = $(this).closest('tr').find('td:eq(1)').text(); // Extract the item code from the table cell
-            var item_name = $(this).closest('tr').find('td:eq(2)').text();
-            var item_price = $(this).closest('tr').find('td:eq(3)').text();
+    $('input:checkbox:checked', tableControl).each(function () {
+        var item_code = $(this).closest('tr').find('td:eq(1)').text(); // Extract the item code from the table cell
+        var item_name = $(this).closest('tr').find('td:eq(2)').text();
+        var item_price = $(this).closest('tr').find('td:eq(3)').text();
 
-            // Add new row with item_code input
-            $("#invoice_items tbody")
-                .append(
-                    '<tr>' +
-                    '<td><input type="hidden" class="form-control item_codes" name="item_codes[]" value="' + item_code + '">' + item_code + '</td>' +
-                    '<td><input type="text" class="form-control item_name" name="desc[]" value="' + item_name + '"></td>' +
-                    '<td> <input type="number" class="form-control qty" name="qty[]" value="1" min="1"oninput="this.value = Math.max(1, this.value)"></td>' +
-                    '<td><input type="text" class="form-control item_price" name="amount[]" value="' + item_price + '"></td>' +
-                    '<td class="ltotal"><input type="text" class="form-control lvtotal" readonly value="' + item_price + '"></td>' +
-                    '<td><button class="btn btn-danger delete-item">Delete</button></td>' +
-                    '</tr>'
-                );
-        });
+        // Remove commas and format price as number with two decimal places
+        item_price = item_price.replace(/,/g, '');  // Remove commas
+        item_price = parseFloat(item_price).toFixed(2);  // Convert to number and keep two decimal places
 
-        calculateTotal();
-        $modal.modal('hide');
+        // Add new row with item_code input
+        $("#invoice_items tbody")
+            .append(
+                '<tr>' +
+                '<td><input type="hidden" class="form-control item_codes" name="item_codes[]" value="' + item_code + '">' + item_code + '</td>' +
+                '<td><input type="text" class="form-control item_name" name="desc[]" value="' + item_name + '"></td>' +
+                '<td><input type="text" class="form-control qty" name="qty[]" value="1" min="1" oninput="this.value = Math.max(1, this.value)"></td>' +
+                '<td><input type="text" class="form-control item_price" name="amount[]" value="' + item_price + '" readonly></td>' +  <!-- Price as number and read-only -->
+                '<td class="ltotal"><input type="text" class="form-control lvtotal" readonly value="' + (item_price * 1).toFixed(2) + '"></td>' +
+                '<td><button class="btn btn-danger delete-item">Delete</button></td>' +
+                '</tr>'
+            );
     });
+
+    calculateTotal();
+    $modal.modal('hide');
+});
+
 
     // Initial calculation of total
     calculateTotal();

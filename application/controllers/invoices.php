@@ -509,23 +509,27 @@ switch ($action) {
                     // Reduce inventory stock
                     $item_code_val = $item_code[$i];
                     $item = ORM::for_table('sys_items')->where('item_number', $item_code_val)->find_one();
-        
-                    if ($item) {
-                        $new_qty = $item->inventory - $sqty;
-                        if ($new_qty < 0) {
-                            error_log("ERROR: Stock insufficient for item: {$item->description}");
-                            $msg .= "Not enough stock for item: " . $item->name . "<br>";
-                        } else {
-                            $item->inventory = $new_qty;
-                            if (!$item->save()) {
-                                error_log("ERROR: Failed to update inventory for item: {$item->description}");
+                        if ($item) {
+                            $required_qty = (float)Finance::amount_fix($qty[$i]);
+                            $inventory_qty = (float)$item->inventory;
+                            error_log("DEBUG: Inventory for {$item->description} (Item Code: $item_code_val): $inventory_qty, Required Quantity: $required_qty");
+
+                            if ($inventory_qty < $required_qty) {
+                                error_log("ERROR: Insufficient stock for item: {$item->description} (Item Code: $item_code_val)");
+                                $msg .= "Not enough stock for item: " . $item->name . " (Item Code: $item_code_val)<br>";
                             } else {
-                                error_log("SUCCESS: Inventory updated for item: {$item->description}");
+                                $item->inventory = $inventory_qty - $required_qty;
+                                if (!$item->save()) {
+                                    error_log("ERROR: Failed to update inventory for item: {$item->description}");
+                                } else {
+                                    error_log("SUCCESS: Inventory updated for item: {$item->description}");
+                                }
                             }
+                        } else {
+                            error_log("ERROR: Item not found in inventory: $item_code_val");
+                            $msg .= "Item not found in inventory: " . $item_code_val . "<br>";
                         }
-                    } else {
-                        error_log("ERROR: Item not found in inventory: $item_code_val");
-                    }
+
         
                     $i++;
                 }
@@ -691,8 +695,12 @@ switch ($action) {
 </div>'
         );
         $validation_message = isset($_SESSION['validation_message']) ? $_SESSION['validation_message'] : '';
-        $ui->assign('validation_message', $validation_message);
-   
+    $ui->assign('validation_message', $validation_message);
+    
+    if (!empty($validation_message)) {
+        unset($_SESSION['validation_message']);
+    }
+  
         $ui->assign('xheader', $mode_css);
         $ui->assign('xfooter', $mode_js);
         $ui->assign('view_type', $view_type);
