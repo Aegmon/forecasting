@@ -275,3 +275,6 @@
 [05-Apr-2025 19:37:24 Asia/Manila] 🔍 Received Data: Name: iphone, Sales Price: 3000, Stock: 3, Item Number: 2, Type: Product
 [05-Apr-2025 19:37:24 Asia/Manila] 🟢 Saving item to database...
 [05-Apr-2025 19:37:24 Asia/Manila] ✅ Item added successfully with ID: 47
+[14-Apr-2025 11:02:20 Asia/Manila] 🔍 Received Data: Name: test, Sales Price: 1000, Stock: 12, Item Number: 1, Type: Product
+[14-Apr-2025 11:02:20 Asia/Manila] 🟢 Saving item to database...
+[14-Apr-2025 11:02:20 Asia/Manila] ✅ Item added successfully with ID: 48

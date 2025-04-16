@@ -21,18 +21,12 @@
                             <label for="description">{$_L['Description']}</label>
                             <input type="text" class="form-control" id="description" name="description">
                         </div>
-                        <div class="form-group">
-                            <label for="balance">{$_L['Initial Balance']}</label>
-                            <input type="text" class="form-control amount" id="balance" name="balance" data-a-sign="{$_c['currency_code']} "  data-a-dec="{$_c['dec_point']}" data-a-sep="{$_c['thousands_sep']}" data-d-group="2">
-                        </div>
+                     
+              <input type="hidden" class="form-control" id="balance"  name="balance" value="0">
 
+                   
 
-                        <div class="form-group">
-                            <label for="account_number">{$_L['Account Number']}</label>
-                            <input type="text" class="form-control" id="account_number" name="account_number">
-                        </div>
-
-                      
+                                   <input type="hidden" class="form-control" id="account_number" name="account_number" value="Accounts">
                             <input type="hidden" class="form-control" id="contact_person" name="contact_person">
                 
 

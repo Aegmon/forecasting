@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-05 20:57:14
+/* Smarty version 3.1.39, created on 2025-04-16 18:11:47
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\list-invoices.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67f128aa8cee44_15946245',
+  'unifunc' => 'content_67ff8263d859d0_14521820',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '4397336c0911e47921cf9ef8c938b3e645fe505b' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\list-invoices.tpl',
-      1 => 1743857322,
+      1 => 1744798235,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67f128aa8cee44_15946245 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ff8263d859d0_14521820 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_90224418867f128aa8bffd6_76074330', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_11817215267ff8263b16998_91913668', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_90224418867f128aa8bffd6_76074330 extends Smarty_Internal_Block
+class Block_11817215267ff8263b16998_91913668 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_90224418867f128aa8bffd6_76074330',
+    0 => 'Block_11817215267ff8263b16998_91913668',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -59,13 +59,12 @@ invoices/add/" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i> <?php e
             </div>
             <div class="ibox-content">
                 
-                <!-- 🚨 Insufficient Stock Banner 
                 <?php if ($_smarty_tpl->tpl_vars['validation_message']->value) {?>
                     <div class="alert alert-danger">
                         <strong>⚠️ Stock Issue:</strong> <?php echo $_smarty_tpl->tpl_vars['validation_message']->value;?>
 
                     </div>
-                <?php }?>-->
+                <?php }?>
 
                 <!-- 🔍 Search Bar -->
                 <input type="text" id="invoice_search" class="form-control" placeholder="🔍 Search Invoices..." style="margin-bottom: 15px; width: 50%;">

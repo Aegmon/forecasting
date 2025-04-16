@@ -37,7 +37,7 @@
                         <div class="form-group">
                             <label for="description" class="col-sm-3 control-label">{$_L['Description']}</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="description" name="description">
+                                <input type="text" class="form-control" id="description" name="description" value="Deposit" readonly>
                           
                             </div>
                         </div>
@@ -136,45 +136,7 @@
 
         </div>
 
-        <div class="col-lg-8 col-md-6 col-sm-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>{$_L['Recent Deposits']}</h5>
-
-                </div>
-                <div class="ibox-content">
-
-                    <table class="table table-bordered sys_table">
-                        <thead>
-                        <tr>
-                            <th width="80%">{$_L['Description']}</th>
-                            <th>{$_L['Amount']}</th>
-
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        {foreach $tr as $trs}
-                            <tr>
-                                <td><a href="{$_url}transactions/manage/{$trs['id']}/">
-                                        {if $trs['attachments'] neq ''}
-                                            <i class="fa fa-paperclip"></i>
-                                        {/if}
-                                        {$trs['description']}
-
-
-
-                                    </a> </td>
-                                <td class="amount">{$trs['amount']}</td>
-                            </tr>
-                        {/foreach}
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
+   
 
     </div>
 

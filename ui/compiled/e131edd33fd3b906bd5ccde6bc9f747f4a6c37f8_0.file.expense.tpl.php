@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-02 18:12:15
+/* Smarty version 3.1.39, created on 2025-04-16 18:36:02
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\expense.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ed0d7f795f70_89694937',
+  'unifunc' => 'content_67ff8812ab8216_54948040',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'e131edd33fd3b906bd5ccde6bc9f747f4a6c37f8' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\expense.tpl',
-      1 => 1743588731,
+      1 => 1744799550,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ed0d7f795f70_89694937 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ff8812ab8216_54948040 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_59354107667ed0d7f7840e7_09678970', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_14577668367ff8812aa6ae5_60118017', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_59354107667ed0d7f7840e7_09678970 extends Smarty_Internal_Block
+class Block_14577668367ff8812aa6ae5_60118017 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_59354107667ed0d7f7840e7_09678970',
+    0 => 'Block_14577668367ff8812aa6ae5_60118017',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -111,6 +111,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
             <option value="Inventory">Inventory & Raw Materials</option>
             <option value="Training">Employee Training & Development</option>
             <option value="Miscellaneous">Miscellaneous</option>
+            <option value="Others">Others</option>
         </select>
     </div>
 </div>

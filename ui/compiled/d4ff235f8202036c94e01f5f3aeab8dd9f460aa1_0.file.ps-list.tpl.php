@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-01 20:34:48
+/* Smarty version 3.1.39, created on 2025-04-16 18:30:18
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\ps-list.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ebdd68d31d65_09905262',
+  'unifunc' => 'content_67ff86ba19b929_53564680',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'd4ff235f8202036c94e01f5f3aeab8dd9f460aa1' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\ps-list.tpl',
-      1 => 1743506153,
+      1 => 1744799413,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ebdd68d31d65_09905262 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ff86ba19b929_53564680 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_6021698067ebdd68d26b55_35503019', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_214494721867ff86ba18f9f5_90782606', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_6021698067ebdd68d26b55_35503019 extends Smarty_Internal_Block
+class Block_214494721867ff86ba18f9f5_90782606 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_6021698067ebdd68d26b55_35503019',
+    0 => 'Block_214494721867ff86ba18f9f5_90782606',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -127,7 +127,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                           
                           
                             <th>Action</th>
                             <th>Type</th>
@@ -144,8 +144,7 @@ if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['transaction']->v
 $_smarty_tpl->tpl_vars['transaction']->do_else = false;
 ?>
                             <tr>
-                                <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['id'];?>
-</td>
+                           
                                 <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['action'];?>
 </td>
                                 <td><?php echo $_smarty_tpl->tpl_vars['transaction']->value['type'];?>

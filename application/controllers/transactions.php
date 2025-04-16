@@ -512,11 +512,11 @@ switch ($action) {
             $cbal = $a['balance'];
             $nbal = $cbal + $amount;
             $a->balance = $nbal;
-            $a->save();
+            // $a->save();
             $d = ORM::for_table('sys_transactions')->create();
             $d->system_id=$user_id;
             $d->account = $account;
-            $d->type = 'Income';
+            $d->type = 'Deposit';
             $d->payerid = $payerid;
             $d->tags = Arr::arr_to_str($tags);
             $d->amount = $amount;
@@ -563,39 +563,49 @@ switch ($action) {
         }
         break;
 
-    case 'expense':
-        Event::trigger('transactions/expense/');
-
+        case 'expense':
+            Event::trigger('transactions/expense/');
         
+            // Fetch user-specific accounts
             $d = ORM::for_table('sys_accounts')
-             ->where('system_id', $user_id)->find_many();
-        $p = ORM::for_table('crm_accounts')->find_many();
-        $ui->assign('p', $p);
-        $ui->assign('d', $d);
-        $tags = Tags::get_all('Expense');
-        $ui->assign('tags', $tags);
-        $cats = ORM::for_table('sys_cats')
-            ->where('type', 'Expense')
-            ->order_by_asc('sorder')
-            ->find_many();
-        $ui->assign('cats', $cats);
-        $pms = ORM::for_table('sys_pmethods')->find_many();
-        $ui->assign('pms', $pms);
-        $ui->assign('mdate', $mdate);
-
-        $ui->assign(
-            'xheader',
-            Asset::css([
+                ->where('system_id', $user_id)
+                ->find_many();
+        
+            // Fetch CRM accounts
+            $p = ORM::for_table('crm_accounts')->find_many();
+        
+            // Assign data to template
+            $ui->assign('p', $p);
+            $ui->assign('d', $d);
+        
+            // Tags for expenses
+            $tags = Tags::get_all('Expense');
+            $ui->assign('tags', $tags);
+        
+            // Expense categories
+            $cats = ORM::for_table('sys_cats')
+                ->where('type', 'Expense')
+                ->order_by_asc('sorder')
+                ->find_many();
+            $ui->assign('cats', $cats);
+        
+            // Payment methods
+            $pms = ORM::for_table('sys_pmethods')->find_many();
+            $ui->assign('pms', $pms);
+        
+            // Set current date
+            $ui->assign('mdate', $mdate);
+        
+            // CSS Assets
+            $ui->assign('xheader', Asset::css([
                 'dropzone/dropzone',
                 'modal',
                 's2/css/select2.min',
                 'dp/dist/datepicker.min',
-            ])
-        );
-
-        $ui->assign(
-            'xfooter',
-            Asset::js([
+            ]));
+        
+            // JS Assets
+            $ui->assign('xfooter', Asset::js([
                 'modal',
                 'dropzone/dropzone',
                 's2/js/select2.min',
@@ -604,50 +614,34 @@ switch ($action) {
                 'dp/i18n/' . $config['language'],
                 'numeric',
                 'expense',
-            ])
-        );
-
-        $ui->assign(
-            'xjq',
-            '
-
- $(\'.amount\').autoNumeric(\'init\', {
-
-    aSign: \'' .
-                $config['currency_code'] .
-                ' \',
-    dGroup: ' .
-                $config['thousand_separator_placement'] .
-                ',
-    aPad: ' .
-                $config['currency_decimal_digits'] .
-                ',
-    pSign: \'' .
-                $config['currency_symbol_position'] .
-                '\',
-    aDec: \'' .
-                $config['dec_point'] .
-                '\',
-    aSep: \'' .
-                $config['thousands_sep'] .
-                '\'
-
-    });
-
- '
-        );
-        //find latest income
-        $tr = ORM::for_table('sys_transactions')
-              ->where('system_id', $user_id)
-            ->where('type', 'Expense')
-            ->order_by_desc('id')
-            ->limit('20')
-            ->find_many();
-        $ui->assign('tr', $tr);
-
-        $ui->display('expense.tpl');
-
-        break;
+            ]));
+        
+            // jQuery initialization for amount input
+            $ui->assign('xjq', "
+            $('.amount').autoNumeric('init', {
+                aSign: '{$config['currency_code']} ',
+                dGroup: {$config['thousand_separator_placement']},
+                aPad: {$config['currency_decimal_digits']},
+                pSign: '{$config['currency_symbol_position']}',
+                aDec: '{$config['dec_point']}',
+                aSep: '{$config['thousands_sep']}',
+                minimumValue: '0.01'
+            });
+        ");
+        
+            // Get latest 20 expense transactions
+            $tr = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id)
+                ->where('type', 'Expense')
+                ->order_by_desc('id')
+                ->limit(20)
+                ->find_many();
+            $ui->assign('tr', $tr);
+        
+            // Display the expense page
+            $ui->display('expense.tpl');
+            break;
+        
 
     case 'expense-post':
         Event::trigger('transactions/expense-post/');
@@ -678,9 +672,10 @@ switch ($action) {
             $msg .= $_L['Choose an Account'] . ' ' . '<br>';
         }
 
-        if (is_numeric($amount) == false) {
-            $msg .= $_L['amount_error'] . '<br>';
+        if (!is_numeric($amount) || floatval($amount) <= 0) {
+            $msg .= $_L['amount_error'] . ' (Amount must be greater than 0)' . '<br>';
         }
+        
 
         if ($msg == '') {
             Tags::save($tags, 'Expense');

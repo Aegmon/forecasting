@@ -65,7 +65,7 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                           
                           
                             <th>Action</th>
                             <th>Type</th>
@@ -77,7 +77,7 @@
                     <tbody id="transaction_logs">
                         {foreach from=$transactions item=transaction}
                             <tr>
-                                <td>{$transaction.id}</td>
+                           
                                 <td>{$transaction.action}</td>
                                 <td>{$transaction.type}</td>
                                 <td>{$transaction.description}</td>

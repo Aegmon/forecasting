@@ -77,12 +77,12 @@ switch ($action) {
             $msg .= $_L['account_title_length_error'] . '<br>';
         }
         //check with same name account is exist 
-        $d = ORM::for_table('sys_accounts')
-            ->where('account', $account)
-            ->find_one();
-        if ($d) {
-            $msg .= $_L['account_already_exist'] . '<br>';
-        }
+        // $d = ORM::for_table('sys_accounts')
+        //     ->where('account', $account)
+        //     ->find_one();
+        // if ($d) {
+        //     $msg .= $_L['account_already_exist'] . '<br>';
+        // }
 
         if (is_numeric($balance) == false) {
             $balance = '0.00';

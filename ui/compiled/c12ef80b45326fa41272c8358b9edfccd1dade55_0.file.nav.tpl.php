@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-01 20:00:13
+/* Smarty version 3.1.39, created on 2025-04-14 10:55:21
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\sections\nav.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ebd54d720fb6_00138037',
+  'unifunc' => 'content_67fc791945a3a3_37329152',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'c12ef80b45326fa41272c8358b9edfccd1dade55' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\sections\\nav.tpl',
-      1 => 1743508811,
+      1 => 1744599318,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ebd54d720fb6_00138037 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67fc791945a3a3_37329152 (Smarty_Internal_Template $_smarty_tpl) {
 ?><ul class="nav" id="side-menu">
 
     <li class="nav-header">
@@ -93,6 +93,9 @@ echo $_smarty_tpl->tpl_vars['_c']->value['redirect_url'];?>
                 <ul class="nav nav-second-level">
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 transactions/chart-of-accounts/">Chart of Accounts</a></li>
+                                <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/deposit/"><?php echo $_smarty_tpl->tpl_vars['_L']->value['New Deposit'];?>
+</a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 transactions/expense/">Disbursement </a></li>
                             <li><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>

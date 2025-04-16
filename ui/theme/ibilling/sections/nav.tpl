@@ -49,6 +49,7 @@
                 <a href="#"><i class="fa fa-database"></i> <span class="nav-label">Bank Reconciliation</span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level">
                             <li><a href="{$_url}transactions/chart-of-accounts/">Chart of Accounts</a></li>
+                                <li><a href="{$_url}transactions/deposit/">{$_L['New Deposit']}</a></li>
                             <li><a href="{$_url}transactions/expense/">Disbursement </a></li>
                             <li><a href="{$_url}transactions/reconciliation/">Reconciliation </a></li>
                             <li><a href="{$_url}transactions/list/">All Transactions</a></li>

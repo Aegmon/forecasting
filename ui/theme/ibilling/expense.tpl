@@ -53,6 +53,7 @@
             <option value="Inventory">Inventory & Raw Materials</option>
             <option value="Training">Employee Training & Development</option>
             <option value="Miscellaneous">Miscellaneous</option>
+            <option value="Others">Others</option>
         </select>
     </div>
 </div>

@@ -336,7 +336,6 @@ $ui->display('add-ps.tpl');
         $stock = _post('stock');
         $price = Finance::amount_fix($price);
         $name = _post('name');
-        $item_number = _post('item_number');
         $description = _post('description');
         if ($name == '') {
             $msg .= 'Name is Required <br>';
@@ -351,7 +350,6 @@ $ui->display('add-ps.tpl');
             ->find_one($id);
             if ($d) {
                 $d->name = $name;
-                $d->item_number = $item_number;
                 $d->inventory = $stock;
                 $d->sales_price = $price;
                 $d->description = $description;

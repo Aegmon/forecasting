@@ -379,7 +379,10 @@ switch ($action) {
         case 'add-post':
             Event::trigger('invoices/add-post/');
             error_log("POST Data: " . json_encode($_POST));
-        
+            if (isset($_SESSION['validation_message'])) {
+                echo $_SESSION['validation_message'];
+                unset($_SESSION['validation_message']);
+            }
             if (!isset($_POST['item_code'])) {
                 error_log("ERROR: item_code is missing in the POST request.");
                 r2(U . 'invoices/list/', 'e', 'Item codes not set in the POST request.');
@@ -412,7 +415,10 @@ switch ($action) {
             if ($msg == '') {
                 $i = 0;
                 foreach ($item_code as $code) {
-                    $item = ORM::for_table('sys_items')->where('item_number', $code)->find_one();
+                    $item = ORM::for_table('sys_items')
+                    ->where('item_number', $code)
+                    ->where('system_id', $user_id)
+                    ->find_one();
                     if ($item) {
                         $required_qty = Finance::amount_fix($qty[$i]);
                         if ($item->inventory < $required_qty) {
@@ -508,7 +514,9 @@ switch ($action) {
         
                     // Reduce inventory stock
                     $item_code_val = $item_code[$i];
-                    $item = ORM::for_table('sys_items')->where('item_number', $item_code_val)->find_one();
+                    $item = ORM::for_table('sys_items')->where('item_number', $item_code_val)
+                    ->where('system_id', $user_id)
+                    ->find_one();
                         if ($item) {
                             $required_qty = (float)Finance::amount_fix($qty[$i]);
                             $inventory_qty = (float)$item->inventory;
@@ -579,7 +587,7 @@ switch ($action) {
                     } else {
                         error_log("SUCCESS: Payment recorded for Invoice ID: $invoiceid.");
                     }
-        
+                    unset($_SESSION['validation_message']);
                     // Update Invoice Status
                     $i = ORM::for_table('sys_invoices')->find_one($invoiceid);
                     if ($i) {
@@ -602,12 +610,14 @@ switch ($action) {
                     }
         
                     Event::trigger('add_invoice_posted');
+                    unset($_SESSION['validation_message']);
                     r2(U . 'invoices/list/', 's', 'Invoice and Payment successfully processed.');
                 } else {
                     r2(U . 'invoices/list/', 'e', $msg);
                 }
             } else {
                 r2(U . 'invoices/list/', 'e', $msg);
+                unset($_SESSION['validation_message']);
             }
             break;
         
@@ -697,9 +707,7 @@ switch ($action) {
         $validation_message = isset($_SESSION['validation_message']) ? $_SESSION['validation_message'] : '';
     $ui->assign('validation_message', $validation_message);
     
-    if (!empty($validation_message)) {
-        unset($_SESSION['validation_message']);
-    }
+   
   
         $ui->assign('xheader', $mode_css);
         $ui->assign('xfooter', $mode_js);

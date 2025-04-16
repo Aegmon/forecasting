@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-03-10 16:04:49
+/* Smarty version 3.1.39, created on 2025-04-16 19:52:10
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\deposit.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ce9d215967e6_47116977',
+  'unifunc' => 'content_67ff99ea4fc0c8_76607581',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '247b99476c0a5423ea3347998f0ae9dc96097a2b' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\deposit.tpl',
-      1 => 1733131561,
+      1 => 1744804329,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ce9d215967e6_47116977 (Smarty_Internal_Template $_smarty_tpl) {
+function content_67ff99ea4fc0c8_76607581 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_162744384867ce9d21585333_07338242', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_98132800267ff99ea4ed0d1_09681697', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_162744384867ce9d21585333_07338242 extends Smarty_Internal_Block
+class Block_98132800267ff99ea4ed0d1_09681697 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_162744384867ce9d21585333_07338242',
+    0 => 'Block_98132800267ff99ea4ed0d1_09681697',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -95,7 +95,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                             <label for="description" class="col-sm-3 control-label"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Description'];?>
 </label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="description" name="description">
+                                <input type="text" class="form-control" id="description" name="description" value="Deposit" readonly>
                           
                             </div>
                         </div>
@@ -241,59 +241,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 
         </div>
 
-        <div class="col-lg-8 col-md-6 col-sm-12">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5><?php echo $_smarty_tpl->tpl_vars['_L']->value['Recent Deposits'];?>
-</h5>
-
-                </div>
-                <div class="ibox-content">
-
-                    <table class="table table-bordered sys_table">
-                        <thead>
-                        <tr>
-                            <th width="80%"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Description'];?>
-</th>
-                            <th><?php echo $_smarty_tpl->tpl_vars['_L']->value['Amount'];?>
-</th>
-
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        <?php
-$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['tr']->value, 'trs');
-$_smarty_tpl->tpl_vars['trs']->do_else = true;
-if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['trs']->value) {
-$_smarty_tpl->tpl_vars['trs']->do_else = false;
-?>
-                            <tr>
-                                <td><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/manage/<?php echo $_smarty_tpl->tpl_vars['trs']->value['id'];?>
-/">
-                                        <?php if ($_smarty_tpl->tpl_vars['trs']->value['attachments'] != '') {?>
-                                            <i class="fa fa-paperclip"></i>
-                                        <?php }?>
-                                        <?php echo $_smarty_tpl->tpl_vars['trs']->value['description'];?>
-
-
-
-
-                                    </a> </td>
-                                <td class="amount"><?php echo $_smarty_tpl->tpl_vars['trs']->value['amount'];?>
-</td>
-                            </tr>
-                        <?php
-}
-$_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
+   
 
     </div>
 

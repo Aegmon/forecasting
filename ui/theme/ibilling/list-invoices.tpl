@@ -13,12 +13,11 @@
             </div>
             <div class="ibox-content">
                 
-                <!-- 🚨 Insufficient Stock Banner 
                 {if $validation_message}
                     <div class="alert alert-danger">
                         <strong>⚠️ Stock Issue:</strong> {$validation_message}
                     </div>
-                {/if}-->
+                {/if}
 
                 <!-- 🔍 Search Bar -->
                 <input type="text" id="invoice_search" class="form-control" placeholder="🔍 Search Invoices..." style="margin-bottom: 15px; width: 50%;">
