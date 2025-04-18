@@ -497,8 +497,8 @@ switch ($action) {
             $msg .= $_L['Choose an Account'] . ' ' . '<br>';
         }
 
-        if (is_numeric($amount) == false) {
-            $msg .= $_L['amount_error'] . '<br>';
+        if (!is_numeric($amount) || floatval($amount) <= 0) {
+            $msg .= $_L['amount_error'] . ' (Amount must be greater than 0)' . '<br>';
         }
 
         if ($msg == '') {
