@@ -36,15 +36,17 @@ switch ($action) {
         $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
         $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
     
+        // Format dates once
+        $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
+        $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
+    
+        // Base transaction query
         $query = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
             ->where('type', 'Expense');
     
-        // Apply date range filter if provided
-        if (!empty($start_date) && !empty($end_date)) {
-            $start_date_formatted = date('Y-m-d', strtotime($start_date));
-            $end_date_formatted = date('Y-m-d', strtotime($end_date));
-    
+        // Apply date range filter if both dates are provided
+        if ($start_date_formatted && $end_date_formatted) {
             $query->where_gte('date', $start_date_formatted)
                   ->where_lte('date', $end_date_formatted);
         }
@@ -55,18 +57,31 @@ switch ($action) {
                    ->order_by_desc('date')
                    ->find_many();
     
-        // Get total reconciled and unreconciled amounts
-        $total_reconciled = ORM::for_table('sys_transactions')
+        // Reconciled total with optional date filter
+        $total_reconciled_query = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
             ->where('type', 'Expense')
-            ->where('archived', 1)
-            ->sum('dr');
+            ->where('archived', 1);
     
-        $total_unreconciled = ORM::for_table('sys_transactions')
+        if ($start_date_formatted && $end_date_formatted) {
+            $total_reconciled_query->where_gte('date', $start_date_formatted)
+                                   ->where_lte('date', $end_date_formatted);
+        }
+    
+        $total_reconciled = $total_reconciled_query->sum('dr');
+    
+        // Unreconciled total with optional date filter
+        $total_unreconciled_query = ORM::for_table('sys_transactions')
             ->where('system_id', $user_id)
             ->where('type', 'Expense')
-            ->where('archived', 0)
-            ->sum('dr');
+            ->where('archived', 0);
+    
+        if ($start_date_formatted && $end_date_formatted) {
+            $total_unreconciled_query->where_gte('date', $start_date_formatted)
+                                     ->where_lte('date', $end_date_formatted);
+        }
+    
+        $total_unreconciled = $total_unreconciled_query->sum('dr');
     
         // Assign values to template
         $ui->assign('d', $d);
@@ -76,57 +91,68 @@ switch ($action) {
         $ui->assign('total_reconciled', $total_reconciled);
         $ui->assign('total_unreconciled', $total_unreconciled);
     
-        // JavaScript for AJAX-based filtering and reconciliation
+    
+        // JavaScript remains unchanged
         $ui->assign('xjq', '
-            $(document).ready(function () {
-                // ✅ Filter Transactions Without Reloading
-                $("#filterBtn").click(function (e) {
-                    e.preventDefault();
-                    var startDate = $("#start_date").val();
-                    var endDate = $("#end_date").val();
-    
-                    if (!startDate || !endDate) {
-                        alert("Please select both start and end dates.");
-                        return;
+        $(document).ready(function () {
+            // ✅ Filter Transactions Without Reloading
+            $("#filterBtn").click(function (e) {
+                e.preventDefault();
+                var startDate = $("#start_date").val();
+                var endDate = $("#end_date").val();
+        
+                if (!startDate || !endDate) {
+                    alert("Please select both start and end dates.");
+                    return;
+                }
+        
+                $.ajax({
+                    url: window.location.origin + "/forecasting/?ng=transactions/reconciliation/",
+                    type: "GET",
+                    data: { start_date: startDate, end_date: endDate },
+                    success: function (response) {
+                        // Replace transaction table body
+                        var newTableBody = $(response).find("table tbody").html();
+                        $("table tbody").html(newTableBody);
+        
+                        // Replace total reconciled and unreconciled
+                        var newReconciled = $(response).find("#total_reconciled").text();
+                        var newUnreconciled = $(response).find("#total_unreconciled").text();
+        
+                        $("#total_reconciled").text(newReconciled);
+                        $("#total_unreconciled").text(newUnreconciled);
+                    },
+                    error: function () {
+                        alert("Failed to load filtered data.");
                     }
-    
-                    $.ajax({
-                        url: window.location.origin + "/forecasting/?ng=transactions/reconciliation/",
-                        type: "GET",
-                        data: { start_date: startDate, end_date: endDate },
-                        success: function (response) {
-                            var tableContent = $(response).find("table tbody").html();
-                            $("table tbody").html(tableContent);
-                        },
-                        error: function () {
-                            alert("Failed to load filtered data.");
-                        }
-                    });
-                });
-    
-                // ✅ Reconcile Transaction
-                $(".reconcile-btn").click(function () {
-                    var transactionId = $(this).data("id");
-                    
-                    $.ajax({
-                        type: "POST",
-                        url: window.location.origin + "/forecasting/?ng=transactions/update-archived", 
-                        data: { id: transactionId },
-                        dataType: "json",
-                        success: function (response) {
-                            if (response.success) {
-                                location.reload();
-                            } else {
-                                alert("Error updating transaction: " + (response.message || "Unknown error"));
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            alert("Failed to update transaction. " + xhr.status + ": " + xhr.statusText);
-                        }
-                    });
                 });
             });
+        
+            // ✅ Reconcile Transaction (works after filtering too)
+            $(document).on("click", ".reconcile-btn", function () {
+                var transactionId = $(this).data("id");
+        
+                $.ajax({
+                    type: "POST",
+                    url: window.location.origin + "/forecasting/?ng=transactions/update-archived", 
+                    data: { id: transactionId },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert("Error updating transaction: " + (response.message || "Unknown error"));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Failed to update transaction. " + xhr.status + ": " + xhr.statusText);
+                    }
+                });
+            });
+        });
         ');
+        
+
     
         $ui->display('reconciliation.tpl');
         break;

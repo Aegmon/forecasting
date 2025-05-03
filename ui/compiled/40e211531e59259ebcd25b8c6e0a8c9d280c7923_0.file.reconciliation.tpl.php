@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-02 18:08:17
+/* Smarty version 3.1.39, created on 2025-05-03 09:15:01
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\reconciliation.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ed0c9101e327_87004919',
+  'unifunc' => 'content_68156e159bf738_19631947',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '40e211531e59259ebcd25b8c6e0a8c9d280c7923' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\reconciliation.tpl',
-      1 => 1743588448,
+      1 => 1746234899,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ed0c9101e327_87004919 (Smarty_Internal_Template $_smarty_tpl) {
+function content_68156e159bf738_19631947 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_20076613767ed0c9100e7e8_72805240', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_119372224968156e159b0a00_09786794', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_20076613767ed0c9100e7e8_72805240 extends Smarty_Internal_Block
+class Block_119372224968156e159b0a00_09786794 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_20076613767ed0c9100e7e8_72805240',
+    0 => 'Block_119372224968156e159b0a00_09786794',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -124,10 +124,10 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 
                     <!-- Totals -->
                     <div class="text-right">
-                        <strong>Total Reconciled:</strong> <?php echo $_smarty_tpl->tpl_vars['total_reconciled']->value;?>
- <br>
-                        <strong>Total Unreconciled:</strong> <?php echo $_smarty_tpl->tpl_vars['total_unreconciled']->value;?>
-
+                        <strong>Total Reconciled:</strong>  <span id="total_reconciled"><?php echo $_smarty_tpl->tpl_vars['total_reconciled']->value;?>
+</span> <br>
+                        <strong>Total Unreconciled:</strong> <span id="total_unreconciled"><?php echo $_smarty_tpl->tpl_vars['total_unreconciled']->value;?>
+</span>
                     </div>
 
                 </div>

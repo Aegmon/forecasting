@@ -60,8 +60,8 @@
 
                     <!-- Totals -->
                     <div class="text-right">
-                        <strong>Total Reconciled:</strong> {$total_reconciled} <br>
-                        <strong>Total Unreconciled:</strong> {$total_unreconciled}
+                        <strong>Total Reconciled:</strong>  <span id="total_reconciled">{$total_reconciled}</span> <br>
+                        <strong>Total Unreconciled:</strong> <span id="total_unreconciled">{$total_unreconciled}</span>
                     </div>
 
                 </div>
