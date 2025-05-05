@@ -1110,7 +1110,7 @@ $(".cdelete").click(function (e) {
                 $invoice->delete();
         
                 // Redirect to the 'list' case with the correct URL structure
-                header("Location: http://localhost/forecasting/?ng=invoices/list/");  // Correct URL
+                header("Location: https://financialforcast.online/?ng=invoices/list/");  // Correct URL
                 exit;
             } else {
                 echo json_encode(["status" => "error", "message" => "Invoice not found."]);

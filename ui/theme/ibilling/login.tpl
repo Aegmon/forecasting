@@ -68,7 +68,7 @@
                 </div>
                  <div class="m-top-md p-top-sm">
                     <div class="font-12 text-center m-bottom-xs">
-                    Don't have an Account? Signup  <strong><a href="/forecasting/register.php" class="font-12">Here</a> </strong>
+                    Don't have an Account? Signup  <strong><a href="/register.php" class="font-12">Here</a> </strong>
                    
                     </div>
                 </div>

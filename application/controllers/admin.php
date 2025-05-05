@@ -276,7 +276,7 @@ case 'reset-password-post':
         $user->save();
 
         // Prepare the email content
-        $resetLink =  "http://localhost/forecasting/?ng=admin/reset-password-form&pwresetkey=" . $pwresetkey;
+        $resetLink =  "https://financialforcast.online/?ng=admin/reset-password-form&pwresetkey=" . $pwresetkey;
         $subject = "Password Reset Request from " . htmlspecialchars($config['CompanyName']);
         $message = "
             <html>

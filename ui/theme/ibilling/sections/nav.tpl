@@ -76,7 +76,7 @@
                 <ul class="nav nav-second-level">
 
                     {if $_c['invoicing'] eq '1'}
-                        {if has_access($user->roleid,'sales')}
+                             {if $user->roleid != '1'}
                         <li><a href="{$_url}invoices/list/">{$_L['Invoices']}</a></li>
                         {/if}
                     

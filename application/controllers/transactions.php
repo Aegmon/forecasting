@@ -538,7 +538,7 @@ switch ($action) {
             $cbal = $a['balance'];
             $nbal = $cbal + $amount;
             $a->balance = $nbal;
-            // $a->save();
+            $a->save();
             $d = ORM::for_table('sys_transactions')->create();
             $d->system_id=$user_id;
             $d->account = $account;
