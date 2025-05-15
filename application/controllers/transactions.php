@@ -27,136 +27,181 @@ Event::trigger('transactions');
 //
 switch ($action) {
 
-    case 'reconciliation':
-        Event::trigger('transactions/reconciliation/');
-    
-        $paginator = Paginator::bootstrap('sys_transactions');
-    
-        // Get filter values
-        $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
-        $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
-    
-        // Format dates once
-        $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
-        $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
-    
-        // Base transaction query
-        $query = ORM::for_table('sys_transactions')
-            ->where('system_id', $user_id)
-            ->where('type', 'Expense');
-    
-        // Apply date range filter if both dates are provided
-        if ($start_date_formatted && $end_date_formatted) {
-            $query->where_gte('date', $start_date_formatted)
-                  ->where_lte('date', $end_date_formatted);
-        }
-    
-        // Fetch filtered transactions
-        $d = $query->offset($paginator['startpoint'])
-                   ->limit($paginator['limit'])
-                   ->order_by_desc('date')
-                   ->find_many();
-    
-        // Reconciled total with optional date filter
-        $total_reconciled_query = ORM::for_table('sys_transactions')
-            ->where('system_id', $user_id)
-            ->where('type', 'Expense')
-            ->where('archived', 1);
-    
-        if ($start_date_formatted && $end_date_formatted) {
-            $total_reconciled_query->where_gte('date', $start_date_formatted)
-                                   ->where_lte('date', $end_date_formatted);
-        }
-    
-        $total_reconciled = $total_reconciled_query->sum('dr');
-    
-        // Unreconciled total with optional date filter
-        $total_unreconciled_query = ORM::for_table('sys_transactions')
-            ->where('system_id', $user_id)
-            ->where('type', 'Expense')
-            ->where('archived', 0);
-    
-        if ($start_date_formatted && $end_date_formatted) {
-            $total_unreconciled_query->where_gte('date', $start_date_formatted)
-                                     ->where_lte('date', $end_date_formatted);
-        }
-    
-        $total_unreconciled = $total_unreconciled_query->sum('dr');
-    
-        // Assign values to template
-        $ui->assign('d', $d);
-        $ui->assign('paginator', $paginator);
-        $ui->assign('start_date', $start_date);
-        $ui->assign('end_date', $end_date);
-        $ui->assign('total_reconciled', $total_reconciled);
-        $ui->assign('total_unreconciled', $total_unreconciled);
-    
-    
-        // JavaScript remains unchanged
-        $ui->assign('xjq', '
-        $(document).ready(function () {
-            // ✅ Filter Transactions Without Reloading
-            $("#filterBtn").click(function (e) {
-                e.preventDefault();
-                var startDate = $("#start_date").val();
-                var endDate = $("#end_date").val();
-        
-                if (!startDate || !endDate) {
-                    alert("Please select both start and end dates.");
-                    return;
-                }
-        
-                $.ajax({
-                    url: window.location.origin + "/forecasting/?ng=transactions/reconciliation/",
-                    type: "GET",
-                    data: { start_date: startDate, end_date: endDate },
-                    success: function (response) {
-                        // Replace transaction table body
-                        var newTableBody = $(response).find("table tbody").html();
-                        $("table tbody").html(newTableBody);
-        
-                        // Replace total reconciled and unreconciled
-                        var newReconciled = $(response).find("#total_reconciled").text();
-                        var newUnreconciled = $(response).find("#total_unreconciled").text();
-        
-                        $("#total_reconciled").text(newReconciled);
-                        $("#total_unreconciled").text(newUnreconciled);
-                    },
-                    error: function () {
-                        alert("Failed to load filtered data.");
-                    }
-                });
-            });
-        
-            // ✅ Reconcile Transaction (works after filtering too)
-            $(document).on("click", ".reconcile-btn", function () {
-                var transactionId = $(this).data("id");
-        
-                $.ajax({
-                    type: "POST",
-                    url: window.location.origin + "/forecasting/?ng=transactions/update-archived", 
-                    data: { id: transactionId },
-                    dataType: "json",
-                    success: function (response) {
-                        if (response.success) {
-                            location.reload();
-                        } else {
-                            alert("Error updating transaction: " + (response.message || "Unknown error"));
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert("Failed to update transaction. " + xhr.status + ": " + xhr.statusText);
-                    }
-                });
-            });
-        });
-        ');
-        
+  case 'reconciliation':
+    Event::trigger('transactions/reconciliation/');
 
-    
-        $ui->display('reconciliation.tpl');
-        break;
-    
+    $excel_transactions = $_SESSION['excel_transactions'] ?? [];
+
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $limit = 5;
+    $offset = ($page - 1) * $limit;
+
+    $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->order_by_asc('archived') // unreconciled first
+        ->order_by_desc('date');
+
+    if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+        $start_date = date('Y-m-d', strtotime($_GET['start_date']));
+        $end_date = date('Y-m-d', strtotime($_GET['end_date']));
+        $query->where_gte('date', $start_date)->where_lte('date', $end_date);
+    }
+
+    $total_items = $query->count();
+
+    $db_results = $query->limit($limit)->offset($offset)->find_array();
+
+    $total_pages = ceil($total_items / $limit);
+
+    $db_transactions = [];
+    foreach ($db_results as $tr) {
+        $db_transactions[$tr['id']] = $tr;
+    }
+
+    $actual_balance = 0;
+        foreach ($db_results as $tr) {
+            if ($tr['type'] === 'Expense') {
+                $actual_balance -= $tr['amount'];
+            } else {
+                $actual_balance += $tr['amount'];
+            }
+        }
+
+        $statement_balance = 0;
+        foreach ($excel_transactions as $ex) {
+            $db_item = $db_transactions[$ex['id']] ?? null;
+            if ($db_item && $db_item['archived'] == 0) {
+                if ($db_item['type'] === 'Expense') {
+                    $statement_balance -= $db_item['amount'];
+                } else {
+                    $statement_balance += $db_item['amount'];
+                }
+            }
+        }
+
+        $ui->assign('actual_balance', $actual_balance);
+    $ui->assign('statement_balance', $statement_balance);
+
+    $ui->assign('excel_transactions', $excel_transactions);
+    $ui->assign('db_transactions', $db_transactions);
+
+    $ui->assign('current_page', $page);
+    $ui->assign('total_pages', $total_pages);
+
+    $ui->display('reconciliation.tpl');
+    break;
+
+
+    case 'import_csv':
+    Event::trigger('transactions/import_csv/');
+
+    if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] == 0) {
+        $fileTmpPath = $_FILES['csv_file']['tmp_name'];
+        $excel_transactions = [];
+
+        if (($handle = fopen($fileTmpPath, 'r')) !== FALSE) {
+            $row = 0;
+            while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                // Skip header
+                if ($row == 0) {
+                    $row++;
+                    continue;
+                }
+
+                // Map CSV columns assuming: id, account, amount, description, date
+                list($id, $account, $amount, $description, $date) = $data;
+
+                $excel_transactions[] = [
+                    'id' => $id,
+                    'account' => $account,
+                    'amount' => $amount,
+                    'description' => $description,
+                    'date' => $date
+                ];
+
+                $row++;
+            }
+            fclose($handle);
+
+            // Save to session for showing in reconciliation page
+            $_SESSION['excel_transactions'] = $excel_transactions;
+  Event::trigger('transactions/reconciliation/');
+
+    // For demo, get excel data from session after import, or else empty array
+    $excel_transactions = $_SESSION['excel_transactions'] ?? [];
+
+
+   $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 5;
+$offset = ($page - 1) * $limit;
+
+$query = ORM::for_table('sys_transactions')
+    ->where('system_id', $user_id)
+    ->order_by_asc('archived')  // unreconciled first (archived=0)
+    ->order_by_desc('date');    // newest first
+
+if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+    $start_date = date('Y-m-d', strtotime($_GET['start_date']));
+    $end_date = date('Y-m-d', strtotime($_GET['end_date']));
+    $query->where_gte('date', $start_date)->where_lte('date', $end_date);
+}
+
+// Count total for pagination
+$total_items = $query->count();
+
+$db_results = $query
+    ->limit($limit)
+    ->offset($offset)
+    ->find_array();
+
+$total_pages = ceil($total_items / $limit);
+
+// Index DB transactions by ID for quick access
+$db_transactions = [];
+foreach ($db_results as $tr) {
+    $db_transactions[$tr['id']] = $tr;
+}
+
+// Calculate actual_balance and statement_balance (same as before)
+$actual_balance = 0;
+foreach ($db_results as $tr) {
+    if ($tr['type'] === 'Expense') {
+        $actual_balance -= $tr['amount'];
+    } else {
+        $actual_balance += $tr['amount'];
+    }
+}
+
+$statement_balance = 0;
+foreach ($excel_transactions as $ex) {
+    $db_item = $db_transactions[$ex['id']] ?? null;
+    if ($db_item && $db_item['archived'] == 0) {
+        if ($db_item['type'] === 'Expense') {
+            $statement_balance -= $db_item['amount'];
+        } else {
+            $statement_balance += $db_item['amount'];
+        }
+    }
+}
+
+$ui->assign('actual_balance', $actual_balance);
+$ui->assign('statement_balance', $statement_balance);
+
+$ui->assign('excel_transactions', $excel_transactions);
+$ui->assign('db_transactions', $db_transactions);
+
+$ui->assign('current_page', $page);
+$ui->assign('total_pages', $total_pages);
+
+$ui->display('reconciliation.tpl');
+            exit;
+        } else {
+            echo "Could not open uploaded file.";
+        }
+    } 
+    exit;
+    break;
+
     
     
     
@@ -181,7 +226,111 @@ switch ($action) {
             exit;
             break;
         
-    
+case 'export_csv':
+    Event::trigger('transactions/export_csv/');
+
+    $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+    $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+    $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
+    $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
+
+    $query = ORM::for_table('sys_transactions')->where('system_id', $user_id);
+
+    if ($start_date_formatted && $end_date_formatted) {
+        $query->where_gte('date', $start_date_formatted)
+              ->where_lte('date', $end_date_formatted);
+    }
+
+    $results = $query->order_by_desc('date')->find_array();
+
+    $fileName = 'transactions_' . time() . '.csv';
+
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header('Content-Description: File Transfer');
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename={$fileName}");
+    header("Expires: 0");
+    header("Pragma: public");
+
+    $fh = @fopen('php://output', 'w');
+
+    // Add 'id' as first column header
+    fputcsv($fh, ['id', 'account', 'amount', 'description', 'date']);
+
+    foreach ($results as $data) {
+        $id = $data['id'] ?? '';
+        $account = $data['account'] ?? '';
+        $amount = (float)$data['amount'];
+        $type = strtolower($data['type'] ?? '');
+        $description = $data['description'] ?? '';
+        $date = $data['date'] ?? '';
+
+        if ($type === 'expense') {
+            $amount = -abs($amount);
+        } elseif ($type === 'income' || $type === 'deposit') {
+            $amount = abs($amount);
+        }
+
+        // Add $id as first column value
+        fputcsv($fh, [$id, $account, $amount, $description, $date]);
+    }
+
+    fclose($fh);
+    exit;
+    break;
+
+
+case 'list':
+    Event::trigger('transactions/list/');
+
+    $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+    $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+
+    $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
+    $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
+
+    $paginator = Paginator::bootstrap('sys_transactions');
+
+    $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id);
+
+    if ($start_date_formatted && $end_date_formatted) {
+        $query->where_gte('date', $start_date_formatted)
+              ->where_lte('date', $end_date_formatted);
+    }
+
+    $d = $query->offset($paginator['startpoint'])
+              ->limit($paginator['limit'])
+              ->order_by_desc('date')
+              ->find_many();
+
+    $ui->assign('d', $d);
+    $ui->assign('paginator', $paginator);
+    $ui->assign('start_date', $start_date);
+    $ui->assign('end_date', $end_date);
+
+    $ui->assign('xjq', '
+        document.getElementById("filterBtn").addEventListener("click", function () {
+            var sDate = document.getElementById("start_date").value;
+            var eDate = document.getElementById("end_date").value;
+            document.getElementById("export_start_date").value = sDate;
+            document.getElementById("export_end_date").value = eDate;
+
+            window.location.href = "?ng=transactions/list&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
+        });
+
+        document.getElementById("exportForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            var sDate = document.getElementById("export_start_date").value;
+            var eDate = document.getElementById("export_end_date").value;
+
+            window.location.href = "?ng=transactions/export_csv&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
+        });
+    ');
+
+    $ui->display('transactions.tpl');
+    break;
 
 
 
@@ -234,12 +383,12 @@ switch ($action) {
                 $(document).ready(function () {
             $(".edit-account").click(function () {
                 var accountId = $(this).data("id");
-                window.location.href = "/forecasting/?ng=transactions/edit-chart-of-accounts/" + accountId;
+                window.location.href = "/?ng=transactions/edit-chart-of-accounts/" + accountId;
             });
         
             $(".delete-account").click(function () {
                 var accountId = $(this).data("id");
-                var baseUrl = window.location.origin + "/forecasting/?ng=transactions/";
+                var baseUrl = window.location.origin + "/?ng=transactions/";
         
                 if (confirm("Are you sure you want to delete this account?")) {
                     $.post(baseUrl + "delete-chart-of-accounts/" + accountId, function (response) {
@@ -292,12 +441,12 @@ switch ($action) {
         $(document).ready(function () {
     $(".edit-account").click(function () {
         var accountId = $(this).data("id");
-        window.location.href = "/forecasting/?ng=transactions/edit-chart-of-accounts/" + accountId;
+        window.location.href = "/?ng=transactions/edit-chart-of-accounts/" + accountId;
     });
 
     $(".delete-account").click(function () {
         var accountId = $(this).data("id");
-        var baseUrl = window.location.origin + "/forecasting/?ng=transactions/";
+        var baseUrl = window.location.origin + "/?ng=transactions/";
 
         if (confirm("Are you sure you want to delete this account?")) {
             $.post(baseUrl + "delete-chart-of-accounts/" + accountId, function (response) {
@@ -343,10 +492,10 @@ switch ($action) {
             statement: $("#edit_statement").val()
         };
 
-        $.post("/forecasting/?ng=transactions/edit-chart-of-accounts-post", formData, function (response) {
+        $.post("/?ng=transactions/edit-chart-of-accounts-post", formData, function (response) {
             if (response.status === "success") {
                 alert("Account updated successfully!");
-                window.location.href = "/forecasting/?ng=transactions/chart-of-accounts"; // Redirect to list
+                window.location.href = "/?ng=transactions/chart-of-accounts"; // Redirect to list
             } else {
                 alert("Error: " + response.message);
             }

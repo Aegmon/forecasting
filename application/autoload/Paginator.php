@@ -48,6 +48,8 @@ class Paginator
                 ->count();
         } else {
             $totalReq = ORM::for_table($table)->count();
+    
+        
         }
 
         $i = 0;
@@ -163,4 +165,58 @@ class Paginator
 
         return $gen;
     }
+public static function bootstrap_raw($total_items, $limit = 10)
+{
+    $adjacents = 2;
+    $page = (int)(isset($_GET['page']) ? $_GET['page'] : 1);
+    if ($page < 1) $page = 1;
+
+    $startpoint = ($page * $limit) - $limit;
+    $lastpage = ceil($total_items / $limit);
+
+    // Generate paginator HTML here or return just the params
+    $contents = self::generate_bootstrap_links($page, $lastpage, $limit, $adjacents);
+
+    return [
+        'startpoint' => $startpoint,
+        'limit' => $limit,
+        'contents' => $contents
+    ];
+}
+
+ public static function generate_bootstrap_links($page, $lastpage, $limit, $adjacents)
+            {
+                $pagination = '';
+                $url = $_SERVER['PHP_SELF'] . '?page='; // You may want to adjust this URL logic
+        
+                if ($lastpage > 1) {
+                    $pagination .= '<ul class="pagination pagination-xs">';
+                    // Previous button
+                    if ($page > 1) {
+                        $pagination .= "<li><a href='{$url}" . ($page - 1) . "'>&laquo;</a></li>";
+                    } else {
+                        $pagination .= "<li class='disabled'><span>&laquo;</span></li>";
+                    }
+        
+                    // Page numbers
+                    for ($counter = 1; $counter <= $lastpage; $counter++) {
+                        if ($counter == $page) {
+                            $pagination .= "<li class='active'><span>$counter</span></li>";
+                        } else {
+                            $pagination .= "<li><a href='{$url}$counter'>$counter</a></li>";
+                        }
+                    }
+        
+                    // Next button
+                    if ($page < $lastpage) {
+                        $pagination .= "<li><a href='{$url}" . ($page + 1) . "'>&raquo;</a></li>";
+                    } else {
+                        $pagination .= "<li class='disabled'><span>&raquo;</span></li>";
+                    }
+        
+                    $pagination .= '</ul>';
+                }
+        
+                return $pagination;
+            }
 }

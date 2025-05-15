@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-01 22:24:27
+/* Smarty version 3.1.39, created on 2025-05-15 21:36:09
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\login.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ebf71b0e3946_62807130',
+  'unifunc' => 'content_6825edc9b2aa97_99518512',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'cb7e4bec509d365cf04b8df632d8141e2c6d2530' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\login.tpl',
-      1 => 1743517437,
+      1 => 1746271913,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ebf71b0e3946_62807130 (Smarty_Internal_Template $_smarty_tpl) {
+function content_6825edc9b2aa97_99518512 (Smarty_Internal_Template $_smarty_tpl) {
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,7 +119,7 @@ admin/forgot-pw/" class="font-12"><?php echo $_smarty_tpl->tpl_vars['_L']->value
                 </div>
                  <div class="m-top-md p-top-sm">
                     <div class="font-12 text-center m-bottom-xs">
-                    Don't have an Account? Signup  <strong><a href="/forecasting/register.php" class="font-12">Here</a> </strong>
+                    Don't have an Account? Signup  <strong><a href="/register.php" class="font-12">Here</a> </strong>
                    
                     </div>
                 </div>
