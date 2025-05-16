@@ -1,5 +1,4 @@
 {extends file="$tpl_admin_layout"}
-
 {block name="content"}
 <div class="row mt-4">
     <div class="col-md-12">
@@ -10,14 +9,17 @@
             </div>
             <button type="submit" class="btn btn-success">Import</button>
         </form>
+        <br>
+             <a href="{$_url}transactions/reports/" class="btn btn-primary" >
+    Reconciliation Report </a>
+
     </div>
 </div>
-
 <br>
 <div class="row mb-4">
     <div class="col-md-5">
         <div class="alert alert-info">
-            <strong>Actual Balance:</strong> {$actual_balance|number_format:2}
+        <strong>Statement Balance:</strong> {$actual_balance|number_format:2}
         </div>
     </div>
         <div class="col-md-2 text-center" >
@@ -25,7 +27,8 @@
 
     <div class="col-md-5">
         <div class="alert alert-warning">
-            <strong>Statement Balance:</strong> {$statement_balance|number_format:2}
+            
+                <strong>Book Balance:</strong> {$statement_balance|number_format:2}
         </div>
     </div>
 </div>
@@ -89,20 +92,7 @@
 
 
 {/block}
-{if $total_pages > 1}
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        {section name=i loop=$total_pages}
-            {assign var=page_num value=$smarty.section.i.index+1}
-            <li class="page-item {if $current_page == $page_num}active{/if}">
-                <a class="page-link" href="?page={$page_num}{if isset($smarty.get.start_date)}&start_date={$smarty.get.start_date}{/if}{if isset($smarty.get.end_date)}&end_date={$smarty.get.end_date}{/if}">
-                    {$page_num}
-                </a>
-            </li>
-        {/section}
-    </ul>
-</nav>
-{/if}
+
 
 {block name="script"}
 <script>

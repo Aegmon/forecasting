@@ -27,14 +27,10 @@ Event::trigger('transactions');
 //
 switch ($action) {
 
-  case 'reconciliation':
+case 'reconciliation':
     Event::trigger('transactions/reconciliation/');
 
     $excel_transactions = $_SESSION['excel_transactions'] ?? [];
-
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-    $limit = 5;
-    $offset = ($page - 1) * $limit;
 
     $query = ORM::for_table('sys_transactions')
         ->where('system_id', $user_id)
@@ -47,18 +43,19 @@ switch ($action) {
         $query->where_gte('date', $start_date)->where_lte('date', $end_date);
     }
 
-    $total_items = $query->count();
-
-    $db_results = $query->limit($limit)->offset($offset)->find_array();
-
-    $total_pages = ceil($total_items / $limit);
+    // Fetch all matching transactions without pagination
+    $db_results = $query->find_array();
 
     $db_transactions = [];
     foreach ($db_results as $tr) {
         $db_transactions[$tr['id']] = $tr;
     }
 
-    $actual_balance = 0;
+    if (empty($excel_transactions)) {
+        $actual_balance = 0;
+        $statement_balance = 0;
+    } else {
+        $actual_balance = 0;
         foreach ($db_results as $tr) {
             if ($tr['type'] === 'Expense') {
                 $actual_balance -= $tr['amount'];
@@ -70,7 +67,7 @@ switch ($action) {
         $statement_balance = 0;
         foreach ($excel_transactions as $ex) {
             $db_item = $db_transactions[$ex['id']] ?? null;
-            if ($db_item && $db_item['archived'] == 0) {
+            if ($db_item && $db_item['archived'] == 1) {
                 if ($db_item['type'] === 'Expense') {
                     $statement_balance -= $db_item['amount'];
                 } else {
@@ -78,21 +75,80 @@ switch ($action) {
                 }
             }
         }
+    }
 
-        $ui->assign('actual_balance', $actual_balance);
+    $ui->assign('actual_balance', $actual_balance);
     $ui->assign('statement_balance', $statement_balance);
 
     $ui->assign('excel_transactions', $excel_transactions);
     $ui->assign('db_transactions', $db_transactions);
 
-    $ui->assign('current_page', $page);
-    $ui->assign('total_pages', $total_pages);
 
     $ui->display('reconciliation.tpl');
     break;
 
+case 'reports':
+    Event::trigger('transactions/reports/');
 
-    case 'import_csv':
+    $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+    $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+
+    $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
+    $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
+
+    $paginator = Paginator::bootstrap('sys_transactions');
+
+    $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id);
+
+    // Apply date filter to the query
+    if ($start_date_formatted && $end_date_formatted) {
+        $query->where_gte('date', $start_date_formatted)
+              ->where_lte('date', $end_date_formatted);
+    }
+
+    // Fetch filtered data
+    $d = $query->order_by_desc('date')
+              ->offset($paginator['startpoint'])
+              ->limit($paginator['limit'])
+              ->find_many();
+
+    // Calculate balances
+    $total_actual = 0.0;
+    $total_book = 0.0;
+
+    foreach ($d as $transaction) {
+        $amount = $transaction->type == 'Expense' ? -$transaction->amount : $transaction->amount;
+        $total_actual += $amount;
+
+        if ($transaction->archived == 1) {
+            $total_book += $amount;
+        }
+    }
+
+    // Assign to template
+    $ui->assign('d', $d);
+    $ui->assign('paginator', $paginator);
+    $ui->assign('start_date', $start_date);
+    $ui->assign('end_date', $end_date);
+    $ui->assign('actual_balance', $total_actual);
+    $ui->assign('book_balance', $total_book);
+
+    $ui->assign('xjq', '
+    document.getElementById("filterBtn").addEventListener("click", function () {
+        var sDate = document.getElementById("start_date").value;
+        var eDate = document.getElementById("end_date").value;
+
+        window.location.href = "?ng=transactions/reports&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
+    });
+');
+
+
+    $ui->display('reports.tpl');
+    break;
+
+
+case 'import_csv':
     Event::trigger('transactions/import_csv/');
 
     if (isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] == 0) {
@@ -102,13 +158,8 @@ switch ($action) {
         if (($handle = fopen($fileTmpPath, 'r')) !== FALSE) {
             $row = 0;
             while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
-                // Skip header
-                if ($row == 0) {
-                    $row++;
-                    continue;
-                }
+                if ($row == 0) { $row++; continue; }  // skip header
 
-                // Map CSV columns assuming: id, account, amount, description, date
                 list($id, $account, $amount, $description, $date) = $data;
 
                 $excel_transactions[] = [
@@ -123,87 +174,63 @@ switch ($action) {
             }
             fclose($handle);
 
-            // Save to session for showing in reconciliation page
             $_SESSION['excel_transactions'] = $excel_transactions;
-  Event::trigger('transactions/reconciliation/');
 
-    // For demo, get excel data from session after import, or else empty array
-    $excel_transactions = $_SESSION['excel_transactions'] ?? [];
+            // Now get DB transactions corresponding to Excel IDs only (to show actual and statement balances)
+            $excel_ids = array_column($excel_transactions, 'id');
+            $db_transactions_query = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id)
+                ->where_in('id', $excel_ids)
+                ->order_by_asc('archived')
+                ->order_by_desc('date')
+                ->find_array();
 
+            $db_transactions = [];
+            foreach ($db_transactions_query as $tr) {
+                $db_transactions[$tr['id']] = $tr;
+            }
 
-   $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 5;
-$offset = ($page - 1) * $limit;
+            // Calculate actual_balance only for these transactions
+            $actual_balance = 0;
+            foreach ($db_transactions as $tr) {
+                if ($tr['type'] === 'Expense') {
+                    $actual_balance -= $tr['amount'];
+                } else {
+                    $actual_balance += $tr['amount'];
+                }
+            }
 
-$query = ORM::for_table('sys_transactions')
-    ->where('system_id', $user_id)
-    ->order_by_asc('archived')  // unreconciled first (archived=0)
-    ->order_by_desc('date');    // newest first
+            // Calculate statement_balance using Excel + DB match logic
+            $statement_balance = 0;
+            foreach ($excel_transactions as $ex) {
+                $db_item = $db_transactions[$ex['id']] ?? null;
+                if ($db_item && $db_item['archived'] == 1) {
+                    if ($db_item['type'] === 'Expense') {
+                        $statement_balance -= $db_item['amount'];
+                    } else {
+                        $statement_balance += $db_item['amount'];
+                    }
+                }
+            }
 
-if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
-    $start_date = date('Y-m-d', strtotime($_GET['start_date']));
-    $end_date = date('Y-m-d', strtotime($_GET['end_date']));
-    $query->where_gte('date', $start_date)->where_lte('date', $end_date);
-}
+            $ui->assign('actual_balance', $actual_balance);
+            $ui->assign('statement_balance', $statement_balance);
 
-// Count total for pagination
-$total_items = $query->count();
+            // Assign only what you want to show: excel + db for statement
+            $ui->assign('excel_transactions', $excel_transactions);
+            $ui->assign('db_transactions', $db_transactions);
 
-$db_results = $query
-    ->limit($limit)
-    ->offset($offset)
-    ->find_array();
-
-$total_pages = ceil($total_items / $limit);
-
-// Index DB transactions by ID for quick access
-$db_transactions = [];
-foreach ($db_results as $tr) {
-    $db_transactions[$tr['id']] = $tr;
-}
-
-// Calculate actual_balance and statement_balance (same as before)
-$actual_balance = 0;
-foreach ($db_results as $tr) {
-    if ($tr['type'] === 'Expense') {
-        $actual_balance -= $tr['amount'];
-    } else {
-        $actual_balance += $tr['amount'];
-    }
-}
-
-$statement_balance = 0;
-foreach ($excel_transactions as $ex) {
-    $db_item = $db_transactions[$ex['id']] ?? null;
-    if ($db_item && $db_item['archived'] == 0) {
-        if ($db_item['type'] === 'Expense') {
-            $statement_balance -= $db_item['amount'];
-        } else {
-            $statement_balance += $db_item['amount'];
-        }
-    }
-}
-
-$ui->assign('actual_balance', $actual_balance);
-$ui->assign('statement_balance', $statement_balance);
-
-$ui->assign('excel_transactions', $excel_transactions);
-$ui->assign('db_transactions', $db_transactions);
-
-$ui->assign('current_page', $page);
-$ui->assign('total_pages', $total_pages);
-
-$ui->display('reconciliation.tpl');
+            // No pagination or full listing needed here
+            $ui->display('reconciliation.tpl'); // maybe use a simpler template for summary
             exit;
         } else {
             echo "Could not open uploaded file.";
         }
-    } 
+    }
     exit;
     break;
 
-    
-    
+
     
     
         case 'update-archived':
