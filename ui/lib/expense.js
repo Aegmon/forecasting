@@ -134,7 +134,12 @@ $(document).ready(function () {
             tags: $('#tags').val(),
             payee: $('#payee').val(),
             pmethod: $('#pmethod').val(),
-            ref: $('#ref').val()
+            ref: $('#ref').val(),
+            to: $('#to').val(),
+            accountNo: $('#accountNo').val(),
+              add_contact: $('#add_contact').val(),
+            bookaccount: $('#bookaccount').val(),
+          
 
         })
             .done(function (data) {
@@ -153,4 +158,5 @@ $(document).ready(function () {
                 }
             });
     });
+     
 });

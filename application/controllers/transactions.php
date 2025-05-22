@@ -26,9 +26,845 @@ _L[\'Submit\'] = \'' .
 Event::trigger('transactions');
 //
 switch ($action) {
+case 'select_bookaccount':
+         Event::trigger('transactions/select_bookaccount/');
+    $_SESSION['selected_bookaccount'] = $_POST['bookaccount'];
+    r2(U . 'transactions/reconciliation');
+    break;
 
 case 'reconciliation':
+      Event::trigger('transactions/reconciliation/');
+
+    $selected_bookaccount = $_SESSION['selected_bookaccount'] ?? '';
+
+    $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->order_by_asc('archived')
+        ->order_by_desc('date');
+
+    if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+        $start_date = date('Y-m-d', strtotime($_GET['start_date']));
+        $end_date = date('Y-m-d', strtotime($_GET['end_date']));
+        $query->where_gte('date', $start_date)->where_lte('date', $end_date);
+    }
+
+    if ($selected_bookaccount !== '') {
+        $query->where('bookaccount', $selected_bookaccount);
+    }
+
+    $db_results = $query->find_array();
+
+    $reconcile_query = ORM::for_table('reconcile')
+        ->where('system_id', $user_id)
+        ->order_by_desc('date');
+
+    if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+        $reconcile_query->where_gte('date', $start_date)->where_lte('date', $end_date);
+    }
+
+    if ($selected_bookaccount !== '') {
+        $reconcile_query->where('bookaccount', $selected_bookaccount);
+    }
+
+    $reconcile_results = $reconcile_query->find_array();
+
+    $actual_balance = 0;
+    $statement_balance = 0;
+    $book_balance = 0;
+    $unarchived_transactions = [];
+    $archived_transactions = [];
+
+    foreach ($db_results as $tr) {
+        if ($tr['archived'] == 0) {
+            $unarchived_transactions[] = $tr;
+        } else {
+            $archived_transactions[] = $tr;
+
+            // Add to statement balance
+            if ($tr['type'] === 'Expense') {
+                $statement_balance -= $tr['amount'];
+            } else {
+                $statement_balance += $tr['amount'];
+            }
+        }
+
+        // Add to actual balance
+        if ($tr['type'] === 'Expense') {
+            $actual_balance -= $tr['amount'];
+        } else {
+            $actual_balance += $tr['amount'];
+        }
+    }
+
+    // Calculate book balance from matched/archived reconcile entries
+    foreach ($reconcile_results as $rec) {
+        if ($rec['archived'] == 1) {
+            if ($rec['type'] === 'Expense') {
+                $book_balance -= $rec['amount'];
+            } else {
+                $book_balance += $rec['amount'];
+            }
+        }
+    }
+
+    // Prepare matched transactions
+    $matched_transactions = [];
+
+    foreach ($unarchived_transactions as $tr) {
+        $matched = null;
+        foreach ($reconcile_results as $rec) {
+            if ($tr['type'] === 'Deposit') {
+                if (
+                    $tr['account'] === $rec['account'] &&
+                    $tr['type'] === $rec['type'] &&
+                    $tr['accountnumber'] === $rec['accountnumber'] &&
+                    $tr['date'] === $rec['date'] &&
+                    $tr['to_field'] === $rec['to_field'] &&
+                    $tr['amount'] == $rec['amount'] &&
+                    $tr['description'] === $rec['description']
+                ) {
+                    $matched = $rec;
+                    break;
+                }
+            } elseif ($tr['type'] === 'Expense') {
+                if (
+                    $tr['account'] === $rec['account'] &&
+                    $tr['type'] === $rec['type'] &&
+                    $tr['accountnumber'] === $rec['accountnumber'] &&
+                    $tr['date'] === $rec['date'] &&
+                    $tr['to_field'] === $rec['to_field'] &&
+                    $tr['from_field'] === $rec['from_field'] &&
+                    $tr['bookaccount'] === $rec['bookaccount'] &&
+                    $tr['amount'] == $rec['amount'] &&
+                    $tr['description'] === $rec['description']
+                ) {
+                    $matched = $rec;
+                    break;
+                }
+            }
+        }
+        $matched_transactions[] = [
+            'transaction' => $tr,
+            'matched' => $matched
+        ];
+    }
+    $bookaccount_rows = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->distinct()
+        ->select('bookaccount')
+        ->find_array();
+
+    $bookaccounts = array_column($bookaccount_rows, 'bookaccount');
+
+// Assign to UI
+    $ui->assign('bookaccounts', $bookaccounts);
+    $ui->assign('selected_bookaccount', $selected_bookaccount);
+    // Assign balances to template
+    $ui->assign('actual_balance', $actual_balance);
+    $ui->assign('statement_balance', $statement_balance);
+    $ui->assign('book_balance', $book_balance);
+    $ui->assign('matched_transactions', $matched_transactions);
+
+    $ui->display('reconciliation.tpl');
+    break;
+case 'rdeposit-json':
+    $id = _post('id');
+    $t = ORM::for_table('sys_transactions')->find_one($id);
+
+    if ($t) {
+        echo json_encode([
+            'status' => 'success',
+            'data' => [
+                'account' => $t->account,
+                'accountnumber' => $t->accountnumber,
+                'to_field' => $t->to_field,
+                'date' => $t->date,
+                'description' => $t->description,
+                'amount' => $t->amount,
+            ],
+        ]);
+    } else {
+        echo json_encode(['status' => 'error']);
+    }
+    exit;
+case 'rexpense-json':
+    $id = _post('id');
+    $t = ORM::for_table('sys_transactions')->find_one($id);
+
+    if ($t) {
+        echo json_encode([
+            'status' => 'success',
+            'data' => [
+              'account' => $t->account,
+              'bookaccount' => $t->bookaccount,
+                'accountnumber' => $t->accountnumber,
+                'to_field' => $t->to_field,
+                'date' => $t->date,
+                'description' => $t->description,
+                'amount' => $t->amount,
+            ],
+        ]);
+    } else {
+        echo json_encode(['status' => 'error']);
+    }
+    exit;
+
+  case 'rdeposit':
+    Event::trigger('transactions/rdeposit/');
+
+    $selected_deposit_id = _post('deposit_select');
+
+    $ui->assign('selected_deposit_id', $selected_deposit_id);
+
+    // Get accounts
+    $d = ORM::for_table('sys_accounts')
+        ->where('system_id', $user_id)
+        ->find_many();
+    $ui->assign('d', $d);
+
+    // CRM accounts
+    $p = ORM::for_table('crm_accounts')->find_many();
+    $ui->assign('p', $p);
+
+    // Income categories
+    $cats = ORM::for_table('sys_cats')
+        ->where('type', 'Income')
+        ->order_by_asc('sorder')
+        ->find_many();
+    $ui->assign('cats', $cats);
+
+    $pms = ORM::for_table('sys_pmethods')->find_many();
+    $ui->assign('pms', $pms);
+    $ui->assign('mdate', $mdate);
+
+    $tags = Tags::get_all('Income');
+    $ui->assign('tags', $tags);
+
+    $ui->assign(
+        'xheader',
+        Asset::css([
+            'dropzone/dropzone',
+            'modal',
+            's2/css/select2.min',
+            'dp/dist/datepicker.min',
+        ])
+    );
+
+    $ui->assign(
+        'xfooter',
+        Asset::js([
+            'modal',
+            'dropzone/dropzone',
+            's2/js/select2.min',
+            's2/js/i18n/' . lan(),
+            'dp/dist/datepicker.min',
+            'dp/i18n/' . $config['language'],
+            'numeric',
+            'deposit',
+        ])
+    );
+
+    $ui->assign(
+        'xjq',
+        '
+        $(\'.amount\').autoNumeric(\'init\', {
+            aSign: \'' . $config['currency_code'] . ' \',
+            dGroup: ' . $config['thousand_separator_placement'] . ',
+            aPad: ' . $config['currency_decimal_digits'] . ',
+            pSign: \'' . $config['currency_symbol_position'] . '\',
+            aDec: \'' . $config['dec_point'] . '\',
+            aSep: \'' . $config['thousands_sep'] . '\'
+        });
+        '
+    );
+
+    // All deposit transactions for dropdown
+    $deposit_trans = ORM::for_table('sys_transactions')
+        ->where('type', 'Deposit')
+        ->where('system_id', $user_id)
+        ->where('archived', 0)
+        ->order_by_desc('id')
+        ->find_many();
+    $ui->assign('deposit_trans', $deposit_trans);
+
+    // If a deposit is selected, fetch its details
+    $selected_deposit = false;
+    if ($selected_deposit_id) {
+        $selected_deposit = ORM::for_table('sys_transactions')->find_one($selected_deposit_id);
+    }
+    $ui->assign('selected_deposit', $selected_deposit);
+
+    $tr = ORM::for_table('sys_transactions')
+        ->where('type', 'Income')
+        ->where('system_id', $user_id)
+        ->order_by_desc('id')
+        ->limit(20)
+        ->find_many();
+    $ui->assign('tr', $tr);
+   $ui->assign('xheader', Asset::css([
+                'dropzone/dropzone',
+                'modal',
+                's2/css/select2.min',
+                'dp/dist/datepicker.min',
+            ]));
+            $ui->assign('xfooter', Asset::js([
+                'modal',
+                'dropzone/dropzone',
+                's2/js/select2.min',
+                's2/js/i18n/' . lan(),
+                'dp/dist/datepicker.min',
+                'dp/i18n/' . $config['language'],
+                'numeric',
+                'expense',
+            ]));
+
+    $ui->display('rdeposit.tpl');
+    break;
+
+
+
+    case 'rdeposit-post':
+ $selected_bookaccount = $_SESSION['selected_bookaccount'] ?? '';
+
+    Event::trigger('transactions/rdeposit-post/');
+    $system_id = $user_id;
+    $account = _post('account');
+    $date = _post('date');
+    $amount = _post('amount');
+    $amount = Finance::amount_fix($amount);
+    $payerid = _post('payer');
+    $ref = _post('ref');
+    $pmethod = _post('pmethod');
+    $cat = _post('cats');
+    $accountnumber = _post('accountNo');
+    $to = _post('to');
+    $attachments = _post('attachments');
+
+    if ($payerid == '') {
+        $payerid = '0';
+    }
+    $description = _post('description');
+    $msg = '';
+
+    if ($description == '') {
+        $msg .= $_L['description_error'] . '<br>';
+    }
+
+    if ($accountnumber == '') {
+        $msg .= 'No Account Number' . '<br>';
+    }
+    if (Validator::Length($account, 100, 1) == false) {
+        $msg .= $_L['Choose an Account'] . ' ' . '<br>';
+    }
+
+    if (!is_numeric($amount) || floatval($amount) <= 0) {
+        $msg .= $_L['amount_error'] . ' (Amount must be greater than 0)' . '<br>';
+    }
+
+    if ($msg == '') {
+        $d = ORM::for_table('reconcile')->create();
+        $d->system_id = $user_id;
+        $d->account = $account;
+        $d->type = 'Deposit';
+        $d->amount = $amount;
+        $d->category = $cat;
+        $d->accountnumber = $accountnumber;
+        $d->to_field = $to;
+        $d->bookaccount = $to;
+        $d->date = $date;
+        $d->description = $description;
+        $d->updated_at = date('Y-m-d H:i:s');
+        $d->save();
+
+        $tid = $d->id();
+        _log("New Deposit: $description [TrID: $tid | Amount: $amount]", 'Admin', $user['id']);
+
+        Event::trigger('transactions/reconciliation/');
+
+       $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->where('bookaccount', $to)
+        ->order_by_asc('archived')
+        ->order_by_desc('date');
+
+        if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+            $start_date = date('Y-m-d', strtotime($_GET['start_date']));
+            $end_date = date('Y-m-d', strtotime($_GET['end_date']));
+            $query->where_gte('date', $start_date)->where_lte('date', $end_date);
+        }
+
+        $db_results = $query->find_array();
+
+        $reconcile_query = ORM::for_table('reconcile')
+            ->where('system_id', $user_id)
+            ->where('bookaccount', $to)
+            ->order_by_desc('date');
+
+        if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+            $reconcile_query->where_gte('date', $start_date)->where_lte('date', $end_date);
+        }
+
+     
+
+        $reconcile_results = $reconcile_query->find_array();
+
+        $actual_balance = 0;
+        $statement_balance = 0;
+        $book_balance = 0;
+        $unarchived_transactions = [];
+        $archived_transactions = [];
+
+        foreach ($db_results as $tr) {
+            if ($tr['archived'] == 0) {
+                $unarchived_transactions[] = $tr;
+            } else {
+                $archived_transactions[] = $tr;
+
+                if ($tr['type'] === 'Expense') {
+                    $statement_balance -= $tr['amount'];
+                } else {
+                    $statement_balance += $tr['amount'];
+                }
+            }
+
+            if ($tr['type'] === 'Expense') {
+                $actual_balance -= $tr['amount'];
+            } else {
+                $actual_balance += $tr['amount'];
+            }
+        }
+
+        foreach ($reconcile_results as $rec) {
+            if ($rec['archived'] == 1) {
+                if ($rec['type'] === 'Expense') {
+                    $book_balance -= $rec['amount'];
+                } else {
+                    $book_balance += $rec['amount'];
+                }
+            }
+        }
+
+        $matched_transactions = [];
+
+        foreach ($unarchived_transactions as $tr) {
+            $matched = null;
+            foreach ($reconcile_results as $rec) {
+                if ($tr['type'] === 'Deposit') {
+                    if (
+                        $tr['account'] === $rec['account'] &&
+                        $tr['type'] === $rec['type'] &&
+                        $tr['accountnumber'] === $rec['accountnumber'] &&
+                        $tr['date'] === $rec['date'] &&
+                        $tr['to_field'] === $rec['to_field'] &&
+                        $tr['amount'] == $rec['amount'] &&
+                        $tr['description'] === $rec['description']
+                    ) {
+                        $matched = $rec;
+                        break;
+                    }
+                } elseif ($tr['type'] === 'Expense') {
+                    if (
+                        $tr['account'] === $rec['account'] &&
+                        $tr['type'] === $rec['type'] &&
+                        $tr['accountnumber'] === $rec['accountnumber'] &&
+                        $tr['date'] === $rec['date'] &&
+                        $tr['to_field'] === $rec['to_field'] &&
+                        $tr['from_field'] === $rec['from_field'] &&
+                        $tr['bookaccount'] === $rec['bookaccount'] &&
+                        $tr['amount'] == $rec['amount'] &&
+                        $tr['description'] === $rec['description']
+                    ) {
+                        $matched = $rec;
+                        break;
+                    }
+                }
+            }
+            $matched_transactions[] = [
+                'transaction' => $tr,
+                'matched' => $matched
+            ];
+        }
+  $bookaccount_rows = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->distinct()
+        ->select('bookaccount')
+        ->find_array();
+
+    $bookaccounts = array_column($bookaccount_rows, 'bookaccount');
+
+// Assign to UI
+       $ui->assign('bookaccounts', $bookaccounts);
+       $ui->assign('selected_bookaccount', $to);
+        $ui->assign('actual_balance', $actual_balance);
+        $ui->assign('statement_balance', $statement_balance);
+        $ui->assign('book_balance', $book_balance);
+        $ui->assign('matched_transactions', $matched_transactions);
+
+        $ui->display('reconciliation.tpl');
+    } else {
+        echo $msg;
+    }
+    break;
+
+
+        case 'rexpense':
+            Event::trigger('transactions/expense/');
+           $selected_deposit_id = _post('deposit_select');
+
+    $ui->assign('selected_deposit_id', $selected_deposit_id);
+            // Fetch user-specific accounts
+            $d = ORM::for_table('sys_accounts')
+                ->where('system_id', $user_id)
+                ->find_many();
+        
+            // Fetch CRM accounts
+            $p = ORM::for_table('crm_accounts')->find_many();
+        
+            // Assign data to template
+            $ui->assign('p', $p);
+            $ui->assign('d', $d);
+        
+            // Tags for expenses
+            $tags = Tags::get_all('Expense');
+            $ui->assign('tags', $tags);
+        
+            // Expense categories
+            $cats = ORM::for_table('sys_cats')
+                ->where('type', 'Expense')
+                ->order_by_asc('sorder')
+                ->find_many();
+            $ui->assign('cats', $cats);
+        
+            // Payment methods
+            $pms = ORM::for_table('sys_pmethods')->find_many();
+            $ui->assign('pms', $pms);
+        
+            // Set current date
+            $ui->assign('mdate', $mdate);
+        
+            // CSS Assets
+            $ui->assign('xheader', Asset::css([
+                'dropzone/dropzone',
+                'modal',
+                's2/css/select2.min',
+                'dp/dist/datepicker.min',
+            ]));
+        
+            // JS Assets
+            $ui->assign('xfooter', Asset::js([
+                'modal',
+                'dropzone/dropzone',
+                's2/js/select2.min',
+                's2/js/i18n/' . lan(),
+                'dp/dist/datepicker.min',
+                'dp/i18n/' . $config['language'],
+                'numeric',
+                'expense',
+            ]));
+        
+            // jQuery initialization for amount input
+            $ui->assign('xjq', "
+            $('.amount').autoNumeric('init', {
+                aSign: '{$config['currency_code']} ',
+                dGroup: {$config['thousand_separator_placement']},
+                aPad: {$config['currency_decimal_digits']},
+                pSign: '{$config['currency_symbol_position']}',
+                aDec: '{$config['dec_point']}',
+                aSep: '{$config['thousands_sep']}',
+                minimumValue: '0.01'
+            });
+        ");
+        
+            // Get latest 20 expense transactions
+            $tr = ORM::for_table('sys_transactions')
+                ->where('system_id', $user_id)
+                ->where('type', 'Expense')
+                ->order_by_desc('id')
+                ->limit(20)
+                ->find_many();
+            $ui->assign('tr', $tr);
+         $deposit_trans = ORM::for_table('sys_transactions')
+        ->where('type', 'Expense')
+        ->where('archived', 0)
+        ->where('system_id', $user_id)
+        ->order_by_desc('id')
+        ->find_many();
+    $ui->assign('deposit_trans', $deposit_trans);
+
+    // If a deposit is selected, fetch its details
+    $selected_deposit = false;
+    if ($selected_deposit_id) {
+        $selected_deposit = ORM::for_table('sys_transactions')->find_one($selected_deposit_id);
+    }
+    $ui->assign('selected_deposit', $selected_deposit);
+            // Display the expense page
+            $ui->display('rexpense.tpl');
+            break;
+        
+
+    case 'rexpense-post':
+        Event::trigger('transactions/rexpense-post/');
+        $selected_bookaccount = $_SESSION['selected_bookaccount'] ?? '';
+        $account = _post('account');
+        $date = _post('date');
+        $amount = _post('amount');
+        $amount = Finance::amount_fix($amount);
+        $cat = _post('cats');
+        $accountnumber = _post('accountNo');
+        $to = _post('to');
+        $bookaccount = _post('bookaccount');
+
+
+        $description = _post('description');
+        $msg = '';
+        if ($description == '') {
+            $msg .= $_L['description_error'] . '<br>';
+        }
+
+        if (Validator::Length($account, 100, 1) == false) {
+            $msg .= $_L['Choose an Account'] . ' ' . '<br>';
+        }
+
+        if (!is_numeric($amount) || floatval($amount) <= 0) {
+            $msg .= $_L['amount_error'] . ' (Amount must be greater than 0)' . '<br>';
+        }
+        if ($msg == '') {
+            $d = ORM::for_table('reconcile')->create();
+            $d-> system_id = $user_id;
+            $d->account = $account;
+            $d->type = 'Expense';
+    
+            $d->amount = $amount;
+            $d->category = $cat;
+  
+            $d->accountnumber = $accountnumber;
+            $d->to_field = $to;
+            $d->bookaccount = $bookaccount;
+            $d->from_field = $account;
+            $d->description = $description;
+            $d->date = $date;
+
+        
+            $d->updated_at = date('Y-m-d H:i:s');
+
+            $d->save();
+            $tid = $d->id();
+            _log(
+                'New Expense: ' .
+                    $description .
+                    ' [TrID: ' .
+                    $tid .
+                    ' | Amount: ' .
+                    $amount .
+                    ']',
+                'Admin',
+                $user['id']
+            );
+          
     Event::trigger('transactions/reconciliation/');
+    $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+         ->where('bookaccount', $bookaccount)
+     
+        ->order_by_asc('archived')
+        ->order_by_desc('date');
+
+    if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+        $start_date = date('Y-m-d', strtotime($_GET['start_date']));
+        $end_date = date('Y-m-d', strtotime($_GET['end_date']));
+        $query->where_gte('date', $start_date)->where_lte('date', $end_date);
+    }
+
+    $db_results = $query->find_array();
+
+    $reconcile_query = ORM::for_table('reconcile')
+        ->where('system_id', $user_id)
+         ->where('bookaccount', $bookaccount)
+        ->order_by_desc('date');
+
+    if (!empty($_GET['start_date']) && !empty($_GET['end_date'])) {
+        $reconcile_query->where_gte('date', $start_date)->where_lte('date', $end_date);
+    }
+   
+    $reconcile_results = $reconcile_query->find_array();
+
+    $actual_balance = 0;
+    $statement_balance = 0;
+    $book_balance = 0;
+    $unarchived_transactions = [];
+    $archived_transactions = [];
+
+    foreach ($db_results as $tr) {
+        if ($tr['archived'] == 0) {
+            $unarchived_transactions[] = $tr;
+        } else {
+            $archived_transactions[] = $tr;
+
+            // Add to statement balance
+            if ($tr['type'] === 'Expense') {
+                $statement_balance -= $tr['amount'];
+            } else {
+                $statement_balance += $tr['amount'];
+            }
+        }
+
+        // Add to actual balance
+        if ($tr['type'] === 'Expense') {
+            $actual_balance -= $tr['amount'];
+        } else {
+            $actual_balance += $tr['amount'];
+        }
+    }
+
+    // Calculate book balance from matched/archived reconcile entries
+    foreach ($reconcile_results as $rec) {
+        if ($rec['archived'] == 1) {
+            if ($rec['type'] === 'Expense') {
+                $book_balance -= $rec['amount'];
+            } else {
+                $book_balance += $rec['amount'];
+            }
+        }
+    }
+
+    // Prepare matched transactions
+    $matched_transactions = [];
+
+    foreach ($unarchived_transactions as $tr) {
+        $matched = null;
+        foreach ($reconcile_results as $rec) {
+            if ($tr['type'] === 'Deposit') {
+                if (
+                    $tr['account'] === $rec['account'] &&
+                    $tr['type'] === $rec['type'] &&
+                    $tr['accountnumber'] === $rec['accountnumber'] &&
+                    $tr['date'] === $rec['date'] &&
+                    $tr['to_field'] === $rec['to_field'] &&
+                    $tr['amount'] == $rec['amount'] &&
+                    $tr['description'] === $rec['description']
+                ) {
+                    $matched = $rec;
+                    break;
+                }
+            } elseif ($tr['type'] === 'Expense') {
+                if (
+                    $tr['account'] === $rec['account'] &&
+                    $tr['type'] === $rec['type'] &&
+                    $tr['accountnumber'] === $rec['accountnumber'] &&
+                    $tr['date'] === $rec['date'] &&
+                    $tr['to_field'] === $rec['to_field'] &&
+                     $tr['from_field'] === $rec['from_field'] &&
+                    $tr['bookaccount'] === $rec['bookaccount'] &&
+                    $tr['amount'] == $rec['amount'] &&
+                    $tr['description'] === $rec['description']
+                ) {
+                    $matched = $rec;
+                    break;
+                }
+            }
+        }
+        $matched_transactions[] = [
+            'transaction' => $tr,
+            'matched' => $matched
+        ];
+    }
+  $bookaccount_rows = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id)
+        ->distinct()
+        ->select('bookaccount')
+        ->find_array();
+
+    $bookaccounts = array_column($bookaccount_rows, 'bookaccount');
+
+// Assign to UI
+    $ui->assign('bookaccounts', $bookaccounts);
+       $ui->assign('selected_bookaccount', $to);
+    // Assign balances to template
+    $ui->assign('actual_balance', $actual_balance);
+    $ui->assign('statement_balance', $statement_balance);
+    $ui->assign('book_balance', $book_balance);
+    $ui->assign('matched_transactions', $matched_transactions);
+
+    $ui->display('reconciliation.tpl');
+        } else {
+            echo $msg;
+        }
+        break;
+
+
+    case 'reports':
+    Event::trigger('transactions/reports/');
+
+    $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+    $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+
+    $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
+    $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
+
+    $paginator = Paginator::bootstrap('sys_transactions');
+
+    $query = ORM::for_table('sys_transactions')
+        ->where('system_id', $user_id);
+
+    // Apply date filter to the query
+    if ($start_date_formatted && $end_date_formatted) {
+        $query->where_gte('date', $start_date_formatted)
+              ->where_lte('date', $end_date_formatted);
+    }
+    $selected_bookaccount = isset($_SESSION['selected_bookaccount']) ? $_SESSION['selected_bookaccount'] : '';
+
+    // Optional: Update from POST if just submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bookaccount'])) {
+        $_SESSION['selected_bookaccount'] = $_POST['bookaccount'];
+        $selected_bookaccount = $_POST['bookaccount'];
+    }
+
+    // Apply book account filter if selected
+    if (!empty($selected_bookaccount)) {
+        $query->where('bookaccount', $selected_bookaccount);
+    }
+    // Fetch filtered data
+    $d = $query->order_by_desc('date')
+              ->offset($paginator['startpoint'])
+              ->limit($paginator['limit'])
+              ->find_many();
+
+    // Calculate balances
+    $total_actual = 0.0;
+    $total_book = 0.0;
+
+    foreach ($d as $transaction) {
+        $amount = $transaction->type == 'Expense' ? -$transaction->amount : $transaction->amount;
+        $total_actual += $amount;
+
+        if ($transaction->archived == 1) {
+            $total_book += $amount;
+        }
+    }
+
+    // Assign to template
+    $ui->assign('d', $d);
+    $ui->assign('paginator', $paginator);
+    $ui->assign('start_date', $start_date);
+    $ui->assign('end_date', $end_date);
+    $ui->assign('actual_balance', $total_actual);
+    $ui->assign('book_balance', $total_book);
+
+    $ui->assign('xjq', '
+    document.getElementById("filterBtn").addEventListener("click", function () {
+        var sDate = document.getElementById("start_date").value;
+        var eDate = document.getElementById("end_date").value;
+
+        window.location.href = "?ng=transactions/reports&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
+    });
+');
+
+
+    $ui->display('reports.tpl');
+    break;
+
+   case 'excel':
+    Event::trigger('transactions/excel/');
 
     $excel_transactions = $_SESSION['excel_transactions'] ?? [];
 
@@ -84,70 +920,8 @@ case 'reconciliation':
     $ui->assign('db_transactions', $db_transactions);
 
 
-    $ui->display('reconciliation.tpl');
+    $ui->display('excel.tpl');
     break;
-
-case 'reports':
-    Event::trigger('transactions/reports/');
-
-    $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
-    $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
-
-    $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
-    $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
-
-    $paginator = Paginator::bootstrap('sys_transactions');
-
-    $query = ORM::for_table('sys_transactions')
-        ->where('system_id', $user_id);
-
-    // Apply date filter to the query
-    if ($start_date_formatted && $end_date_formatted) {
-        $query->where_gte('date', $start_date_formatted)
-              ->where_lte('date', $end_date_formatted);
-    }
-
-    // Fetch filtered data
-    $d = $query->order_by_desc('date')
-              ->offset($paginator['startpoint'])
-              ->limit($paginator['limit'])
-              ->find_many();
-
-    // Calculate balances
-    $total_actual = 0.0;
-    $total_book = 0.0;
-
-    foreach ($d as $transaction) {
-        $amount = $transaction->type == 'Expense' ? -$transaction->amount : $transaction->amount;
-        $total_actual += $amount;
-
-        if ($transaction->archived == 1) {
-            $total_book += $amount;
-        }
-    }
-
-    // Assign to template
-    $ui->assign('d', $d);
-    $ui->assign('paginator', $paginator);
-    $ui->assign('start_date', $start_date);
-    $ui->assign('end_date', $end_date);
-    $ui->assign('actual_balance', $total_actual);
-    $ui->assign('book_balance', $total_book);
-
-    $ui->assign('xjq', '
-    document.getElementById("filterBtn").addEventListener("click", function () {
-        var sDate = document.getElementById("start_date").value;
-        var eDate = document.getElementById("end_date").value;
-
-        window.location.href = "?ng=transactions/reports&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
-    });
-');
-
-
-    $ui->display('reports.tpl');
-    break;
-
-
 case 'import_csv':
     Event::trigger('transactions/import_csv/');
 
@@ -221,7 +995,7 @@ case 'import_csv':
             $ui->assign('db_transactions', $db_transactions);
 
             // No pagination or full listing needed here
-            $ui->display('reconciliation.tpl'); // maybe use a simpler template for summary
+            $ui->display('excel.tpl'); // maybe use a simpler template for summary
             exit;
         } else {
             echo "Could not open uploaded file.";
@@ -325,7 +1099,18 @@ case 'list':
         $query->where_gte('date', $start_date_formatted)
               ->where_lte('date', $end_date_formatted);
     }
+$selected_bookaccount = isset($_SESSION['selected_bookaccount']) ? $_SESSION['selected_bookaccount'] : '';
 
+// Optional: Update from POST if just submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bookaccount'])) {
+    $_SESSION['selected_bookaccount'] = $_POST['bookaccount'];
+    $selected_bookaccount = $_POST['bookaccount'];
+}
+
+// Apply book account filter if selected
+if (!empty($selected_bookaccount)) {
+    $query->where('bookaccount', $selected_bookaccount);
+}
     $d = $query->offset($paginator['startpoint'])
               ->limit($paginator['limit'])
               ->order_by_desc('date')
@@ -359,7 +1144,68 @@ case 'list':
     $ui->display('transactions.tpl');
     break;
 
+case 'reconlist':
+    Event::trigger('transactions/reconlist/');
 
+    $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '';
+    $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '';
+
+    $start_date_formatted = !empty($start_date) ? date('Y-m-d', strtotime($start_date)) : null;
+    $end_date_formatted = !empty($end_date) ? date('Y-m-d', strtotime($end_date)) : null;
+
+    $paginator = Paginator::bootstrap('reconcile');
+
+    $query = ORM::for_table('reconcile')
+        ->where('system_id', $user_id);
+$selected_bookaccount = isset($_SESSION['selected_bookaccount']) ? $_SESSION['selected_bookaccount'] : '';
+
+// Optional: Update from POST if just submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bookaccount'])) {
+    $_SESSION['selected_bookaccount'] = $_POST['bookaccount'];
+    $selected_bookaccount = $_POST['bookaccount'];
+}
+
+// Apply book account filter if selected
+if (!empty($selected_bookaccount)) {
+    $query->where('bookaccount', $selected_bookaccount);
+}
+    if ($start_date_formatted && $end_date_formatted) {
+        $query->where_gte('date', $start_date_formatted)
+              ->where_lte('date', $end_date_formatted);
+    }
+
+    $d = $query->offset($paginator['startpoint'])
+              ->limit($paginator['limit'])
+              ->order_by_desc('date')
+              ->find_many();
+
+    $ui->assign('d', $d);
+    $ui->assign('paginator', $paginator);
+    $ui->assign('start_date', $start_date);
+    $ui->assign('end_date', $end_date);
+
+    $ui->assign('xjq', '
+        document.getElementById("filterBtn").addEventListener("click", function () {
+            var sDate = document.getElementById("start_date").value;
+            var eDate = document.getElementById("end_date").value;
+            document.getElementById("export_start_date").value = sDate;
+            document.getElementById("export_end_date").value = eDate;
+
+            window.location.href = "?ng=transactions/list&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
+        });
+
+        document.getElementById("exportForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            var sDate = document.getElementById("export_start_date").value;
+            var eDate = document.getElementById("export_end_date").value;
+
+            window.location.href = "?ng=transactions/export_csv&start_date=" + encodeURIComponent(sDate) + "&end_date=" + encodeURIComponent(eDate);
+        });
+    ');
+
+    $ui->display('reconlist.tpl');
+    break;
 
 
 
@@ -582,11 +1428,65 @@ case 'list':
             }
             exit;
             break;
-        
+        case 'lookup':
+              Event::trigger('transactions/lookup/');
+    $to = _post('to'); // Or use _get('to') if sent via GET
+
+    $t = ORM::for_table('sys_transactions')->where('bookaccount', $to)->where('system_id', $user_id)->find_one();
+
+    if ($t) {
+        // Record found, return account number
+        echo json_encode([
+            'exists' => true,
+            'accountNo' => $t['accountnumber']
+        ]);
+    } else {
+        // No match found
+        echo json_encode([
+            'exists' => false
+        ]);
+    }
+    break;
+   case 'lookup-expense':
+              Event::trigger('transactions/lookup-expense/');
+    $bookaccount = _post('bookaccount'); // Or use _get('to') if sent via GET
+
+    $t = ORM::for_table('sys_transactions')->where('bookaccount', $bookaccount)->where('system_id', $user_id)->find_one();
+
+    if ($t) {
+        // Record found, return account number
+        echo json_encode([
+            'exists' => true,
+            'accountNo' => $t['accountnumber']
+        ]);
+    } else {
+        // No match found
+        echo json_encode([
+            'exists' => false
+        ]);
+    }
+    break;
+      case 'get-bookaccounts':
+        Event::trigger('transactions/get-bookaccounts/');
+    $term = _post('q'); // For Select2's query param
+    $results = [];
+
+    $bookAccounts = ORM::for_table('sys_transactions')
+        ->where_like('bookaccount', '%' . $term . '%')
+        ->where('system_id', $user_id)
+        ->distinct()
+        ->select('bookaccount')
+        ->limit(20)
+        ->find_many();
+
+    foreach ($bookAccounts as $ba) {
+        $results[] = ['id' => $ba->bookaccount, 'text' => $ba->bookaccount];
+    }
+
+    echo json_encode(['results' => $results]);
+    exit;
     case 'deposit':
         Event::trigger('transactions/deposit/');
-
-          
             $d = ORM::for_table('sys_accounts')
              ->where('system_id', $user_id)
              ->find_many();
@@ -681,8 +1581,9 @@ case 'list':
         $pmethod = _post('pmethod');
         $cat = _post('cats');
         $tags = $_POST['tags'];
-
-        /* @since Build 4560. added support file attachments */
+        $accountnumber = _post('accountNo');
+        $to = _post('to');
+        $add_contact = _post('add_contact');
 
         $attachments = _post('attachments');
 
@@ -694,7 +1595,11 @@ case 'list':
         if ($description == '') {
             $msg .= $_L['description_error'] . '<br>';
         }
-
+  
+        $msg = '';
+        if ($accountnumber == '') {
+            $msg .= 'No Account Number' . '<br>';
+        }
         if (Validator::Length($account, 100, 1) == false) {
             $msg .= $_L['Choose an Account'] . ' ' . '<br>';
         }
@@ -709,8 +1614,8 @@ case 'list':
 
             $a = ORM::for_table('sys_accounts')
              ->where('system_id', $user_id)
-                ->where('account', $account)
-                ->find_one();
+             ->where('account', $account)
+             ->find_one();
             $cbal = $a['balance'];
             $nbal = $cbal + $amount;
             $a->balance = $nbal;
@@ -725,8 +1630,11 @@ case 'list':
             $d->category = $cat;
             $d->method = $pmethod;
             $d->ref = $ref;
-
+            $d->accountnumber = $accountnumber;
+            $d->to_field = $to;
+            $d->bookaccount = $to;
             $d->description = $description;
+            $d->source = $add_contact;
             // Build 4560
             $d->attachments = $attachments;
             $d->date = $date;
@@ -744,8 +1652,10 @@ case 'list':
             $d->aid = 0;
             $d->updated_at = date('Y-m-d H:i:s');
             //
-
+         
             $d->save();
+           
+
             $tid = $d->id();
             _log(
                 'New Deposit: ' .
@@ -857,9 +1767,11 @@ case 'list':
         $pmethod = _post('pmethod');
         $cat = _post('cats');
         $tags = $_POST['tags'];
-
+        $accountnumber = _post('accountNo');
+        $to = _post('to');
+        $bookaccount = _post('bookaccount');
         $attachments = _post('attachments');
-
+         $add_contact = _post('add_contact');
         if (!is_numeric($payee)) {
             $payee = '0';
         }
@@ -901,8 +1813,12 @@ case 'list':
             $d->category = $cat;
             $d->method = $pmethod;
             $d->ref = $ref;
-
+            $d->accountnumber = $accountnumber;
+            $d->to_field = $to;
+            $d->bookaccount = $bookaccount;
+            $d->from_field = $account;
             $d->description = $description;
+             $d->source = $add_contact;
             // Build 4560
             $d->attachments = $attachments;
             $d->date = $date;

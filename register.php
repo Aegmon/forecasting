@@ -1,10 +1,12 @@
 <?php
-// Database connection settings
+// $host = 'localhost';     
+// $dbname = 'u286208807_forecasting';   
+// $username = 'u286208807_forecasting';      
+// $password = 'Forecasting@2024';           
 $host = 'localhost';      // Database host
-$dbname = 'u286208807_forecasting';     // Database name
-$username = 'u286208807_forecasting';       // Database username
-$password = 'Forecasting@2024';           // Database password
-
+$dbname = 'forecast';     // Database name
+$username = 'root';       // Database username
+$password = ''; 
 // Initialize variables to retain form data after submission failure
 $usernameInput = $firstnameInput = $middlenameInput = $lastnameInput = $emailInput = "";
 

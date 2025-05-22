@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-05-22 08:53:44
-  from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\transactions.tpl' */
+/* Smarty version 3.1.39, created on 2025-05-22 08:53:41
+  from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\reconlist.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_682e7598432bf4_95092579',
+  'unifunc' => 'content_682e75954c5d17_35091470',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
-    'd6cde22432d768362e13a1ea9e7bf6541c4e4764' => 
+    '1872fc4c475355deb7f80d7e67fe7bf21ebd7aab' => 
     array (
-      0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\transactions.tpl',
-      1 => 1747789555,
+      0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\reconlist.tpl',
+      1 => 1747789561,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_682e7598432bf4_95092579 (Smarty_Internal_Template $_smarty_tpl) {
+function content_682e75954c5d17_35091470 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_720036587682e7598424187_46903268', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_219107902682e75954b7a73_81965576', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_720036587682e7598424187_46903268 extends Smarty_Internal_Block
+class Block_219107902682e75954b7a73_81965576 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_720036587682e7598424187_46903268',
+    0 => 'Block_219107902682e75954b7a73_81965576',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -109,22 +109,15 @@ $_smarty_tpl->tpl_vars['ds']->do_else = false;
                                 <tr>
                                     <td><?php echo date($_smarty_tpl->tpl_vars['_c']->value['df'],strtotime($_smarty_tpl->tpl_vars['ds']->value['date']));?>
 </td>
-                                 
-                               <td class="text-right">
+                                    <td><?php echo $_smarty_tpl->tpl_vars['ds']->value['account'];?>
+</td>
+                                
+                                  <td class="text-right">
                                         <?php if ($_smarty_tpl->tpl_vars['ds']->value['type'] == 'Expense') {?>
                                             <span class="text-danger"><?php echo $_smarty_tpl->tpl_vars['ds']->value['to_field'];?>
 </span>
                                         <?php } else { ?>
                                             <span class="text-success"><?php echo $_smarty_tpl->tpl_vars['ds']->value['to_field'];?>
-</span>
-                                        <?php }?>
-                                    </td>
-                                    <td class="text-right">
-                                        <?php if ($_smarty_tpl->tpl_vars['ds']->value['type'] == 'Expense') {?>
-                                            <span class="text-danger">-<?php echo $_smarty_tpl->tpl_vars['ds']->value['amount'];?>
-</span>
-                                        <?php } else { ?>
-                                            <span class="text-success"><?php echo $_smarty_tpl->tpl_vars['ds']->value['amount'];?>
 </span>
                                         <?php }?>
                                     </td>

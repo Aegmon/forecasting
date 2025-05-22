@@ -199,16 +199,15 @@ $(document).ready(function () {
     });
 
 
-    $ib_form_submit.click(function (e) {
+    $('#submit').click(function (e) {
         e.preventDefault();
         $('#ibox_form').block({ message: null });
         var _url = $("#_url").val();
+        console.log($('#to').val(), $('#accountNo').val());
         $.post(_url + 'transactions/deposit-post/', {
-
-
+            
             account: $('#account').val(),
             date: $('#date').val(),
-
             amount: $('#amount').val(),
             cats: $('#cats').val(),
             description: $('#description').val(),
@@ -216,8 +215,10 @@ $(document).ready(function () {
             tags: $('#tags').val(),
             payer: $('#payer').val(),
             pmethod: $('#pmethod').val(),
-            ref: $('#ref').val()
-
+            ref: $('#ref').val(),
+            to: $('#to').val(),
+             add_contact: $('#add_contact').val(),
+            accountNo: $('#accountNo').val()
         })
             .done(function (data) {
                 var sbutton = $("#submit");
@@ -235,4 +236,5 @@ $(document).ready(function () {
                 }
             });
     });
+   
 });

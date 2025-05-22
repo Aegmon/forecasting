@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-05-22 08:44:52
-  from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\expense.tpl' */
+/* Smarty version 3.1.39, created on 2025-05-21 22:15:43
+  from 'E:\Xampp\htdocs\forecasting\ui\theme\ibilling\expense.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_682e73844ba1e3_02576817',
+  'unifunc' => 'content_682de00f1b0624_33815403',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
-    'e131edd33fd3b906bd5ccde6bc9f747f4a6c37f8' => 
+    '9ec740ccd811feab07a43d9cbf345e4312b6e8ff' => 
     array (
-      0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\expense.tpl',
-      1 => 1747874690,
+      0 => 'E:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\expense.tpl',
+      1 => 1747836939,
       2 => 'file',
     ),
   ),
@@ -20,27 +20,27 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_682e73844ba1e3_02576817 (Smarty_Internal_Template $_smarty_tpl) {
+function content_682de00f1b0624_33815403 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1548900050682e73844a8098_66620446', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_347744553682de00f19df40_85952072', "content");
 ?>
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_2011080366682e73844b8f16_63192509', "script");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_993653583682de00f1afb29_53520792', "script");
 $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_1548900050682e73844a8098_66620446 extends Smarty_Internal_Block
+class Block_347744553682de00f19df40_85952072 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_1548900050682e73844a8098_66620446',
+    0 => 'Block_347744553682de00f19df40_85952072',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -62,8 +62,7 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
                       <div class="form-group">
                             <label for="bookaccount" class="col-sm-3 control-label">Account</label>
                             <div class="col-sm-9">
-                        
-                                     <select id="bookaccount" name="bookaccount" class="form-control"></select>
+                                <input type="text" class="form-control" id="bookaccount" name="bookaccount">
                             </div>
                         </div>
                         <div class="form-group">
@@ -375,12 +374,12 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 }
 /* {/block "content"} */
 /* {block "script"} */
-class Block_2011080366682e73844b8f16_63192509 extends Smarty_Internal_Block
+class Block_993653583682de00f1afb29_53520792 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'script' => 
   array (
-    0 => 'Block_2011080366682e73844b8f16_63192509',
+    0 => 'Block_993653583682de00f1afb29_53520792',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -388,95 +387,38 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 
 <?php echo '<script'; ?>
 >
-$(document).ready(function () {
-    // Initialize Select2
-    $('#bookaccount').select2({
-        tags: true,
-        placeholder: 'Type to search book account...',
-        ajax: {
-            url: '<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/get-bookaccounts',
-            type: 'POST',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data.results
-                };
-            },
-            cache: true
-        },
-        minimumInputLength: 1,
-        createTag: function (params) {
-            // Avoid creating tag if input is empty
-            const term = $.trim(params.term);
-            if (term === '') {
-                return null;
-            }
-            return {
-                id: term,
-                text: term,
-                newTag: true // mark as new
-            };
-        },
-        templateResult: function (data) {
-            var $result = $("<span></span>");
-            $result.text(data.text);
-            if (data.newTag) {
-                $result.append(" <em>(new)</em>");
-            }
-            return $result;
-        }
-    });
+$('#bookaccount').on('blur', function () {
+    let toValue = $(this).val();
 
-    // When a new tag is entered and Select2 closes, force it to select the custom value
-    $('#bookaccount').on('select2:close', function (e) {
-        var inputValue = $('#bookaccount').data('select2').dropdown.$search.val();
-
-        if (inputValue && !$('#bookaccount').find("option[value='" + inputValue + "']").length) {
-            // Add the new option and select it
-            var newOption = new Option(inputValue, inputValue, true, true);
-            $('#bookaccount').append(newOption).trigger('change');
-        }
-    });
-
-    // Handle blur logic
-    $('#bookaccount').on('change', function () {
-        let toValue = $(this).val();
-
-        if (toValue !== '') {
-            $.post('<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+    if (toValue !== '') {
+        $.post('<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
 transactions/lookup-expense', {
-                bookaccount: toValue
-            }, function (data) {
-                const res = JSON.parse(data);
+            bookaccount: toValue
+        }, function (data) {
+            const res = JSON.parse(data);
 
-                if (res.exists) {
-                    $('#accountNo').val(res.accountNo).prop('readonly', true);
-                    $('#add-contact-group').remove();
-                } else {
-                    $('#accountNo').val('').prop('readonly', false);
+            if (res.exists) {
+                $('#accountNo').val(res.accountNo).prop('readonly', true);
+                $('#add-contact-group').remove(); // Remove contact field if it was added
+            } else {
+                $('#accountNo').val('').prop('readonly', false);
 
-                    if (!$('#add-contact-group').length) {
-                        let contactField = `
-                            <div class="form-group" id="add-contact-group">
-                                <label class="col-sm-3 control-label">Add Contact</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="add_contact" id="add_contact" placeholder="Enter contact name">
-                                </div>
-                            </div>`;
-                        $('#accountNo').closest('.form-group').after(contactField);
-                    }
+                // Add input below accountNo only if it doesn't already exist
+                if (!$('#add-contact-group').length) {
+                    let contactField = `
+                        <div class="form-group" id="add-contact-group">
+                            <label class="col-sm-3 control-label">Add Contact</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="add_contact" id="add_contact" placeholder="Enter contact name">
+                            </div>
+                        </div>`;
+                    $('#accountNo').closest('.form-group').after(contactField);
                 }
-            });
-        }
-    });
+            }
+        });
+    }
 });
+
 <?php echo '</script'; ?>
 >
 <?php

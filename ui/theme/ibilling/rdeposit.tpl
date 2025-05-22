@@ -9,28 +9,38 @@
                     <h5>{$_L['Add Deposit']}</h5>
 
                 </div>
-                <div class="ibox-content" id="ibox_form">
+                <div class="ibox-content" id="ribox_form">
                     <div class="alert alert-danger" id="emsg">
                         <span id="emsgbody"></span>
                     </div>
-                    <form class="form-horizontal" method="post" id="tform" role="form">
+                    <form method="post"  class="form-horizontal">
+                 <div class="form-group">
+                    <label for="deposit_select" class="col-sm-3 control-label">Load From Deposit ID</label>
+                    <div class="col-sm-9">
+                        <select id="deposit_select" class="form-control">
+                            <option value="">-- Select Deposit ID --</option>
+                            {foreach $deposit_trans as $dt}
+                                <option value="{$dt['id']}">{$dt['id']} - {$dt['description']} - {$dt['amount']}- {$dt['bookaccount']}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+                    <form class="form-horizontal" method="post" id="tform" role="form" action="{$_url}transactions/rdeposit-post/">
+                   
+
                         <div class="form-group">
                             <label for="account" class="col-sm-3 control-label">From</label>
                             <div class="col-sm-9">
                                 <select id="account" name="account" class="form-control">
                                     <option value="">{$_L['Choose an Account']}</option>
                                     {foreach $d as $ds}
-                                        <option value="{$ds['account']}">{$ds['account']}</option>
+                                        <option selected value="{$ds['account']}">{$ds['account']}</option>
                                     {/foreach}
 
 
                                 </select>
-                            </div>
-                        </div>
-                         <div class="form-group">
-                            <label for="to" class="col-sm-3 control-label">To</label>
-                            <div class="col-sm-9">
-                               <select id="to" name="to" class="form-control"></select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -40,9 +50,15 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label for="to" class="col-sm-3 control-label">To</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="to" name="to">
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="date" class="col-sm-3 control-label">{$_L['Date']}</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control"  value="{$mdate}" name="date" id="date" datepicker data-date-format="yyyy-mm-dd" data-auto-close="true">
+                                <input type="date" class="form-control"  value="{$mdate}" name="date" id="date" datepicker data-date-format="yyyy-mm-dd" data-auto-close="true">
                             </div>
                         </div>
 
@@ -135,7 +151,7 @@
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
                                 <input type="hidden" name="attachments" id="attachments" value="">
-                                <button type="submit" id="submit" class="btn btn-primary"><i class="fa fa-check"></i> {$_L['Submit']}</button>
+                                <button type="submit" id="rsubmit" class="btn btn-primary"><i class="fa fa-check"></i> {$_L['Submit']}</button>
                             </div>
                         </div>
                     </form>
@@ -193,94 +209,70 @@
 
 {/block}
 {block name="script"}
-<script>
-$(document).ready(function () {
-    // Initialize Select2
-    $('#to').select2({
-        tags: true,
-        placeholder: 'Type to search book account...',
-        ajax: {
-            url: '{$_url}transactions/get-bookaccounts',
-            type: 'POST',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data.results
-                };
-            },
-            cache: true
-        },
-        minimumInputLength: 1,
-        createTag: function (params) {
-            // Avoid creating tag if input is empty
-            const term = $.trim(params.term);
-            if (term === '') {
-                return null;
+
+   <script>
+$('#deposit_select').on('change', function () {
+    const depositId = $(this).val();
+
+    if (depositId !== '') {
+        $.post("{$_url}transactions/rdeposit-json", {
+            id: depositId
+        }, function (data) {
+            const res = JSON.parse(data);
+            if (res.status === 'success') {
+                const d = res.data;
+
+                console.log('Account from server:', d.account);
+
+            const accountSelect = $('#account');
+
+            // Check if the option with d.account exists
+            if (accountSelect.find('option[value="' + d.account + '"]').length === 0) {
+                // If not, add it so we can select it
+                accountSelect.append($('<option>', {
+                    value: d.account,
+                    text: d.account
+                }));
             }
+
+            // Set the select to this value, which selects the option
+            accountSelect.val(d.account);
+
+
+                $('#accountNo').val(d.accountnumber);
+                $('#to').val(d.to_field);
+                $('#date').val(d.date);
+                $('#description').val(d.description);
+                $('#amount').val(d.amount);
+            } else {
+                alert('Transaction not found.');
+            }
+        });
+    }
+});
+$('#to').select2({
+    placeholder: 'Type to search book account...',
+    ajax: {
+        url:'{$_url}transactions/get-bookaccounts',
+        type: 'POST',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
             return {
-                id: term,
-                text: term,
-                newTag: true // mark as new
+                q: params.term
             };
         },
-        templateResult: function (data) {
-            var $result = $("<span></span>");
-            $result.text(data.text);
-            if (data.newTag) {
-                $result.append(" <em>(new)</em>");
-            }
-            return $result;
-        }
-    });
-
-    // When a new tag is entered and Select2 closes, force it to select the custom value
-    $('#to').on('select2:close', function (e) {
-        var inputValue = $('#to').data('select2').dropdown.$search.val();
-
-        if (inputValue && !$('#to').find("option[value='" + inputValue + "']").length) {
-            // Add the new option and select it
-            var newOption = new Option(inputValue, inputValue, true, true);
-            $('#to').append(newOption).trigger('change');
-        }
-    });
-
-    // Handle blur logic
-    $('#to').on('change', function () {
-        let toValue = $(this).val();
-
-        if (toValue !== '') {
-            $.post('{$_url}transactions/lookup', {
-                to: toValue
-            }, function (data) {
-                const res = JSON.parse(data);
-
-                if (res.exists) {
-                    $('#accountNo').val(res.accountNo).prop('readonly', true);
-                    $('#add-contact-group').remove();
-                } else {
-                    $('#accountNo').val('').prop('readonly', false);
-
-                    if (!$('#add-contact-group').length) {
-                        let contactField = `
-                            <div class="form-group" id="add-contact-group">
-                                <label class="col-sm-3 control-label">Add Contact</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="add_contact" id="add_contact" placeholder="Enter contact name">
-                                </div>
-                            </div>`;
-                        $('#accountNo').closest('.form-group').after(contactField);
-                    }
-                }
-            });
-        }
-    });
+        processResults: function (data) {
+            return {
+                results: data.results
+            };
+        },
+        cache: true
+    },
+    minimumInputLength: 1
 });
-</script>
-{/block}
 
+</script>
+
+
+{/block}

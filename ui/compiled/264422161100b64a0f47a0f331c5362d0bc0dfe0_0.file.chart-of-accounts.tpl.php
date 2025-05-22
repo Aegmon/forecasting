@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-05-22 08:27:17
-  from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\chart-of-accounts.tpl' */
+/* Smarty version 3.1.39, created on 2025-05-20 20:41:43
+  from 'E:\Xampp\htdocs\forecasting\ui\theme\ibilling\chart-of-accounts.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_682e6f65a40c33_19963130',
+  'unifunc' => 'content_682c7887945b14_94939761',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
-    'fbf4ac53e11cc320895b6054951ce5b89640b8de' => 
+    '264422161100b64a0f47a0f331c5362d0bc0dfe0' => 
     array (
-      0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\chart-of-accounts.tpl',
+      0 => 'E:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\chart-of-accounts.tpl',
       1 => 1747744901,
       2 => 'file',
     ),
@@ -21,25 +21,25 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
     'file:sections/chart-of-accounts-table.tpl' => 6,
   ),
 ),false)) {
-function content_682e6f65a40c33_19963130 (Smarty_Internal_Template $_smarty_tpl) {
+function content_682c7887945b14_94939761 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_159130906682e6f659b3fd4_33976107', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1544249190682c788793f772_98469025', "content");
 ?>
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_159130906682e6f659b3fd4_33976107 extends Smarty_Internal_Block
+class Block_1544249190682c788793f772_98469025 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_159130906682e6f659b3fd4_33976107',
+    0 => 'Block_1544249190682c788793f772_98469025',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {

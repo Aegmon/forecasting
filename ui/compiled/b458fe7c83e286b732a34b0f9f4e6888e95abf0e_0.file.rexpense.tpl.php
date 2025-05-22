@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-05-22 08:44:52
-  from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\expense.tpl' */
+/* Smarty version 3.1.39, created on 2025-05-22 07:59:18
+  from 'E:\Xampp\htdocs\forecasting\ui\theme\ibilling\rexpense.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_682e73844ba1e3_02576817',
+  'unifunc' => 'content_682e68d6dfbda7_20765792',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
-    'e131edd33fd3b906bd5ccde6bc9f747f4a6c37f8' => 
+    'b458fe7c83e286b732a34b0f9f4e6888e95abf0e' => 
     array (
-      0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\expense.tpl',
-      1 => 1747874690,
+      0 => 'E:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\rexpense.tpl',
+      1 => 1747871957,
       2 => 'file',
     ),
   ),
@@ -20,27 +20,30 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_682e73844ba1e3_02576817 (Smarty_Internal_Template $_smarty_tpl) {
+function content_682e68d6dfbda7_20765792 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1548900050682e73844a8098_66620446', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_1691024676682e68d6dea238_53465338', "content");
 ?>
 
+
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_2011080366682e73844b8f16_63192509', "script");
-$_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_798069243682e68d6dfb243_20513419', "script");
+?>
+
+<?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_1548900050682e73844a8098_66620446 extends Smarty_Internal_Block
+class Block_1691024676682e68d6dea238_53465338 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_1548900050682e73844a8098_66620446',
+    0 => 'Block_1691024676682e68d6dea238_53465338',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -54,16 +57,41 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 </h5>
 
                 </div>
-                <div class="ibox-content" id="ibox_form">
+                <div class="ibox-content" id="ribox_form">
                     <div class="alert alert-danger" id="emsg">
                         <span id="emsgbody"></span>
                     </div>
-                    <form class="form-horizontal" method="post" id="tform" role="form">
+                        <form method="post"  class="form-horizontal">
+                 <div class="form-group">
+                    <label for="deposit_select" class="col-sm-3 control-label">Load From Deposit ID</label>
+                    <div class="col-sm-9">
+                        <select id="deposit_select" class="form-control">
+                            <option value="">-- Select Deposit ID --</option>
+                            <?php
+$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['deposit_trans']->value, 'dt');
+$_smarty_tpl->tpl_vars['dt']->do_else = true;
+if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['dt']->value) {
+$_smarty_tpl->tpl_vars['dt']->do_else = false;
+?>
+                                    <option value="<?php echo $_smarty_tpl->tpl_vars['dt']->value['id'];?>
+"><?php echo $_smarty_tpl->tpl_vars['dt']->value['id'];?>
+ - <?php echo $_smarty_tpl->tpl_vars['dt']->value['description'];?>
+ - <?php echo $_smarty_tpl->tpl_vars['dt']->value['amount'];?>
+- <?php echo $_smarty_tpl->tpl_vars['dt']->value['bookaccount'];?>
+</option>
+                            <?php
+}
+$_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
+                        </select>
+                    </div>
+                </div>
+            </form>
+                       <form class="form-horizontal" method="post" id="tform" role="form" action="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/rexpense-post/">
                       <div class="form-group">
                             <label for="bookaccount" class="col-sm-3 control-label">Account</label>
                             <div class="col-sm-9">
-                        
-                                     <select id="bookaccount" name="bookaccount" class="form-control"></select>
+                                <input type="text" class="form-control" id="bookaccount" name="bookaccount">
                             </div>
                         </div>
                         <div class="form-group">
@@ -85,7 +113,7 @@ $_smarty_tpl->tpl_vars['ds']->do_else = true;
 if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['ds']->value) {
 $_smarty_tpl->tpl_vars['ds']->do_else = false;
 ?>
-                                        <option value="<?php echo $_smarty_tpl->tpl_vars['ds']->value['account'];?>
+                                        <option selected value="<?php echo $_smarty_tpl->tpl_vars['ds']->value['account'];?>
 "><?php echo $_smarty_tpl->tpl_vars['ds']->value['account'];?>
 </option>
                                     <?php
@@ -266,7 +294,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
                         <div class="form-group">
                             <div class="col-sm-offset-3 col-sm-9">
                                 <input type="hidden" name="attachments" id="attachments" value="">
-                                <button type="submit" id="submit" class="btn btn-primary"><i class="fa fa-check"></i> <?php echo $_smarty_tpl->tpl_vars['_L']->value['Submit'];?>
+                                <button type="submit" id="rsubmit" class="btn btn-primary"><i class="fa fa-check"></i> <?php echo $_smarty_tpl->tpl_vars['_L']->value['Submit'];?>
 </button>
                             </div>
                         </div>
@@ -276,56 +304,6 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
             </div>
         </div>
 
-        <div class="col-md-8">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5><?php echo $_smarty_tpl->tpl_vars['_L']->value['Recent Expense'];?>
-</h5>
-
-                </div>
-                <div class="ibox-content">
-
-                    <table class="table table-bordered sys_table">
-                        <thead>
-                        <tr>
-                            <th><?php echo $_smarty_tpl->tpl_vars['_L']->value['Description'];?>
-</th>
-                            <th><?php echo $_smarty_tpl->tpl_vars['_L']->value['Amount'];?>
-</th>
-
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        <?php
-$_from = $_smarty_tpl->smarty->ext->_foreach->init($_smarty_tpl, $_smarty_tpl->tpl_vars['tr']->value, 'trs');
-$_smarty_tpl->tpl_vars['trs']->do_else = true;
-if ($_from !== null) foreach ($_from as $_smarty_tpl->tpl_vars['trs']->value) {
-$_smarty_tpl->tpl_vars['trs']->do_else = false;
-?>
-                            <tr>
-                                <td><a href="<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/manage/<?php echo $_smarty_tpl->tpl_vars['trs']->value['id'];?>
-">
-                                        <?php if ($_smarty_tpl->tpl_vars['trs']->value['attachments'] != '') {?>
-                                            <i class="fa fa-paperclip"></i>
-                                        <?php }?>
-                                        <?php echo $_smarty_tpl->tpl_vars['trs']->value['description'];?>
-
-                                    </a> </td>
-                                <td class="amount"><?php echo $_smarty_tpl->tpl_vars['trs']->value['amount'];?>
-</td>
-                            </tr>
-                        <?php
-}
-$_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-        </div>
 
     </div>
 
@@ -375,110 +353,65 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 }
 /* {/block "content"} */
 /* {block "script"} */
-class Block_2011080366682e73844b8f16_63192509 extends Smarty_Internal_Block
+class Block_798069243682e68d6dfb243_20513419 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'script' => 
   array (
-    0 => 'Block_2011080366682e73844b8f16_63192509',
+    0 => 'Block_798069243682e68d6dfb243_20513419',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
 ?>
 
-<?php echo '<script'; ?>
+
+   <?php echo '<script'; ?>
 >
-$(document).ready(function () {
-    // Initialize Select2
-    $('#bookaccount').select2({
-        tags: true,
-        placeholder: 'Type to search book account...',
-        ajax: {
-            url: '<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/get-bookaccounts',
-            type: 'POST',
-            dataType: 'json',
-            delay: 250,
-            data: function (params) {
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: data.results
-                };
-            },
-            cache: true
-        },
-        minimumInputLength: 1,
-        createTag: function (params) {
-            // Avoid creating tag if input is empty
-            const term = $.trim(params.term);
-            if (term === '') {
-                return null;
+$('#deposit_select').on('change', function () {
+    const depositId = $(this).val();
+
+    if (depositId !== '') {
+        $.post("<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/rexpense-json", {
+            id: depositId
+        }, function (data) {
+            const res = JSON.parse(data);
+            if (res.status === 'success') {
+                const d = res.data;
+
+                console.log('Account from server:', d.account);
+
+            const accountSelect = $('#account');
+
+            // Check if the option with d.account exists
+            if (accountSelect.find('option[value="' + d.account + '"]').length === 0) {
+                // If not, add it so we can select it
+                accountSelect.append($('<option>', {
+                    value: d.account,
+                    text: d.account
+                }));
             }
-            return {
-                id: term,
-                text: term,
-                newTag: true // mark as new
-            };
-        },
-        templateResult: function (data) {
-            var $result = $("<span></span>");
-            $result.text(data.text);
-            if (data.newTag) {
-                $result.append(" <em>(new)</em>");
+
+            // Set the select to this value, which selects the option
+            accountSelect.val(d.account);
+
+                $('#bookaccount').val(d.bookaccount);
+                $('#accountNo').val(d.accountnumber);
+                $('#to').val(d.to_field);
+                $('#date').val(d.date);
+                $('#description').val(d.description);
+                $('#amount').val(d.amount);
+            } else {
+                alert('Transaction not found.');
             }
-            return $result;
-        }
-    });
-
-    // When a new tag is entered and Select2 closes, force it to select the custom value
-    $('#bookaccount').on('select2:close', function (e) {
-        var inputValue = $('#bookaccount').data('select2').dropdown.$search.val();
-
-        if (inputValue && !$('#bookaccount').find("option[value='" + inputValue + "']").length) {
-            // Add the new option and select it
-            var newOption = new Option(inputValue, inputValue, true, true);
-            $('#bookaccount').append(newOption).trigger('change');
-        }
-    });
-
-    // Handle blur logic
-    $('#bookaccount').on('change', function () {
-        let toValue = $(this).val();
-
-        if (toValue !== '') {
-            $.post('<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
-transactions/lookup-expense', {
-                bookaccount: toValue
-            }, function (data) {
-                const res = JSON.parse(data);
-
-                if (res.exists) {
-                    $('#accountNo').val(res.accountNo).prop('readonly', true);
-                    $('#add-contact-group').remove();
-                } else {
-                    $('#accountNo').val('').prop('readonly', false);
-
-                    if (!$('#add-contact-group').length) {
-                        let contactField = `
-                            <div class="form-group" id="add-contact-group">
-                                <label class="col-sm-3 control-label">Add Contact</label>
-                                <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="add_contact" id="add_contact" placeholder="Enter contact name">
-                                </div>
-                            </div>`;
-                        $('#accountNo').closest('.form-group').after(contactField);
-                    }
-                }
-            });
-        }
-    });
+        });
+    }
 });
+
 <?php echo '</script'; ?>
 >
+
+
 <?php
 }
 }

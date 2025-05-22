@@ -48,19 +48,13 @@
                             {foreach $d as $ds}
                                 <tr>
                                     <td>{date($_c.df, strtotime($ds.date))}</td>
-                                 
-                               <td class="text-right">
+                                    <td>{$ds.account}</td>
+                                
+                                  <td class="text-right">
                                         {if $ds.type == 'Expense'}
                                             <span class="text-danger">{$ds.to_field}</span>
                                         {else}
                                             <span class="text-success">{$ds.to_field}</span>
-                                        {/if}
-                                    </td>
-                                    <td class="text-right">
-                                        {if $ds.type == 'Expense'}
-                                            <span class="text-danger">-{$ds.amount}</span>
-                                        {else}
-                                            <span class="text-success">{$ds.amount}</span>
                                         {/if}
                                     </td>
                                     <td>{$ds.description}</td>

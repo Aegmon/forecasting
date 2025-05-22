@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.39, created on 2025-04-16 19:52:10
+/* Smarty version 3.1.39, created on 2025-05-22 08:40:20
   from 'D:\Xampp\htdocs\forecasting\ui\theme\ibilling\deposit.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.39',
-  'unifunc' => 'content_67ff99ea4fc0c8_76607581',
+  'unifunc' => 'content_682e7274504734_83669048',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     '247b99476c0a5423ea3347998f0ae9dc96097a2b' => 
     array (
       0 => 'D:\\Xampp\\htdocs\\forecasting\\ui\\theme\\ibilling\\deposit.tpl',
-      1 => 1744804329,
+      1 => 1747874418,
       2 => 'file',
     ),
   ),
@@ -20,25 +20,30 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_67ff99ea4fc0c8_76607581 (Smarty_Internal_Template $_smarty_tpl) {
+function content_682e7274504734_83669048 (Smarty_Internal_Template $_smarty_tpl) {
 $_smarty_tpl->_loadInheritance();
 $_smarty_tpl->inheritance->init($_smarty_tpl, true);
 ?>
 
 
 <?php 
-$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_98132800267ff99ea4ed0d1_09681697', "content");
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_422904107682e72744f4690_12275967', "content");
 ?>
+
+<?php 
+$_smarty_tpl->inheritance->instanceBlock($_smarty_tpl, 'Block_862299991682e7274502de5_92667615', "script");
+?>
+
 
 <?php $_smarty_tpl->inheritance->endChild($_smarty_tpl, ((string)$_smarty_tpl->tpl_vars['tpl_admin_layout']->value));
 }
 /* {block "content"} */
-class Block_98132800267ff99ea4ed0d1_09681697 extends Smarty_Internal_Block
+class Block_422904107682e72744f4690_12275967 extends Smarty_Internal_Block
 {
 public $subBlocks = array (
   'content' => 
   array (
-    0 => 'Block_98132800267ff99ea4ed0d1_09681697',
+    0 => 'Block_422904107682e72744f4690_12275967',
   ),
 );
 public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
@@ -59,8 +64,7 @@ public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
                     </div>
                     <form class="form-horizontal" method="post" id="tform" role="form">
                         <div class="form-group">
-                            <label for="account" class="col-sm-3 control-label"><?php echo $_smarty_tpl->tpl_vars['_L']->value['Account'];?>
-</label>
+                            <label for="account" class="col-sm-3 control-label">From</label>
                             <div class="col-sm-9">
                                 <select id="account" name="account" class="form-control">
                                     <option value=""><?php echo $_smarty_tpl->tpl_vars['_L']->value['Choose an Account'];?>
@@ -80,6 +84,18 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 
 
                                 </select>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                            <label for="to" class="col-sm-3 control-label">To</label>
+                            <div class="col-sm-9">
+                               <select id="to" name="to" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountNo" class="col-sm-3 control-label">Account Number</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="accountNo" name="accountNo">
                             </div>
                         </div>
                         <div class="form-group">
@@ -292,4 +308,113 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 }
 }
 /* {/block "content"} */
+/* {block "script"} */
+class Block_862299991682e7274502de5_92667615 extends Smarty_Internal_Block
+{
+public $subBlocks = array (
+  'script' => 
+  array (
+    0 => 'Block_862299991682e7274502de5_92667615',
+  ),
+);
+public function callBlock(Smarty_Internal_Template $_smarty_tpl) {
+?>
+
+<?php echo '<script'; ?>
+>
+$(document).ready(function () {
+    // Initialize Select2
+    $('#to').select2({
+        tags: true,
+        placeholder: 'Type to search book account...',
+        ajax: {
+            url: '<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/get-bookaccounts',
+            type: 'POST',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.results
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 1,
+        createTag: function (params) {
+            // Avoid creating tag if input is empty
+            const term = $.trim(params.term);
+            if (term === '') {
+                return null;
+            }
+            return {
+                id: term,
+                text: term,
+                newTag: true // mark as new
+            };
+        },
+        templateResult: function (data) {
+            var $result = $("<span></span>");
+            $result.text(data.text);
+            if (data.newTag) {
+                $result.append(" <em>(new)</em>");
+            }
+            return $result;
+        }
+    });
+
+    // When a new tag is entered and Select2 closes, force it to select the custom value
+    $('#to').on('select2:close', function (e) {
+        var inputValue = $('#to').data('select2').dropdown.$search.val();
+
+        if (inputValue && !$('#to').find("option[value='" + inputValue + "']").length) {
+            // Add the new option and select it
+            var newOption = new Option(inputValue, inputValue, true, true);
+            $('#to').append(newOption).trigger('change');
+        }
+    });
+
+    // Handle blur logic
+    $('#to').on('change', function () {
+        let toValue = $(this).val();
+
+        if (toValue !== '') {
+            $.post('<?php echo $_smarty_tpl->tpl_vars['_url']->value;?>
+transactions/lookup', {
+                to: toValue
+            }, function (data) {
+                const res = JSON.parse(data);
+
+                if (res.exists) {
+                    $('#accountNo').val(res.accountNo).prop('readonly', true);
+                    $('#add-contact-group').remove();
+                } else {
+                    $('#accountNo').val('').prop('readonly', false);
+
+                    if (!$('#add-contact-group').length) {
+                        let contactField = `
+                            <div class="form-group" id="add-contact-group">
+                                <label class="col-sm-3 control-label">Add Contact</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="add_contact" id="add_contact" placeholder="Enter contact name">
+                                </div>
+                            </div>`;
+                        $('#accountNo').closest('.form-group').after(contactField);
+                    }
+                }
+            });
+        }
+    });
+});
+<?php echo '</script'; ?>
+>
+<?php
+}
+}
+/* {/block "script"} */
 }
